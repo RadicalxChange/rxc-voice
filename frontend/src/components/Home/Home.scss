@@ -1,0 +1,22 @@
+.home {
+  margin: auto;
+  width: 700px;
+  align-items: center;
+  text-align: center;
+
+  .create-election-button {
+    margin: 5em auto 5em auto;
+    width: 33%;
+    border-radius: 15px;
+    background: var(--yellowColor);
+    color: var(--blackColor);
+    border: 0;
+    padding: 0.25em;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+    &:active {
+      background: darken(#ff8a00, 10);
+    }
+  }
+}
