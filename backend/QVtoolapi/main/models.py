@@ -36,7 +36,7 @@ class User(AbstractUser):
 class Election(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     title = models.CharField(max_length=256, blank=False)
-    description = models.TextField(blank=False)
+    description = models.TextField(blank=True)
     start_date = models.DateField(blank=False)
     end_date = models.DateField(blank=False)
     negative_votes = models.BooleanField(default=True)
