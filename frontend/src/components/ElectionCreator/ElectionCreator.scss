@@ -1,4 +1,55 @@
 .election-creator {
   margin: auto;
-  width: 700px;
+  background: var(--yellowColor);
+
+  .back-button {
+    color: var(--blackColor);
+    position: absolute;
+    left: 0px;
+    padding: 1em 2.3em;
+  }
+
+  .page-header {
+    align-items: center;
+    text-align: center;
+    margin: auto;
+    width: 650px;
+  }
+
+  .election-form {
+    padding-top: 3rem;
+    align-items: left;
+    text-align: left;
+    margin: auto;
+    width: 650px;
+
+    .neg-switch {
+      display: block;
+    }
+  }
+
+  .button-wrapper {
+    margin: auto;
+    width: 650px;
+    align-items: center;
+    text-align: center;
+
+    .submit-button {
+      margin: 3em auto 3em auto;
+      width: 33%;
+      border-radius: 15px;
+      background: var(--blackColor);
+      color: var(--yellowColor);
+      border: 0;
+      padding: 0.25em;
+      font-size: 1.2rem;
+      font-family: var(--secondaryFont);
+      line-height: 3rem;
+      outline: none;
+      cursor: pointer;
+      &:active {
+        background: darken(#ff8a00, 10);
+      }
+    }
+  }
 }

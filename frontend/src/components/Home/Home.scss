@@ -1,10 +1,10 @@
 .home {
   margin: auto;
-  width: 700px;
+  width: 650px;
   align-items: center;
   text-align: center;
 
-  .create-election-button {
+  .create-button {
     margin: 5em auto 5em auto;
     width: 33%;
     border-radius: 15px;
@@ -12,7 +12,6 @@
     color: var(--blackColor);
     border: 0;
     padding: 0.25em;
-    font-size: 16px;
     outline: none;
     cursor: pointer;
     &:active {

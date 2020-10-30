@@ -10,13 +10,15 @@ function Home() {
         <h1>RxC QV</h1>
         <p>Welcome to RadicalxChange's Quadratic Voting tool!</p>
         <p>Click below to create a QV election.</p>
-        <Link
-          to='/create-election'
-        >
-          <div className="create-election-button">
-            <div className="button-text">create election</div>
-          </div>
-        </Link>
+
+        <div className="create-button">
+          <Link
+            to='/create-election'
+            className="button-text"
+          >
+          create election
+          </Link>
+        </div>
 
     </div>
   );
