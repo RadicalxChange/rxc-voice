@@ -21,4 +21,4 @@ KNOWN BUGS
 
 create-election page:
 deleting one ballot fires onClick twice, deletes top element every time.
-same thing for adding/deleting voter email addresses.
+same thing for deleting voter email addresses.
