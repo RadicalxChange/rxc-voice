@@ -17,8 +17,8 @@ function Ballot(props: any) {
      // console.log(newBallot);
    };
 
-   let handleAdd = (proposal: string) => {
-     const newProposal: Proposal = { id: nextId, name: proposal }
+   let handleAdd = (proposalTitle: string) => {
+     const newProposal: Proposal = { id: nextId, title: proposalTitle, description: '', link: '' }
      const newBallot: Proposal[] = [...ballot, newProposal];
      setBallot(ballot => newBallot);
      setNextId(nextId => nextId + 1);
@@ -31,7 +31,7 @@ function Ballot(props: any) {
       <ul>
         {ballot.map(proposal => (
           <li className="ballot-proposal" key={proposal.id}>
-            <label>{proposal.name}</label>
+            <label>{proposal.title}</label>
             <button
               type="button"
               onClick={() => handleDelete(proposal.id)}>

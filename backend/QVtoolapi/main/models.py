@@ -37,8 +37,8 @@ class Election(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True)
-    start_date = models.DateField(blank=False)
-    end_date = models.DateField(blank=False)
+    start_date = models.DateTimeField(blank=False)
+    end_date = models.DateTimeField(blank=False)
     negative_votes = models.BooleanField(default=True)
     matching_fund = models.DecimalField(
         default=0, max_digits=10, decimal_places=0, blank=False)
@@ -56,7 +56,7 @@ class Proposal(models.Model):
     description = models.TextField(blank=True)
     link = models.CharField(max_length=512, blank=True)
     election = models.ForeignKey(Election, on_delete=models.CASCADE,
-                                 null=True, blank=False, editable=False)
+                                 null=True, blank=False)
     sum_contributions = models.DecimalField(
         default=0, max_digits=10, decimal_places=0, editable=False)
     current_match = models.DecimalField(
@@ -74,4 +74,4 @@ class Vote(models.Model):
                                  null=True, blank=False)
     amount = models.DecimalField(
         default=0, max_digits=4, decimal_places=0, editable=False)
-    date = models.DateField(blank=False)
+    date = models.DateTimeField(blank=False)

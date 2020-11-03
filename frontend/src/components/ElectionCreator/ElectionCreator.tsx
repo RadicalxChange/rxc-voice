@@ -1,59 +1,81 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Switch from "react-switch";
 import moment from 'moment';
 import "./ElectionCreator.scss";
-import blackSquareIcon from '../../assets/black-square.png';
+// import blackSquareIcon from '../../assets/black-square.png';
 import Ballot from "./components/Ballot";
 import VoterList from "./components/VoterList";
 import { Proposal } from "../../models/Proposal";
 import { Voter } from "../../models/Voter";
+import { WebService } from "../../services";
+// import { useAlert } from "react-alert";
 
 function ElectionCreator() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [ballot, setBallot] = useState(new Array<Proposal>());
   const [voters, setVoters] = useState(new Array<Voter>());
-  const [voteToken, setVoteToken] = useState({blackSquareIcon});
+  // const [voteToken, setVoteToken] = useState({blackSquareIcon});
   const [numTokens, setNumTokens] = useState(99);
   const [negativeVotes, setNegativeVotes] = useState(true)
   const [startTime, setStartTime] = useState(moment().format('YYYY-MM-DDTHH:MM'));
   const [endTime, setEndTime] = useState(moment().add(1, "days").format('YYYY-MM-DDTHH:MM'));
 
   const createElection = () => {
-    console.log("submitted");
-  //   if (formComplete()) {
-  //     WebService.postElection({
-  //       title: title,
-  //       description: description,
-  //       start_date: startTime,
-  //       end_date: endTime,
-  //       negative_votes:
-  //     })
-  //   } else {
-  //   showAlert("Please fill all the fields");
-  // }
+    if (formComplete()) {
+      WebService.postElection({
+        title: title,
+        description: description,
+        start_date: startTime,
+        end_date: endTime,
+        negative_votes: negativeVotes,
+        matching_fund: 0,
+        vote_token: '../../assets/black-square.png',
+        num_tokens: numTokens,
+      }).subscribe(async (data) => {
+                      if (data.ok) {
+                        console.log("election submitted!");
+                        const response = await data.json();
+                        const election_id = response.id;
+                        // submit proposals.
+                        ballot.forEach(proposal => WebService.postProposal({
+                          title: proposal.title,
+                          description: proposal.description,
+                          link: proposal.link,
+                        }, election_id).subscribe(async (data) => {
+                                        if (data.ok) {
+                                          console.log("proposal submitted!");
+                                        } else {
+                                          const error = await data.json();
+                                          Object.keys(error).forEach((key) => {
+                                            console.log(error[key].join());
+                                          });
+                                        }
+                                      })
+                                    );
+                      } else {
+                        const error = await data.json();
+                        Object.keys(error).forEach((key) => {
+                          console.log(error[key].join());
+                        });
+                      }
+                    });
+    } else {
+      console.log("Please fill all the fields");
+    }
   };
 
   const formComplete = () => {
     return title && ballot.length && voters.length
   };
 
-  const printTime = () => {
-    console.log("start time:");
-    console.log(startTime);
-  };
-
   const onChangeBallot = (newBallot: Proposal[]) => {
     setBallot(ballot => newBallot);
-    // console.log("changed ballot to:");
-    // console.log(newBallot);
   }
 
   const onChangeVoters = (newVoters: Voter[]) => {
     setVoters(voters => newVoters);
-    // console.log("changed voters to:");
-    // console.log(newVoters);
   }
 
   return (
@@ -105,10 +127,6 @@ function ElectionCreator() {
           </label>
 
           <label>
-            Vote Token
-          </label>
-
-          <label>
             Vote Tokens per Voter
             <input
               type="number"
@@ -137,7 +155,7 @@ function ElectionCreator() {
               offHandleColor="#ffffff"
               onHandleColor="#ffffff"
               onColor="#000000"
-              offColor="999999"
+              offColor="#999999"
             />
           </div>
 
@@ -150,8 +168,6 @@ function ElectionCreator() {
               onChange={(e) => setStartTime(e.target.value)}
             />
           </label>
-
-          {printTime()}
 
           <label>
             End Time

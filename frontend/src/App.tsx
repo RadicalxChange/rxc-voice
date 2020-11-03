@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Route, Redirect, useHistory } from "react-router-dom";
+import React from 'react';
+import { Route } from "react-router-dom";
 
 
 import Home from "./components/Home";
@@ -20,7 +20,13 @@ function App() {
       <Route
         path="/create-election"
         exact
-        render={() => <ElectionCreator></ElectionCreator>} />
+        render={() => <ElectionCreator></ElectionCreator>}
+      />
+      <Route
+        path="/elections/:id/:slug"
+        exact
+        render={() => <VotingPage></VotingPage>}
+      />
 
     </div>
   );

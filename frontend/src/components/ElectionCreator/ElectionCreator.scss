@@ -1,6 +1,8 @@
 .election-creator {
   margin: auto;
   background: var(--yellowColor);
+  align-items: left;
+  justify-content: left;
 
   .back-button {
     color: var(--blackColor);

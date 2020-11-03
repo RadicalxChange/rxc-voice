@@ -80,6 +80,14 @@ ul {
   padding-left: 0px;
 }
 
+img {
+  display: block;
+  padding: none;
+  margin: none;
+  left: 0px;
+  position: relative;
+}
+
 .button-text {
   font-size: 1.2rem;
   font-family: var(--secondaryFont);
