@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 
 import Home from "./components/Home";
 import ElectionCreator from "./components/ElectionCreator";
+import VotingPage from "./components/VotingPage";
 import logo from './assets/RadicalxChange_yellow.png';
 import './App.scss';
 

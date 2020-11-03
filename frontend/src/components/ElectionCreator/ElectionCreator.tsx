@@ -18,7 +18,7 @@ function ElectionCreator() {
   const [voters, setVoters] = useState(new Array<Voter>());
   // const [voteToken, setVoteToken] = useState({blackSquareIcon});
   const [numTokens, setNumTokens] = useState(99);
-  const [negativeVotes, setNegativeVotes] = useState(true)
+  const [negativeVotes, setNegativeVotes] = useState(true);
   const [startTime, setStartTime] = useState(moment().format('YYYY-MM-DDTHH:MM'));
   const [endTime, setEndTime] = useState(moment().add(1, "days").format('YYYY-MM-DDTHH:MM'));
 

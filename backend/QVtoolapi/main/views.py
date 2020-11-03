@@ -80,7 +80,6 @@ class ProposalList(mixins.CreateModelMixin,
 
     def get(self, request, *args, **kwargs):
         election_id = self.kwargs['pk']
-        print(election_id)
         election_proposals = self.get_queryset().filter(
             election__id=election_id)
         page = self.paginate_queryset(election_proposals)

@@ -12,6 +12,6 @@ urlpatterns = [
     # See note in views.py.
     # path('proposals/<int:pk>', ProposalDetail.as_view(),
     #      name='proposal-detail'),
-    path('elections/<int:pk>/proposals',
+    path('elections/<int:pk>/proposals/',
          ProposalList.as_view(), name='proposal-list'),
 ]

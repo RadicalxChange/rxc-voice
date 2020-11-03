@@ -1,0 +1,27 @@
+.voting-page {
+  margin: auto;
+  background: var(--whiteColor);
+  align-items: left;
+  justify-content: left;
+
+  .sticky-header {
+    align-items: left;
+    text-align: left;
+    margin: auto;
+    width: 800px;
+
+    .available-tokens-widget {
+
+      .available-tokens-text {
+        width: 150px;
+        display: inline-block;
+      }
+
+      .tokens-remaining {
+        display: inline-block;
+        width: 80%;
+        text-align: right;
+      }
+    }
+  }
+}
