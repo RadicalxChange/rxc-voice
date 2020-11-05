@@ -73,5 +73,5 @@ class Vote(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.PROTECT,
                                  null=True, blank=False)
     amount = models.DecimalField(
-        default=0, max_digits=4, decimal_places=0, editable=False)
-    date = models.DateTimeField(blank=False)
+        default=0, max_digits=4, decimal_places=0)
+    date = models.DateTimeField(null=True)

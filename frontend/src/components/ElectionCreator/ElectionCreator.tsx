@@ -39,21 +39,40 @@ function ElectionCreator() {
                         const response = await data.json();
                         const election_id = response.id;
                         // submit proposals.
-                        ballot.forEach(proposal => WebService.postProposal({
+                        // ballot.forEach(proposal => WebService.postProposal({
+                        //   title: proposal.title,
+                        //   description: proposal.description,
+                        //   link: proposal.link,
+                        // }, election_id).subscribe(async (data) => {
+                        //                 if (data.ok) {
+                        //                   console.log("proposal submitted!");
+                        //                 } else {
+                        //                   const error = await data.json();
+                        //                   Object.keys(error).forEach((key) => {
+                        //                     console.log(error[key].join());
+                        //                   });
+                        //                 }
+                        //               })
+                        //             );
+
+
+                        const postData = new Array<any>();
+                        ballot.forEach(proposal => postData.push({
                           title: proposal.title,
                           description: proposal.description,
                           link: proposal.link,
-                        }, election_id).subscribe(async (data) => {
+                          election: election_id,
+                        }));
+                        WebService.postProposals(postData, election_id).subscribe(async (data) => {
                                         if (data.ok) {
-                                          console.log("proposal submitted!");
+                                          console.log("proposals submitted!");
                                         } else {
                                           const error = await data.json();
                                           Object.keys(error).forEach((key) => {
                                             console.log(error[key].join());
                                           });
                                         }
-                                      })
-                                    );
+                                      });
                       } else {
                         const error = await data.json();
                         Object.keys(error).forEach((key) => {

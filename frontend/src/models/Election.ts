@@ -1,7 +1,7 @@
 import { Proposal } from "./Proposal"
 
 export interface Election {
-  id: string,
+  id: number,
   title: string,
   description: string,
   start_date: string,

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import RootView, ElectionList, ElectionDetail, ProposalList, ProposalListAll
+from .views import RootView, ElectionList, ElectionDetail, ProposalList, VoteList, ProposalListAll
 
 urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
@@ -14,4 +14,6 @@ urlpatterns = [
     #      name='proposal-detail'),
     path('elections/<int:pk>/proposals/',
          ProposalList.as_view(), name='proposal-list'),
+    path('elections/<int:pk>/votes/',
+         VoteList.as_view(), name='vote-list'),
 ]

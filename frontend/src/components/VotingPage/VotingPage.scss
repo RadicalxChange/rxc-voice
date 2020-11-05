@@ -3,12 +3,12 @@
   background: var(--whiteColor);
   align-items: left;
   justify-content: left;
+  width: 800px;
 
   .sticky-header {
     align-items: left;
     text-align: left;
     margin: auto;
-    width: 800px;
 
     .available-tokens-widget {
 
@@ -21,6 +21,31 @@
         display: inline-block;
         width: 80%;
         text-align: right;
+      }
+    }
+  }
+
+  .button-wrapper {
+    margin: auto;
+    width: 650px;
+    align-items: center;
+    text-align: center;
+
+    .submit-button {
+      margin: 3em auto 3em auto;
+      width: 33%;
+      border-radius: 15px;
+      background: var(--blackColor);
+      color: var(--yellowColor);
+      border: 0;
+      padding: 0.25em;
+      font-size: 1.2rem;
+      font-family: var(--secondaryFont);
+      line-height: 3rem;
+      outline: none;
+      cursor: pointer;
+      &:active {
+        background: darken(#ff8a00, 10);
       }
     }
   }

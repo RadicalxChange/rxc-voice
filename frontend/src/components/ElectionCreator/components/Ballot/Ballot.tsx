@@ -18,7 +18,10 @@ function Ballot(props: any) {
    };
 
    let handleAdd = (proposalTitle: string) => {
-     const newProposal: Proposal = { id: nextId, title: proposalTitle, description: '', link: '' }
+     const newProposal: Proposal = { id: nextId,
+                                     title: proposalTitle,
+                                     description: '',
+                                     link: '', }
      const newBallot: Proposal[] = [...ballot, newProposal];
      setBallot(ballot => newBallot);
      setNextId(nextId => nextId + 1);

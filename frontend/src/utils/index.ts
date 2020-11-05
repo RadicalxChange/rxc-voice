@@ -1,8 +1,9 @@
 import { Election } from "../models/Election";
 import { Proposal } from "../models/Proposal";
+import { Vote } from "../models/Vote";
 
 export const standInElection = (): Election => ({
-  id: '',
+  id: 0,
   title: 'loading election...',
   description: '',
   start_date: '',
@@ -24,5 +25,19 @@ export const mapToProposal = (proposal: Proposal): Proposal => {
     title: proposal.title,
     description: proposal.description,
     link: proposal.link,
+  };
+};
+
+export const mapToVotes = (votes: Vote[]): Vote[] => {
+  return votes.map(mapToVote);
+};
+
+export const mapToVote = (vote: Vote): Vote => {
+  return {
+    id: vote.id,
+    sender: vote.sender,
+    proposal: vote.proposal,
+    amount: vote.amount,
+    date: vote.date,
   };
 };
