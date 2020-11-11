@@ -8,17 +8,17 @@ function VoterList(props: any) {
 
 
    let handleDelete = (id: number) => {
-     // console.log("deleted:")
-     // console.log(id);
      const newVoterList: Voter[] = voterList.filter(voter => voter.id !== id);
      setVoterList(voterList => newVoterList);
      props.onChange(newVoterList);
-     // console.log("changed voter list to:");
-     // console.log(newVoterList);
    };
 
    let handleAdd = (newEmail: string) => {
-     const newVoter: Voter = { id: nextId, email: newEmail }
+     const newVoter: Voter = {
+       id: nextId,
+       email: newEmail,
+       password: '',
+     }
      const newVoterList: Voter[] = [...voterList, newVoter];
      setVoterList(voterList => newVoterList);
      setNextId(nextId => nextId + 1);
@@ -42,8 +42,8 @@ function VoterList(props: any) {
       </ul>
       <div className="add-voter">
         <input
-          type="text"
-          placeholder="Enter email address"
+          type="email"
+          placeholder="example@mail.com"
           value={editableVoter}
           onChange={(e) => setEditableVoter(e.target.value)}
         />

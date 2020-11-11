@@ -1,3 +1,4 @@
 export interface VotingPageRouteParams {
-  id: string,
+  email: string,
+  userId: string,
 }

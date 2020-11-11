@@ -1,6 +1,8 @@
 import { Election } from "../models/Election";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
+import { Voter } from "../models/Voter";
+import { Permission } from "../models/Permission";
 
 export const standInElection = (): Election => ({
   id: 0,
@@ -14,6 +16,14 @@ export const standInElection = (): Election => ({
   num_tokens: 0,
   proposals: new Array<Proposal>(),
 });
+
+export const standInVoter = (): Voter => ({
+  id: 0,
+  email: '',
+  password: '',
+});
+
+export const defaultPermission = (): Permission => (Permission.None);
 
 export const mapToProposals = (proposals: Proposal[]): Proposal[] => {
   return proposals.map(mapToProposal);
@@ -39,5 +49,17 @@ export const mapToVote = (vote: Vote): Vote => {
     proposal: vote.proposal,
     amount: vote.amount,
     date: vote.date,
+  };
+};
+
+export const mapToVoters = (voters: Voter[]): Voter[] => {
+  return voters.map(mapToVoter);
+};
+
+export const mapToVoter = (voter: Voter): Voter => {
+  return {
+    id: voter.id,
+    email: voter.email,
+    password: voter.password,
   };
 };

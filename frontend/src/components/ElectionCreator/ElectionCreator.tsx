@@ -9,6 +9,7 @@ import VoterList from "./components/VoterList";
 import { Proposal } from "../../models/Proposal";
 import { Voter } from "../../models/Voter";
 import { WebService } from "../../services";
+import { fromString } from 'uuidv4';
 // import { useAlert } from "react-alert";
 
 function ElectionCreator() {
@@ -19,8 +20,10 @@ function ElectionCreator() {
   // const [voteToken, setVoteToken] = useState({blackSquareIcon});
   const [numTokens, setNumTokens] = useState(99);
   const [negativeVotes, setNegativeVotes] = useState(true);
-  const [startTime, setStartTime] = useState(moment().format('YYYY-MM-DDTHH:MM'));
-  const [endTime, setEndTime] = useState(moment().add(1, "days").format('YYYY-MM-DDTHH:MM'));
+  const [startTime, setStartTime] = useState(
+    moment().format('YYYY-MM-DDTHH:MM'));
+  const [endTime, setEndTime] = useState(
+    moment().add(1, "days").format('YYYY-MM-DDTHH:MM'));
 
   const createElection = () => {
     if (formComplete()) {
@@ -38,38 +41,42 @@ function ElectionCreator() {
                         console.log("election submitted!");
                         const response = await data.json();
                         const election_id = response.id;
-                        // submit proposals.
-                        // ballot.forEach(proposal => WebService.postProposal({
-                        //   title: proposal.title,
-                        //   description: proposal.description,
-                        //   link: proposal.link,
-                        // }, election_id).subscribe(async (data) => {
-                        //                 if (data.ok) {
-                        //                   console.log("proposal submitted!");
-                        //                 } else {
-                        //                   const error = await data.json();
-                        //                   Object.keys(error).forEach((key) => {
-                        //                     console.log(error[key].join());
-                        //                   });
-                        //                 }
-                        //               })
-                        //             );
-
-
-                        const postData = new Array<any>();
-                        ballot.forEach(proposal => postData.push({
+                        const postDataProposals = new Array<any>();
+                        ballot.forEach(proposal => postDataProposals.push({
                           title: proposal.title,
                           description: proposal.description,
                           link: proposal.link,
                           election: election_id,
                         }));
-                        WebService.postProposals(postData, election_id).subscribe(async (data) => {
+                        console.log(postDataProposals);
+                        WebService.postProposals(
+                          postDataProposals,
+                          election_id).subscribe(async (data) => {
                                         if (data.ok) {
                                           console.log("proposals submitted!");
                                         } else {
                                           const error = await data.json();
                                           Object.keys(error).forEach((key) => {
-                                            console.log(error[key].join());
+                                            console.log(error[key]);
+                                          });
+                                        }
+                                      });
+                        const postDataVoters = new Array<any>();
+                        voters.forEach(voter => postDataVoters.push({
+                          password: fromString(voter.email + election_id),
+                          email: voter.email,
+                          election: election_id,
+                        }));
+                        console.log(postDataVoters);
+                        WebService.postUsers(
+                          postDataVoters,
+                          election_id).subscribe(async (data) => {
+                                        if (data.ok) {
+                                          console.log("users submitted!");
+                                        } else {
+                                          const error = await data.json();
+                                          Object.keys(error).forEach((key) => {
+                                            console.log(error[key]);
                                           });
                                         }
                                       });

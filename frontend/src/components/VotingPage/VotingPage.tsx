@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
+import moment from 'moment';
 // import { Election } from "../../models/Election";
 import { Proposal } from "../../models/Proposal";
 import { VotingPageRouteParams } from "../../models/VotingPageRouteParams";
-import { standInElection } from "../../utils";
+import { standInElection, standInVoter, defaultPermission } from "../../utils";
+import { Permission } from "../../models/Permission";
 import { WebService } from "../../services";
 import { Vote } from "../../models/Vote";
 import "./VotingPage.scss";
@@ -29,23 +31,45 @@ function VotingPage() {
   };
 
   const initTokens: number = 0;
-  const { id } = useParams<VotingPageRouteParams>();
+  const { email, userId } = useParams<VotingPageRouteParams>();
   const [election, setElection] = useState(standInElection);
+  // const [voter, setVoter] = useState(standInVoter);
   const [tokensRemaining, setTokensRemaining] = useState(initTokens);
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
+  const [permission, setPermission] = useState(defaultPermission);
 
   useEffect(() => {
-    if (id) {
-      WebService.fetchElection(id).subscribe((data) => {
-        setElection(election => data);
-        setTokensRemaining(tokensRemaining => data.num_tokens);
-      });
-      WebService.fetchProposals(id).subscribe((data: Proposal[]) => {
-        setProposals(proposals => data);
-        data.forEach(proposal => {
-          voteDispatch({ proposal: proposal.id, amount: 0, });
-        });
+    if (userId) {
+      console.log({email: email, password: userId,});
+      WebService.loginUser({email: email, password: userId,}).subscribe(async (data) => {
+        if (data.ok) {
+          const user = await data.json();
+          sessionStorage.setItem("user", JSON.stringify(user));
+          const election_id = user.election;
+          if (election_id) {
+            WebService.fetchElection(election_id).subscribe(async (data) => {
+              if (data.id) {
+                setElection(election => data);
+                setTokensRemaining(tokensRemaining => data.num_tokens);
+                if (!user.voted) {
+                  setPermission(permission => Permission.Vote);
+                } else {
+                  setPermission(permission => Permission.View);
+                }
+              }
+            });
+            WebService.fetchProposals(election_id).subscribe((data: Proposal[]) => {
+              setProposals(proposals => data);
+              data.forEach(proposal => {
+                voteDispatch({ proposal: proposal.id, amount: 0, });
+              });
+            });
+          }
+        } else {
+          const error = await data.json();
+          console.log("yo");
+        }
       });
     }
    // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,9 +84,12 @@ function VotingPage() {
 
   const submitVotes = () => {
     const postData = new Array<any>();
+    const user = sessionStorage.getItem("user");
     votes.forEach(vote => postData.push({
       proposal: vote.proposal,
       amount: vote.amount,
+      date: moment().format('YYYY-MM-DDTHH:MM'),
+      sender: user,
     }));
     console.log(postData);
     WebService.postVotes(postData, election.id).subscribe(async (data) => {
@@ -71,45 +98,59 @@ function VotingPage() {
                     } else {
                       const error = await data.json();
                       Object.keys(error).forEach((key) => {
-                        console.log(error[key].join());
+                        console.log(error[key]);
                       });
                     }
                   });
+    // WebService.updateVoter(userId, {voted: true})
+    //       .subscribe(async (data) => {
+    //         if (!data.ok) {
+    //           console.error("Error", await data.json());
+    //         }
+    //       });
   };
 
-  return (
-    <div className="voting-page">
-      <div className="sticky-header">
-        <h2>{election.title}</h2>
-        <p>{election.description}</p>
-        <div className="available-tokens-widget">
-          <h3 className="available-tokens-text">Available Tokens</h3>
-          <p className="tokens-remaining">
-            {tokensRemaining}/{election.num_tokens} tokens remaining
-          </p>
+  if (permission === Permission.Vote) {
+    return (
+        <div className="voting-page">
+          <div className="sticky-header">
+            <h2>{election.title}</h2>
+            <p>{election.description}</p>
+            <div className="available-tokens-widget">
+              <h3 className="available-tokens-text">Available Tokens</h3>
+              <p className="tokens-remaining">
+                {tokensRemaining}/{election.num_tokens} tokens remaining
+              </p>
+            </div>
+          </div>
+          <hr />
+          <ul>
+            {proposals.map((proposal: Proposal, i) => (
+              <ProposalWidget key={i}
+                              tokensRemaining={tokensRemaining}
+                              proposal={proposal}
+                              negativeVotes={election.negative_votes}
+                              onChange={onChangeVoteCount} />
+            ))}
+          </ul>
+          <div className="button-wrapper">
+            <button
+              type="button"
+              className="submit-button"
+              onClick={() => submitVotes()}
+              >
+              submit
+            </button>
+          </div>
         </div>
+    );
+  } else {
+    return (
+      <div className="sticky-header">
+        <h2>Sorry! You do not have access to this private election.</h2>
       </div>
-      <hr />
-      <ul>
-        {proposals.map((proposal: Proposal, i) => (
-          <ProposalWidget key={i}
-                          tokensRemaining={tokensRemaining}
-                          proposal={proposal}
-                          negativeVotes={election.negative_votes}
-                          onChange={onChangeVoteCount} />
-        ))}
-      </ul>
-      <div className="button-wrapper">
-        <button
-          type="button"
-          className="submit-button"
-          onClick={() => submitVotes()}
-          >
-          submit
-        </button>
-      </div>
-    </div>
-  );
+    )
+  }
 }
 
 export default VotingPage;
