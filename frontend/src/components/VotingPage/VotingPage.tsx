@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import moment from 'moment';
-// import { Election } from "../../models/Election";
 import { Proposal } from "../../models/Proposal";
 import { VotingPageRouteParams } from "../../models/VotingPageRouteParams";
-import { standInElection, standInVoter, defaultPermission } from "../../utils";
+import { standInElection, defaultPermission } from "../../utils";
 import { Permission } from "../../models/Permission";
 import { WebService } from "../../services";
 import { Vote } from "../../models/Vote";
@@ -31,44 +30,44 @@ function VotingPage() {
   };
 
   const initTokens: number = 0;
-  const { email, userId } = useParams<VotingPageRouteParams>();
+  const { electionId, userId } = useParams<VotingPageRouteParams>();
   const [election, setElection] = useState(standInElection);
-  // const [voter, setVoter] = useState(standInVoter);
   const [tokensRemaining, setTokensRemaining] = useState(initTokens);
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [permission, setPermission] = useState(defaultPermission);
 
   useEffect(() => {
-    if (userId) {
-      console.log({email: email, password: userId,});
-      WebService.loginUser({email: email, password: userId,}).subscribe(async (data) => {
+    if (userId && electionId) {
+      WebService.loginUser({
+        username: userId,
+        password: userId,
+      }).subscribe(async (data) => {
         if (data.ok) {
           const user = await data.json();
           sessionStorage.setItem("user", JSON.stringify(user));
-          const election_id = user.election;
-          if (election_id) {
-            WebService.fetchElection(election_id).subscribe(async (data) => {
-              if (data.id) {
-                setElection(election => data);
+          WebService.fetchElection(electionId)
+          .subscribe(async (data) => {
+            if (data.id) {
+              setElection(election => data);
+              if (data.show_results) {
+                setPermission(permission => Permission.View_Results);
+              } else {
+                setPermission(permission => Permission.Vote);
                 setTokensRemaining(tokensRemaining => data.num_tokens);
-                if (!user.voted) {
-                  setPermission(permission => Permission.Vote);
-                } else {
-                  setPermission(permission => Permission.View);
-                }
               }
+            }
+          });
+          WebService.fetchProposals(electionId)
+          .subscribe((data: Proposal[]) => {
+            setProposals(proposals => data);
+            data.forEach(proposal => {
+              voteDispatch({ proposal: proposal.id, amount: 0, });
             });
-            WebService.fetchProposals(election_id).subscribe((data: Proposal[]) => {
-              setProposals(proposals => data);
-              data.forEach(proposal => {
-                voteDispatch({ proposal: proposal.id, amount: 0, });
-              });
-            });
-          }
+          });
         } else {
           const error = await data.json();
-          console.log("yo");
+          console.log(error);
         }
       });
     }
@@ -89,7 +88,7 @@ function VotingPage() {
       proposal: vote.proposal,
       amount: vote.amount,
       date: moment().format('YYYY-MM-DDTHH:MM'),
-      sender: user,
+      sender: user ? JSON.parse(user).id : '',
     }));
     console.log(postData);
     WebService.postVotes(postData, election.id).subscribe(async (data) => {
@@ -102,12 +101,6 @@ function VotingPage() {
                       });
                     }
                   });
-    // WebService.updateVoter(userId, {voted: true})
-    //       .subscribe(async (data) => {
-    //         if (!data.ok) {
-    //           console.error("Error", await data.json());
-    //         }
-    //       });
   };
 
   if (permission === Permission.Vote) {

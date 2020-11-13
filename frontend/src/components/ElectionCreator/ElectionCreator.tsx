@@ -41,6 +41,9 @@ function ElectionCreator() {
                         console.log("election submitted!");
                         const response = await data.json();
                         const election_id = response.id;
+                        const election_groups = response.groups;
+                        console.log(election_id);
+                        console.log(election_groups);
                         const postDataProposals = new Array<any>();
                         ballot.forEach(proposal => postDataProposals.push({
                           title: proposal.title,
@@ -48,7 +51,6 @@ function ElectionCreator() {
                           link: proposal.link,
                           election: election_id,
                         }));
-                        console.log(postDataProposals);
                         WebService.postProposals(
                           postDataProposals,
                           election_id).subscribe(async (data) => {
@@ -65,12 +67,10 @@ function ElectionCreator() {
                         voters.forEach(voter => postDataVoters.push({
                           password: fromString(voter.email + election_id),
                           email: voter.email,
-                          election: election_id,
+                          groups: election_groups
                         }));
-                        console.log(postDataVoters);
-                        WebService.postUsers(
-                          postDataVoters,
-                          election_id).subscribe(async (data) => {
+                        WebService.postUsers(postDataVoters)
+                        .subscribe(async (data) => {
                                         if (data.ok) {
                                           console.log("users submitted!");
                                         } else {

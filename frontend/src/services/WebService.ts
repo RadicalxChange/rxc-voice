@@ -7,14 +7,6 @@ import { mapToProposals, mapToVotes, mapToVoters } from "../utils";
 
 const ROOT_URL = "http://127.0.0.1:8000";
 
-// export const accessElection = (id: string): Observable<any> => {
-//   return defer(() => {
-//     return from<Promise<any>>(
-//       fetch(`${ROOT_URL}/anon-voters/${id}/`).then((res) => res.json()),
-//     );
-//   });
-// };
-
 export const loginUser = (user: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
@@ -27,16 +19,13 @@ export const loginUser = (user: any): Observable<any> => {
   });
 };
 
-
-export const updateVoter = (id: string, voter: any): Observable<any> => {
+export const postUsers = (users: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/anon-voters/${id}/`, {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-        },
-        method: "PUT",
-        body: JSON.stringify(voter),
+      fetch(`${ROOT_URL}/users/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+        body: JSON.stringify(users),
       }),
     );
   });
@@ -91,40 +80,6 @@ export const postProposals = (proposals: any, election_id: number): Observable<a
   });
 };
 
-export const fetchVoters = (election_id: string): Observable<Voter[]> => {
-  return defer(() => {
-    return from<Promise<Voter[]>>(
-      fetch(`${ROOT_URL}/elections/${election_id}/anon-voters/`)
-        .then((res) => res.json())
-        .then(mapToVoters),
-    );
-  });
-};
-
-export const postVoters = (voters: any, election_id: number): Observable<any> => {
-  return defer(() => {
-    return from<Promise<any>>(
-      fetch(`${ROOT_URL}/elections/${election_id}/anon-voters/`, {
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        method: "POST",
-        body: JSON.stringify(voters),
-      }),
-    );
-  });
-};
-
-export const postUsers = (users: any, election_id: number): Observable<any> => {
-  return defer(() => {
-    return from<Promise<any>>(
-      fetch(`${ROOT_URL}/users/`, {
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        method: "POST",
-        body: JSON.stringify(users),
-      }),
-    );
-  });
-};
-
 export const fetchVotes = (election_id: string): Observable<Vote[]> => {
   return defer(() => {
     return from<Promise<Vote[]>>(
@@ -142,6 +97,28 @@ export const postVotes = (votes: any, election_id: number): Observable<any> => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         method: "POST",
         body: JSON.stringify(votes),
+      }),
+    );
+  });
+};
+
+export const fetchVoters = (election_id: string): Observable<Voter[]> => {
+  return defer(() => {
+    return from<Promise<Voter[]>>(
+      fetch(`${ROOT_URL}/elections/${election_id}/anon-voters/`)
+        .then((res) => res.json())
+        .then(mapToVoters),
+    );
+  });
+};
+
+export const postVoters = (voters: any, election_id: number): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/elections/${election_id}/anon-voters/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+        body: JSON.stringify(voters),
       }),
     );
   });

@@ -24,7 +24,7 @@ function App() {
         render={() => <ElectionCreator></ElectionCreator>}
       />
       <Route
-        path="/vote/:email/:userId"
+        path="/vote/:electionId/:userId"
         exact
         render={() => <VotingPage></VotingPage>}
       />

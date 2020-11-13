@@ -15,6 +15,7 @@ export const standInElection = (): Election => ({
   vote_token: '',
   num_tokens: 0,
   proposals: new Array<Proposal>(),
+  show_results: false,
 });
 
 export const standInVoter = (): Voter => ({

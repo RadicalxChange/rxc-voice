@@ -11,4 +11,5 @@ export interface Election {
   vote_token: string,
   num_tokens: number,
   proposals: Proposal[],
+  show_results: boolean,
 }

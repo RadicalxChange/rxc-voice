@@ -22,3 +22,8 @@ KNOWN BUGS
 create-election page:
 deleting one ballot fires onClick twice, deletes top element every time.
 same thing for deleting voter email addresses.
+
+api:
+its extremely unlikely, but possible, that two anonymous users may be assigned
+the same uuid. in the long run, consider handling uuid assignments on backend
+with a check/try-again for uniqueness.

@@ -1,3 +1,10 @@
+from .permissions import ElectionPermission
+from .serializers import (UserSerializer, ElectionSerializer, VoteSerializer,
+                          ProposalSerializer, CustomGroupSerializer,
+                          PermissionSerializer)
+from .models import User, Election, Vote, Proposal, CustomGroup
+
+from django.contrib.auth.models import Permission
 import json
 
 from rest_framework import generics, mixins, status
@@ -6,12 +13,8 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
+from guardian.shortcuts import assign_perm
 
-from .models import User, AnonVoter, Election, Vote, Proposal
-from .serializers import (UserSerializer, ElectionSerializer, VoteSerializer,
-                          ProposalSerializer, AnonVoterSerializer,
-                          CustomAuthTokenSerializer)
-from .permissions import ElectionPermission
 # from .authentication import TokenAuthentication
 
 
@@ -35,6 +38,7 @@ class UserList(mixins.CreateModelMixin,
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        # set many = true and make sure single and multiple both work
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -44,9 +48,16 @@ class UserList(mixins.CreateModelMixin,
             status=status.HTTP_201_CREATED,
             headers=headers)
 
+    # Deletes ALL users. For testing only.
+    def delete(self, request, *args, **kwargs):
+        for instance in self.get_queryset():
+            instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class UserDetail(mixins.RetrieveModelMixin,
                  mixins.UpdateModelMixin,
+                 mixins.DestroyModelMixin,
                  generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -57,50 +68,50 @@ class UserDetail(mixins.RetrieveModelMixin,
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
-class AnonList(mixins.CreateModelMixin,
-               mixins.ListModelMixin,
-               generics.GenericAPIView):
-    queryset = AnonVoter.objects.all()
-    serializer_class = AnonVoterSerializer
+
+class GroupList(mixins.CreateModelMixin,
+                mixins.ListModelMixin,
+                generics.GenericAPIView):
+
+    queryset = CustomGroup.objects.all()
+    serializer_class = CustomGroupSerializer
 
     def get(self, request, *args, **kwargs):
-        election_id = self.kwargs['pk']
-        election_voters = self.get_queryset().filter(
-            election__id=election_id)
-        page = self.paginate_queryset(election_voters)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(election_voters, many=True)
-        return Response(serializer.data)
+        return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED,
-            headers=headers)
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        for instance in self.get_queryset():
+            instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AnonDetail(mixins.RetrieveModelMixin,
-                 mixins.UpdateModelMixin,
-                 generics.GenericAPIView):
-    queryset = AnonVoter.objects.all()
-    serializer_class = AnonVoterSerializer
+class PermissionList(mixins.CreateModelMixin,
+                     mixins.ListModelMixin,
+                     generics.GenericAPIView):
+
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        for instance in self.get_queryset():
+            instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CustomAuthToken(ObtainAuthToken):
-    serializer_class = CustomAuthTokenSerializer
+    # serializer_class = CustomAuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
@@ -111,13 +122,14 @@ class CustomAuthToken(ObtainAuthToken):
             return Response({
                 'token': token.key,
                 'id': token.user.pk,
+                'username': token.user.username,
                 'email': token.user.email,
                 'phone_number': token.user.phone_number,
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
                 'profile_pic': token.user.profile_pic,
+                'invited_by': token.user.invited_by,
                 'credit_balance': token.user.credit_balance,
-                'election': token.user.election.id,
             })
 
 
@@ -131,7 +143,30 @@ class ElectionList(mixins.CreateModelMixin,
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        # if the election does not belong to a pre-existing group,
+        # create a new one for it.
+        request_groups = serializer.validated_data.get('groups') if not(
+            serializer.validated_data.get('groups') is None) else []
+        election_id = serializer.data.get('id')
+        election_object = Election.objects.get(pk=election_id)
+        if len(request_groups) == 0:
+            new_group = CustomGroup.objects.create(
+                name="election " + str(election_id),
+                autogenerated=True)
+            election_object.groups.add(new_group)
+        # assign can_vote permission to any groups the election belongs to.
+        election_groups = election_object.groups.all()
+        for group in election_groups:
+            assign_perm('can_vote', group, election_object)
+        # pack any new groups into server response.
+        result = self.get_serializer(election_object)
+        headers = self.get_success_headers(result.data)
+        return Response(result.data,
+                        status=status.HTTP_201_CREATED,
+                        headers=headers)
 
     # Deletes ALL elections. For testing only.
     def delete(self, request, *args, **kwargs):
@@ -152,7 +187,11 @@ class ElectionDetail(mixins.RetrieveModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        serializer.data["show_results"] = request.user.has_perm(
+            'can_view_results', instance)
+        return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -179,9 +218,13 @@ class VoteList(mixins.CreateModelMixin,
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        election_id = self.kwargs['pk']
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
+        election = Election.objects.get(pk=election_id)
         self.perform_create(serializer)
+        for vote in serializer.data:
+            assign_perm('can_view_results', vote.sender, election)
         headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data,
@@ -215,27 +258,6 @@ class ProposalList(mixins.CreateModelMixin,
             serializer.data,
             status=status.HTTP_201_CREATED,
             headers=headers)
-
-
-# Stub for proposal list detail view. Note: no one should be able to edit a
-# proposal once an election has started. However, we could eventually allow
-# election edmins to edit elections *up until the start date*
-# class ProposalDetail(mixins.RetrieveModelMixin,
-#                      mixins.UpdateModelMixin,
-#                      mixins.DestroyModelMixin,
-#                      generics.GenericAPIView):
-#
-#     queryset = Proposal.objects.all()
-#     serializer_class = ProposalSerializer
-#
-#     def get(self, request, *args, **kwargs):
-#         return self.retrieve(request, *args, **kwargs)
-#
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
-#
-#     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)
 
 
 # for testing only.
@@ -277,23 +299,22 @@ class VoteListAll(mixins.CreateModelMixin,
             instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# for testing only.
-
-
-class AnonVoterListAll(mixins.CreateModelMixin,
-                       mixins.ListModelMixin,
-                       generics.GenericAPIView):
-
-    queryset = AnonVoter.objects.all()
-    serializer_class = AnonVoterSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        for instance in self.get_queryset():
-            instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+# Stub for proposal list detail view. Note: no one should be able to edit a
+# proposal once an election has started. However, we could eventually allow
+# election edmins to edit elections *up until the start date*
+# class ProposalDetail(mixins.RetrieveModelMixin,
+#                      mixins.UpdateModelMixin,
+#                      mixins.DestroyModelMixin,
+#                      generics.GenericAPIView):
+#
+#     queryset = Proposal.objects.all()
+#     serializer_class = ProposalSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.retrieve(request, *args, **kwargs)
+#
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+#
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)

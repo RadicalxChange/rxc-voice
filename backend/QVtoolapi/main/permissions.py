@@ -16,7 +16,4 @@ class ElectionPermission(permissions.BasePermission):
             return True
 
     def has_object_permission(self, request, view, obj):
-        if obj.group:
-            return request.user.groups.filter(pk=obj.group)
-        else:
-            return True
+        return request.user.has_perm('can_vote', obj)
