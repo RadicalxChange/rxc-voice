@@ -1,14 +1,15 @@
 from django.urls import path, re_path
 
 from .views import (RootView, ElectionList, ElectionDetail, ProposalList,
-                    VoteList, VoteListAll, ProposalListAll, UserList,
-                    UserDetail, CustomAuthToken, GroupList, PermissionList)
+                    VoteList, VoteListAll, ProposalListAll, DelegateList,
+                    DelegateDetail, CustomAuthToken, PermissionList, GroupList)
 
 urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
 
-    path('users/', UserList.as_view(), name='user-list'),
-    path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
+    path('delegates/', DelegateList.as_view(), name='delegate-list'),
+    path('delegates/<int:pk>/', DelegateDetail.as_view(),
+         name='delegate-detail'),
     path('groups/', GroupList.as_view(), name='group-list'),
     path('permissions/', PermissionList.as_view(), name='permission-list'),
 

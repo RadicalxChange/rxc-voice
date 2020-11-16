@@ -96,8 +96,6 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'main.User'
-
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # this is default
     'guardian.backends.ObjectPermissionBackend',

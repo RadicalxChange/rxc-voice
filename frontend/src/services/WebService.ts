@@ -19,10 +19,10 @@ export const loginUser = (user: any): Observable<any> => {
   });
 };
 
-export const postUsers = (users: any): Observable<any> => {
+export const postDelegates = (users: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/users/`, {
+      fetch(`${ROOT_URL}/delegates/`, {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         method: "POST",
         body: JSON.stringify(users),

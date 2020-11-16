@@ -46,10 +46,12 @@ function VotingPage() {
         if (data.ok) {
           const user = await data.json();
           sessionStorage.setItem("user", JSON.stringify(user));
+          console.log(user);
           WebService.fetchElection(electionId)
           .subscribe(async (data) => {
             if (data.id) {
               setElection(election => data);
+              console.log(data.show_results);
               if (data.show_results) {
                 setPermission(permission => Permission.View_Results);
               } else {
@@ -137,6 +139,12 @@ function VotingPage() {
           </div>
         </div>
     );
+  } else if (permission === Permission.View_Results) {
+    return (
+      <div className="sticky-header">
+        <h2>Results will show up here as votes come in...</h2>
+      </div>
+    )
   } else {
     return (
       <div className="sticky-header">
