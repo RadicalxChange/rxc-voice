@@ -1,23 +1,27 @@
-build and run frontend docker image
+## Deploy Instructions (untested)
 
-cd frontend
+1. Export .env file to enviroment and fill up suitable environment variables
 
-docker build --tag qvtool_frontend:1.0 .
+```
+cp .env.test .env
+```
 
-docker run --publish 8000:8080 --detach --name frontend qvtool_frontend:1.0
+2. Build Images and Stand up containers
 
-view site at: localhost:8000
+```
+docker-compose up --build
+```
+
+Note - If images are already present ```docker-compose up```
+
+The Project is now up and running -
+
+Backend API - http://127.0.0.1:8000
+
+Frontend - http://localhost:3000
 
 
-no dockerfile yet for backend
-
-
-start up docker image with .env variables
-
-docker run --env-file .env
-
-
-KNOWN BUGS
+## KNOWN BUGS
 
 create-election page:
 deleting one ballot fires onClick twice, deletes top element every time.
