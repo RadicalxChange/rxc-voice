@@ -1,0 +1,12 @@
+FROM node as builder
+
+RUN mkdir /frontend
+COPY frontend/ /frontend
+COPY scripts/ /scripts
+
+WORKDIR /frontend
+
+RUN npm install
+RUN npm rebuild node-sass
+
+EXPOSE 3000
