@@ -72,15 +72,16 @@ class Vote(models.Model):
     date = models.DateTimeField(null=True)
 
 
-# class PolisConversation(models.Model):
-#     id = models.AutoField(primary_key=True, editable=False)
-#     title = models.CharField(max_length=256, blank=False)
-#     description = models.TextField(blank=True)
-#     start_date = models.DateTimeField(blank=False)
-#     end_date = models.DateTimeField(blank=False)
-#     groups = models.ManyToManyField(Group, blank=True, default=[])
-#
-#     class Meta:
-#         permissions = [
-#             ("can_view", "Can view"),
-#         ]
+class Conversation(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    site_id = models.CharField(max_length=256, blank=False)
+    title = models.CharField(max_length=256, blank=False)
+    description = models.TextField(blank=True)
+    start_date = models.DateTimeField(blank=False)
+    end_date = models.DateTimeField(blank=False)
+    groups = models.ManyToManyField(Group, blank=True, default=[])
+
+    class Meta:
+        permissions = [
+            ("can_view", "Can view"),
+        ]

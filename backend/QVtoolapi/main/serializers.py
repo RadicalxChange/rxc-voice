@@ -3,8 +3,14 @@ from django.contrib.auth import authenticate
 from guardian.shortcuts import assign_perm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Election, Vote, Proposal, Delegate
+from .models import Election, Vote, Proposal, Delegate, Conversation
 from django.contrib.auth.models import (User, Group, Permission)
+
+
+class ConversationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conversation
+        fields = '__all__'
 
 
 class ElectionSerializer(serializers.ModelSerializer):
