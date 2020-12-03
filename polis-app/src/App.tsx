@@ -1,21 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import logo from './assets/logo.svg';
+import './App.scss';
 import { Route } from "react-router-dom";
+import Home from "./components/Home";
+import PolisPage from "./components/PolisPage";
+import { Conversation } from './models/Conversation';
+import { WebService } from './services';
 
 function App() {
+
+  const [conversations, setConversations] = useState(new Array<Conversation>());
+
+  useEffect(() => {
+    WebService.fetchConversations().subscribe((data: Conversation[]) => {
+      setConversations(conversations => data);
+    });
+
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="App">
 
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
+    
 
-      <Route path="/" exact render={() => <Home></Home>} />
       <Route
-        path="/:conversationid"
+        path="/"
         exact
-        render={() => <PolisPage></PolisPage>}
+        render={(props) => <Home {...props} conversations={conversations} />}
+      />
+      <Route
+        path="/conversation/:conversationId"
+        exact
+        render={(props) => <PolisPage {...props} conversations={conversations} />}
       />
 
     </div>

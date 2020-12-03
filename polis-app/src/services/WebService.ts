@@ -1,4 +1,6 @@
 import { Observable, defer, from } from "rxjs";
+import { Conversation } from "../models/Conversation";
+import { mapToConversations } from "../utils";
 
 const ROOT_URL = "http://127.0.0.1:8000";
 

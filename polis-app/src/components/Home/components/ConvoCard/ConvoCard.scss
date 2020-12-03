@@ -1,0 +1,48 @@
+.conversation-card {
+  margin: 1em 0 1em 0;
+  width: inherit;
+  height: auto;
+  border: 1px solid;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr;
+
+  .conversation-item {
+    cursor: pointer;
+    padding: 1em;
+    grid-column: 1 / span 1;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+
+    .title {
+      cursor: inherit;
+      font-size: 1.35em;
+      grid-row: 1 / span 1;
+    }
+
+    .description {
+      cursor: inherit;
+      font-size: .9em;
+      grid-row: 2 / span 1;
+    }
+
+    .time-remaining {
+      cursor: inherit;
+      margin: 1em 0 0 0;
+      grid-row: 3 / span 1;
+      text-align: right;
+    }
+  }
+
+  .conversation-item:hover {
+  }
+
+}
+
+@media only screen and (min-width: 768px) {
+  .conversation-card {
+
+    .conversation-item {
+    }
+  }
+}

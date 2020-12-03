@@ -1,0 +1,56 @@
+.home {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+  column-gap: 1rem;
+  text-align: center;
+  background: var(--yellowColor);
+  padding: 4.5vmin;
+  min-height: 100vh;
+
+  .header {
+    grid-column: 1 / -1;
+    grid-row: 1 / span 1;
+
+    .home-logo {
+      width: 91vw;
+    }
+  }
+
+  .subheader {
+    grid-column: 1 / -1;
+    grid-row-start: 2;
+    margin-top: 2.5em;
+  }
+
+  .convo-list {
+    grid-column: 1 / -1;
+
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .home {
+    text-align: left;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    padding: 3vw 2vw 3vw 2vw;
+
+    .header {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+
+      .home-logo {
+        width: 39.31vw;
+      }
+    }
+
+    .subheader {
+      grid-column: 4 / -4;
+      text-align: left;
+    }
+
+    .convo-list {
+      grid-column: 4 / -4;
+      text-align: left;
+    }
+  }
+}

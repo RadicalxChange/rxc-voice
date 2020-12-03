@@ -1,0 +1,54 @@
+.polis-page {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: auto 1fr;
+  column-gap: 1rem;
+  text-align: center;
+  padding: 4.5vmin;
+  min-height: 100vh;
+
+  .header {
+    grid-column: 1 / -1;
+    grid-row: 1 / span 1;
+
+    .logo {
+      width: 91vw;
+    }
+  }
+
+  .body {
+    grid-column: 1 / -1;
+    grid-row-start: 2;
+    text-align: center;
+
+    .back-button {
+    }
+  }
+
+  .title {
+    margin-top: 2em;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .polis-page {
+    text-align: left;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    padding: 3vw 2vw 3vw 2vw;
+
+    .header {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+
+      .logo {
+        width: 39.31vw;
+      }
+    }
+
+    .back-button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 2vw;
+    }
+  }
+}

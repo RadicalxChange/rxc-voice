@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
+import { VotingPageRouteParams } from "../../models/VotingPageRouteParams";
 import moment from 'moment';
 import { Proposal } from "../../models/Proposal";
-import { VotingPageRouteParams } from "../../models/VotingPageRouteParams";
 import { standInElection, defaultPermission } from "../../utils";
 import { Permission } from "../../models/Permission";
 import { WebService } from "../../services";

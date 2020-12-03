@@ -1,26 +1,39 @@
+:root {
+  --yellowColor: #edff38;
+  --blackColor: #000000;
+  --whiteColor: #ffffff;
+
+  --primaryFont: 'messerv2.1condensed';
+  --secondaryFont: 'suisse_intlbook';
+  --ItallicFont: 'suisse_intlbook_italic';
+}
+
 .App {
   text-align: center;
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.logo {
+  width: 91vw;
+  grid-column-start: 1;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@media only screen and (min-width: 768px) {
+  .logo {
+    width: 39.31vw;
+  }
+  .App-header {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    padding: 3vw 2vw 2vw 2vw;
   }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 1rem;
+  padding: 4.5vmin;
   color: white;
 }
 
@@ -35,4 +48,71 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+h1 {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+h2 {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+h3 {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+p {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+ul {
+  list-style-type: none;
+  text-align: left;
+  padding-left: 0px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: black;
+}
+
+@font-face {
+    font-family: 'suisse_intlbook_italic';
+    src: url('./assets/fonts/suisseintl-bookitalic-webfont.woff2') format('woff2'),
+         url('./assets/fonts/suisseintl-bookitalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'suisse_intlbook';
+    src: url('./assets/fonts/suisseintl-book-webfont.woff2') format('woff2'),
+         url('./assets/fonts/suisseintl-book-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'messerv2.1condensed';
+    src: url('./assets/fonts/messerv2.1-condensed-webfont.woff2') format('woff2'),
+         url('./assets/fonts/messerv2.1-condensed-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
 }

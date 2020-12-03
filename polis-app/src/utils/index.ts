@@ -1,13 +1,17 @@
 import { Conversation } from "../models/Conversation";
 
-export const mapToConversations = (
-  conversations: Conversation[]): Conversation[] => {
-  return conversations.map(mapToConversations);
+export interface PolisProps {
+  conversations: Conversation[];
+};
+
+export const mapToConversations = (conversations: Conversation[]): Conversation[] => {
+  return conversations.map(mapToConversation);
 };
 
 export const mapToConversation = (conversation: Conversation): Conversation => {
   return {
     id: conversation.id,
+    site_id: conversation.site_id,
     title: conversation.title,
     description: conversation.description,
     start_date: conversation.start_date,
