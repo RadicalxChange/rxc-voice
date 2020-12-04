@@ -18,7 +18,7 @@ The Project is now up and running -
 
 Backend API - http://127.0.0.1:8000
 
-Frontend - http://localhost:3000
+QV App Frontend - http://localhost:3000
 
 
 ## KNOWN BUGS

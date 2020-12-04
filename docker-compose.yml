@@ -33,10 +33,10 @@ services:
   web:
     build:
       context: .
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./qv-app/Dockerfile
     command: npm start
     volumes:
-    - ./frontend/src:/frontend/src
+    - ./qv-app/src:/qv-app/src
     ports:
       - "3000:3000"
     depends_on:
