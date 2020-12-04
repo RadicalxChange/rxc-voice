@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PolisPageRouteParams } from "../../models/PolisPageRouteParams";
 import { PolisProps } from "../../utils";
 import logo from '../../assets/logo.svg';
+import publicIp from "public-ip";
+import hash from "password-hash-and-salt";
 
 import "./PolisPage.scss";
 
@@ -12,11 +14,18 @@ function PolisPage(props:PolisProps) {
   const conversation = props.conversations.find(
     conversation => conversation.id === +conversationId);
 
+  const [ip, setIp] = useState('');
+
   useEffect(() => {
+    (async () => {
+        const userIp = await publicIp.v6();
+        setIp(ip => userIp);
+    })();
     const script = document.createElement('script');
     script.src = 'https://pol.is/embed.js';
     script.async = true;
     document.body.appendChild(script);
+
     return () => {
       document.body.removeChild(script);
     }
@@ -27,7 +36,7 @@ function PolisPage(props:PolisProps) {
   return (
     <div className="polis-page">
       <header className="header">
-        <img src={logo} className="logo" />
+        <img src={logo} className="logo" alt="logo" />
       </header>
       {conversation ? (
         <div className="body">
@@ -45,6 +54,7 @@ function PolisPage(props:PolisProps) {
             data-site_id={POLIS_SITE_ID}
             data-topic={conversation.title}
             data-ucsd='false'
+            data-xid={hash(ip)}
           >
           </div>
         </div>

@@ -22,8 +22,6 @@ function App() {
   return (
     <div className="App">
 
-    
-
       <Route
         path="/"
         exact

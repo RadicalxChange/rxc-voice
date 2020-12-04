@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { PolisProps } from "../../utils"
 import ConvoCard from "./components/ConvoCard";
 import logo from '../../assets/logo.svg';
@@ -11,7 +10,7 @@ function Home(props:PolisProps) {
   return (
     <div className="home">
       <header className="header">
-        <img src={logo} className="home-logo" />
+        <img src={logo} className="home-logo" alt="logo" />
       </header>
       <div className="subheader">
         <h1>RxC Deliberation</h1>
@@ -22,7 +21,7 @@ function Home(props:PolisProps) {
           {props.conversations.length ? (
             <ul>
               {props.conversations.map(conversation => (
-                <ConvoCard conversation={conversation} />
+                <ConvoCard conversation={conversation} key={conversation.id} />
               ))}
             </ul>
           ) : (
