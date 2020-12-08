@@ -13,9 +13,13 @@
 }
 
 .App-logo {
-  width: 12%;
-  height: auto;
-  pointer-events: none;
+  width: 91vw;
+}
+
+@media only screen and (min-width: 768px) {
+  .App-logo {
+    width: 39.31vw;
+  }
 }
 
 .App-header {
@@ -80,6 +84,10 @@ input {
 
 a {
   text-decoration: none;
+}
+
+a:visited {
+  color: black;
 }
 
 ul {

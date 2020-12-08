@@ -10,6 +10,7 @@ import { Proposal } from "../../models/Proposal";
 import { Voter } from "../../models/Voter";
 import { WebService } from "../../services";
 import { fromString } from 'uuidv4';
+import logo from '../../assets/logo.svg';
 // import { useAlert } from "react-alert";
 
 function ElectionCreator() {
@@ -109,13 +110,16 @@ function ElectionCreator() {
 
   return (
     <div className="election-creator">
-      <Link
-        to='/'
-        className="back-button"
-      >
-      Back to Home
-      </Link>
-      <div className="page-header">
+      <header className="header">
+        <img src={logo} className="App-logo" alt="logo" />
+      </header>
+      <div className="subheader">
+        <Link
+          to='/'
+          className="back-button"
+        >
+        Back to Home
+        </Link>
         <h2>Create a New Election</h2>
         <p>Customize the election settings and populate the ballot.
         QVtool will automatically send invitations to the voters via

@@ -1,29 +1,40 @@
 .election-creator {
-  margin: auto;
-  background: var(--yellowColor);
-  align-items: left;
-  justify-content: left;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 1rem;
+  grid-template-rows: auto auto auto 1fr;
+  background: var(--whiteColor);
+  padding: 4.5vmin;
+  min-height: 100vh;
+  align-items: center;
 
-  .back-button {
-    color: var(--blackColor);
-    position: absolute;
-    left: 0px;
-    padding: 1em 2.3em;
+  .header {
+    align-items: left;
+    grid-column: 1 / -1;
+    grid-row: 1 / span 1;
   }
 
-  .page-header {
+  .subheader {
     align-items: center;
     text-align: center;
-    margin: auto;
-    width: 650px;
+    grid-column: 1 / -1;
+    grid-row-start: 2;
+
+    .back-button {
+      // color: var(--blackColor);
+      // position: absolute;
+      // left: 0px;
+      // padding: 1em 2.3em;
+    }
   }
 
   .election-form {
+    grid-column: 1 / -1;
+    grid-row-start: 3;
     padding-top: 3rem;
-    align-items: left;
     text-align: left;
-    margin: auto;
-    width: 650px;
+    grid-column: 1 / -1;
+    grid-row-start: 3;
 
     .neg-switch {
       display: block;
@@ -31,17 +42,17 @@
   }
 
   .button-wrapper {
-    margin: auto;
-    width: 650px;
     align-items: center;
     text-align: center;
+    grid-column: 1 / -1;
+    grid-row-start: 4;
 
     .submit-button {
       margin: 3em auto 3em auto;
       width: 33%;
       border-radius: 15px;
       background: var(--blackColor);
-      color: var(--yellowColor);
+      color: var(--whiteColor);
       border: 0;
       padding: 0.25em;
       font-size: 1.2rem;
@@ -52,6 +63,36 @@
       &:active {
         background: darken(#ff8a00, 10);
       }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .election-creator {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    padding: 3vw 2vw 3vw 2vw;
+
+    .header {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .subheader {
+      grid-column: 4 / -4;
+
+      .back-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 2vw;
+      }
+    }
+
+    .election-form {
+      grid-column: 4 / -4;
+    }
+
+    .button-wrapper {
+      grid-column: 4 / -4;
     }
   }
 }
