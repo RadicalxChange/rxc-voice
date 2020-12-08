@@ -1,0 +1,47 @@
+:root {
+  --yellowColor: #edff38;
+  --blackColor: #000000;
+  --whiteColor: #ffffff;
+
+  --primaryFont: 'messerv2.1condensed';
+  --secondaryFont: 'suisse_intlbook';
+  --ItallicFont: 'suisse_intlbook_italic';
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  width: 91vw;
+}
+
+@media only screen and (min-width: 768px) {
+  .App-logo {
+    width: 39.31vw;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
