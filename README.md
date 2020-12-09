@@ -21,11 +21,13 @@ Backend API - http://127.0.0.1:8000
 QV App Frontend - http://localhost:3000
 
 
-## KNOWN BUGS
+## known bugs
 
 create-election page:
 deleting one ballot fires onClick twice, deletes top element every time.
 same thing for deleting voter email addresses.
+
+## TODOS for later
 
 moment.js:
 datetime functions need testing for different timezones.
