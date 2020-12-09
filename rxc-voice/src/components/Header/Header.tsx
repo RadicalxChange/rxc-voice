@@ -4,21 +4,40 @@ import logo from '../../assets/logo.svg';
 
 import "./Header.scss";
 
-function Header(props: any) {
+function Header() {
 
-if (props.color === "yellow") {
   return (
-    <div className="App-header-yellow">
+    <div className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
+      <ul className="nav">
+        <Link
+        to={`/about`}
+        className="nav-link"
+        >
+        ABOUT
+        </Link>
+        <Link
+        to={`/`}
+        className="nav-link"
+        >
+        PARTICIPATE
+        </Link>
+        <Link
+        to={`/delegates`}
+        className="nav-link"
+        >
+        DELEGATES
+        </Link>
+
+        <Link
+        to={`/account`}
+        className="nav-link"
+        >
+        ACCOUNT
+        </Link>
+      </ul>
     </div>
   );
-} else {
-  return (
-    <div className="App-header-white">
-      <img src={logo} className="App-logo" alt="logo" />
-    </div>
-  )
-}
 }
 
 export default Header;

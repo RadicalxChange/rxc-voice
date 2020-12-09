@@ -1,0 +1,27 @@
+.App-header {
+  display: grid;
+  grid-template-columns: 1fr 33%;
+
+  .App-logo {
+    width: 91vw;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    font-size: 1.2vw;
+    text-transform: uppercase;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .App-header {
+    text-align: left;
+
+    .App-logo {
+      width: 39.31vw;
+    }
+  }
+}

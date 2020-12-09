@@ -10,38 +10,55 @@
 
 .App {
   text-align: center;
-}
-
-.App-logo {
-  width: 91vw;
+  font-family: var(--secondaryFont);
+  padding: 4.5vmin;
+  min-height: 100vh;
 }
 
 @media only screen and (min-width: 768px) {
-  .App-logo {
-    width: 39.31vw;
+  .App {
+    padding: 3vw 2vw 3vw 2vw;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+a {
+  text-decoration: none;
+  color: black;
 }
 
-.App-link {
-  color: #61dafb;
+a:visited {
+  color: black;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+@font-face {
+    font-family: 'suisse_intlbook_italic';
+    src: url('./assets/fonts/suisseintl-bookitalic-webfont.woff2') format('woff2'),
+         url('./assets/fonts/suisseintl-bookitalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'suisse_intlbook';
+    src: url('./assets/fonts/suisseintl-book-webfont.woff2') format('woff2'),
+         url('./assets/fonts/suisseintl-book-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'messerv2.1condensed';
+    src: url('./assets/fonts/messerv2.1-condensed-webfont.woff2') format('woff2'),
+         url('./assets/fonts/messerv2.1-condensed-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
 }
