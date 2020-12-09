@@ -1,5 +1,5 @@
 import React from "react";
-import { PolisProps } from "../../utils"
+import { PolisProps } from "../../models/PolisProps"
 import ConvoCard from "./components/ConvoCard";
 import logo from '../../assets/logo.svg';
 

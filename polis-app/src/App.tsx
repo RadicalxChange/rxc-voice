@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import logo from './assets/logo.svg';
 import './App.scss';
 import { Route } from "react-router-dom";
 import Home from "./components/Home";
 import PolisPage from "./components/PolisPage";
 import { Conversation } from './models/Conversation';
 import { WebService } from './services';
+import { useCookies } from 'react-cookie';
 
 function App() {
 
   const [conversations, setConversations] = useState(new Array<Conversation>());
+  const [cookies, setCookie] = useCookies();
 
   useEffect(() => {
+    console.log(cookies);
     WebService.fetchConversations().subscribe((data: Conversation[]) => {
       setConversations(conversations => data);
     });
@@ -25,12 +27,12 @@ function App() {
       <Route
         path="/"
         exact
-        render={(props) => <Home {...props} conversations={conversations} />}
+        render={(props) => <Home {...props} cookies={cookies} setCookie={setCookie} conversations={conversations} />}
       />
       <Route
         path="/conversation/:conversationId"
         exact
-        render={(props) => <PolisPage {...props} conversations={conversations} />}
+        render={(props) => <PolisPage {...props} cookies={cookies} setCookie={setCookie} conversations={conversations} />}
       />
 
     </div>

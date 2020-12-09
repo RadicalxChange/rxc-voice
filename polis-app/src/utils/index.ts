@@ -1,9 +1,5 @@
 import { Conversation } from "../models/Conversation";
 
-export interface PolisProps {
-  conversations: Conversation[];
-};
-
 export const mapToConversations = (conversations: Conversation[]): Conversation[] => {
   return conversations.map(mapToConversation);
 };

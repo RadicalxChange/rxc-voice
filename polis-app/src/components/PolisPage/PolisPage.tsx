@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PolisPageRouteParams } from "../../models/PolisPageRouteParams";
-import { PolisProps } from "../../utils";
+import { PolisProps } from "../../models/PolisProps"
+import moment from "moment";
 import logo from '../../assets/logo.svg';
 import publicIp from "public-ip";
-import hash from "password-hash-and-salt";
+import { fromString } from 'uuidv4';
 
 import "./PolisPage.scss";
 
@@ -14,13 +15,21 @@ function PolisPage(props:PolisProps) {
   const conversation = props.conversations.find(
     conversation => conversation.id === +conversationId);
 
-  const [ip, setIp] = useState('');
-
   useEffect(() => {
-    (async () => {
-        const userIp = await publicIp.v6();
-        setIp(ip => userIp);
-    })();
+    const thisCookie = props.cookies[conversationId];
+    console.log("cookie found on page load: " + thisCookie);
+    if (thisCookie === undefined) {
+      (async () => {
+          const userIp = await publicIp.v6();
+          const title = conversation ? conversation.title : '';
+          props.setCookie(conversationId, fromString(moment().toDate() + userIp + title), {
+            path: "/",
+            expires: moment().add(1, "days").toDate(),
+            sameSite: "lax",
+          });
+      })();
+    }
+
     const script = document.createElement('script');
     script.src = 'https://pol.is/embed.js';
     script.async = true;
@@ -54,7 +63,7 @@ function PolisPage(props:PolisProps) {
             data-site_id={POLIS_SITE_ID}
             data-topic={conversation.title}
             data-ucsd='false'
-            data-xid={hash(ip)}
+            data-xid={props.cookies[conversationId]}
           >
           </div>
         </div>
