@@ -21,7 +21,14 @@
     grid-row-start: 2;
     text-align: center;
 
-    .back-button {
+    .cookie-banner {
+      position: fixed;
+      width: 100%;
+      height: auto;
+      bottom: 0;
+    }
+    .closed {
+      display: none;
     }
   }
 

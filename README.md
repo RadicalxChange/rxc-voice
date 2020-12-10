@@ -37,3 +37,6 @@ api:
 its extremely unlikely, but possible, that two anonymous users may be assigned
 the same uuid. in the long run, consider handling uuid assignments on backend
 with a check/try-again for uniqueness.
+
+react state:
+convert all state to reducers.

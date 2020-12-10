@@ -13,7 +13,7 @@ function App() {
   const [cookies, setCookie] = useCookies();
 
   useEffect(() => {
-    console.log(cookies);
+    console.log("loading from database...");
     WebService.fetchConversations().subscribe((data: Conversation[]) => {
       setConversations(conversations => data);
     });
