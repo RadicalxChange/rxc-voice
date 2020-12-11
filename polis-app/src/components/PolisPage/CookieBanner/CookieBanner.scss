@@ -1,0 +1,126 @@
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: auto;
+  padding: 1em 1.8em;
+  line-height: 2.5em;
+  background: var(--blackColor);
+  color: var(--whiteColor);
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+  display: grid;
+  grid-row-template: auto auto auto;
+  text-align: center;
+
+  .policy-short {
+    grid-row: 1;
+    font: inherit;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .policy-short {
+      text-align: left;
+    }
+  }
+
+  .policy-long {
+    grid-row: 1;
+    font: inherit;
+    line-height: 2em;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .policy-long {
+      text-align: left;
+      max-width: 100%;
+      margin-right: 3em;
+    }
+  }
+
+  .show-less {
+    grid-row: 3;
+    font: inherit;
+    display: inline-block;
+    background: none;
+    color: white;
+    border: none;
+    outline: none;
+    line-height: 2em;
+    margin: 0 .5em;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .show-more {
+    grid-row: 3;
+    font: inherit;
+    display: inline-block;
+    background: none;
+    color: white;
+    border: none;
+    outline: none;
+    margin: 0 .5em;
+    cursor: pointer;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .show-less {
+      position: absolute;
+      right: 1.8em;
+      top: 1em;
+    }
+  }
+
+  .options {
+    grid-row: 2;
+    margin: .5em 0;
+
+    .decline-button {
+      font: inherit;
+      color: white;
+      background: none;
+      border: none;
+      border-radius: 5px;
+      margin: 0 .5em;
+      cursor: pointer;
+    }
+
+    .accept-button {
+      font: inherit;
+      background: var(--yellowColor);
+      border: none;
+      border-radius: 5px;
+      min-width: 140px;
+      margin: 0 .5em;
+      cursor: pointer;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    .options {
+      max-width: 100%;
+      height: auto;
+      text-align: right;
+      flex: 1 1 auto;
+      margin: 0;
+      align-self: flex-end;
+      min-width: 250px;
+    }
+  }
+  .closed {
+    display: none;
+  }
+}
+.closed {
+  display: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .cookie-banner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

@@ -1,11 +1,11 @@
 import React from "react";
-import { PolisProps } from "../../models/PolisProps"
+import { Conversation } from "../../models/Conversation";
 import ConvoCard from "./components/ConvoCard";
 import logo from '../../assets/logo.svg';
 
 import "./Home.scss";
 
-function Home(props:PolisProps) {
+function Home(props:any) {
 
   return (
     <div className="home">
@@ -20,7 +20,7 @@ function Home(props:PolisProps) {
         <h2>Active</h2>
           {props.conversations.length ? (
             <ul>
-              {props.conversations.map(conversation => (
+              {props.conversations.map((conversation: Conversation) => (
                 <ConvoCard conversation={conversation} key={conversation.id} />
               ))}
             </ul>

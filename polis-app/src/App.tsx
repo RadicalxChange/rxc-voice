@@ -27,7 +27,7 @@ function App() {
       <Route
         path="/"
         exact
-        render={(props) => <Home {...props} cookies={cookies} setCookie={setCookie} conversations={conversations} />}
+        render={(props) => <Home {...props} conversations={conversations} />}
       />
       <Route
         path="/conversation/:conversationId"

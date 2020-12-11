@@ -4,8 +4,7 @@ import { PolisPageRouteParams } from "../../models/PolisPageRouteParams";
 import { PolisProps } from "../../models/PolisProps"
 import moment from "moment";
 import logo from '../../assets/logo.svg';
-import publicIp from "public-ip";
-import { fromString } from 'uuidv4';
+import CookieBanner from "./CookieBanner";
 
 import "./PolisPage.scss";
 
@@ -21,7 +20,6 @@ function PolisPage(props:PolisProps) {
   const thisCookie = props.cookies[conversationId];
   console.log("cookie found on page load: " + thisCookie);
   const [canVote, setCanVote] = useState(!!thisCookie);
-  const [showCookieBanner, setShowCookieBanner] = useState(!!!thisCookie);
 
   useEffect(() => {
     // load pol.is embed script
@@ -48,21 +46,6 @@ function PolisPage(props:PolisProps) {
    // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [props.conversations, canVote]);
 
-  const allowCookies = () => {
-    (async () => {
-        const userIp = await publicIp.v6();
-        const title = conversation ? conversation.title : '';
-        props.setCookie(conversationId, fromString(moment().toDate() + userIp + title), {
-          path: "/",
-          expires: moment().add(1, "days").toDate(),
-          sameSite: "lax",
-        });
-        setShowCookieBanner(showCookieBanner => false);
-        setCanVote(canVote => true);
-      }
-    )();
-  };
-
   return (
     <div className="polis-page">
       <header className="header">
@@ -76,24 +59,6 @@ function PolisPage(props:PolisProps) {
       </header>
       {conversation ? (
         <div className="body">
-
-          <div className={`cookie-banner ${!showCookieBanner ? "closed" : ""}`}>
-            <h2>can we use cookie?</h2>
-            <button
-              type="button"
-              onClick={() => allowCookies()}
-            >
-            Yes
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowCookieBanner(showCookieBanner => false)}
-            >
-            No
-            </button>
-          </div>
-
-
           <h2 id="head" className="title">{conversation.title}</h2>
           <p>{conversation.description}</p>
           <div
@@ -106,8 +71,11 @@ function PolisPage(props:PolisProps) {
             data-ucw={canComment}
             data-ucsd='false'
             data-xid={props.cookies[conversationId]}
+            data-auth_needed_to_vote='false'
+            data-auth_needed_to_write='false'
           >
           </div>
+          <CookieBanner thisCookie={thisCookie} setCookie={props.setCookie} setCanVote={setCanVote} />
         </div>
       ) : (
         <div className="body">

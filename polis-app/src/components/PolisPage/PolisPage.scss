@@ -20,16 +20,6 @@
     grid-column: 1 / -1;
     grid-row-start: 2;
     text-align: center;
-
-    .cookie-banner {
-      position: fixed;
-      width: 100%;
-      height: auto;
-      bottom: 0;
-    }
-    .closed {
-      display: none;
-    }
   }
 
   .title {
