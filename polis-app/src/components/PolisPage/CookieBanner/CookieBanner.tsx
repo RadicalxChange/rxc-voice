@@ -34,7 +34,7 @@ function CookieBanner(props:any) {
           <span className="policy-long">
             Welcome! With your consent, we would like to use a cookie to
             identify you as a distinct voter. If you accept, we will store a
-            random number on your device that tells us you've been here before.
+            random number in your browser that tells us you've been here before.
             This prevents double-voting. We do not store any information about
             you or your device. If you decline, you won't be able to vote (you
             can still post comments). Thanks for joining the conversation!

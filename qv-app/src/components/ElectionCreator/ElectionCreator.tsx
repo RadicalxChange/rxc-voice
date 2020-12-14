@@ -102,11 +102,11 @@ function ElectionCreator() {
 
   const onChangeBallot = (newBallot: Proposal[]) => {
     setBallot(ballot => newBallot);
-  }
+  };
 
   const onChangeVoters = (newVoters: Voter[]) => {
     setVoters(voters => newVoters);
-  }
+  };
 
   return (
     <div className="election-creator">
