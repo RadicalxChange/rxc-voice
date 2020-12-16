@@ -1,4 +1,4 @@
-FROM node as builder
+FROM node
 
 RUN mkdir /polis-app
 COPY polis-app/ /polis-app
