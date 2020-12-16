@@ -37,6 +37,8 @@ services:
     command: npm start
     volumes:
     - ./polis-app/src:/polis-app/src
+    environment:
+      - REACT_APP_SITE_ID=$REACT_APP_SITE_ID
     ports:
       - "3000:3000"
     depends_on:
