@@ -1,0 +1,9 @@
+polis-app/
+rxc-voice/
+node_modules/
+.git
+.gitignore
+.cache
+.md
+docker-compose.yml
+.env

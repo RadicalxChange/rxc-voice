@@ -1,13 +1,11 @@
 FROM node
 
-RUN mkdir /frontend
-COPY . /frontend
+RUN mkdir /qv-app
+COPY qv-app/ /qv-app
+COPY scripts/ /scripts
 
-WORKDIR /frontend
+WORKDIR /qv-app
 
 RUN npm install
-RUN npm rebuild node-sass
 
 EXPOSE 3000
-
-CMD [ "npm", "start" ]
