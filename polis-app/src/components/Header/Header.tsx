@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import logo from '../../assets/logo.svg';
 
 import "./Header.scss";
@@ -6,9 +7,9 @@ import "./Header.scss";
 function Header() {
 
   return (
-    <header className="App-header">
-      <img src={logo} className="logo" />
-    </header>
+    <div className="App-header">
+      <img src={logo} className="App-logo" alt="logo" />
+    </div>
   );
 }
 

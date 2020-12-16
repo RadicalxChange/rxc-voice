@@ -28,8 +28,6 @@ function CookieBanner(props:any) {
 
   return (
     <div className={`cookie-banner ${!showCookieBanner ? "closed" : ""}`}>
-      <div className={`cookie-policy ${!showPolicy ? "closed" : ""}`}>
-      </div>
         {showPolicy ? (
           <span className="policy-long">
             Welcome! With your consent, we would like to use a cookie to

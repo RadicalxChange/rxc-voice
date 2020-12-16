@@ -3,8 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { PolisPageRouteParams } from "../../models/PolisPageRouteParams";
 import { PolisProps } from "../../models/PolisProps"
 import moment from "moment";
-import logo from '../../assets/logo.svg';
 import CookieBanner from "./CookieBanner";
+import { BgColor } from "../../models/BgColor";
 
 import "./PolisPage.scss";
 
@@ -22,6 +22,7 @@ function PolisPage(props:PolisProps) {
   const [canVote, setCanVote] = useState(!!thisCookie);
 
   useEffect(() => {
+    props.changeColor(BgColor.White);
     // load pol.is embed script
     console.log("loading script...")
     const script = document.createElement('script');
@@ -48,15 +49,12 @@ function PolisPage(props:PolisProps) {
 
   return (
     <div className="polis-page">
-      <header className="header">
-        <img src={logo} className="logo" alt="logo" />
-        <Link
-          to='/'
-          className="back-button"
-        >
-        Back to Home
-        </Link>
-      </header>
+      <Link
+        to='/'
+        className="back-button"
+      >
+      Back to Home
+      </Link>
       {conversation ? (
         <div className="body">
           <h2 id="head" className="title">{conversation.title}</h2>

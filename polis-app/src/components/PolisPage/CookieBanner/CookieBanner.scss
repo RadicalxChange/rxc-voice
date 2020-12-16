@@ -109,9 +109,6 @@
       min-width: 250px;
     }
   }
-  .closed {
-    display: none;
-  }
 }
 .closed {
   display: none;
@@ -122,5 +119,8 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+  .closed {
+    display: none;
   }
 }

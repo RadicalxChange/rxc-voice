@@ -27,13 +27,14 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = True
 
 # PRODUCTION: only allow api requests from local server
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.radicalxchange.org']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '.radicalxchange.org']
 
 # PRODUCTION: only allow api requests from local server
-CORS_ALLOWED_ORIGINS = [
-    "https://radicalxchange.org",
-    "http://localhost:3000",
-    ]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://radicalxchange.org",
+#     "http://localhost:3000",
+#     ]
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 

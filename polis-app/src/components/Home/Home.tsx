@@ -1,22 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Conversation } from "../../models/Conversation";
 import ConvoCard from "./components/ConvoCard";
-import logo from '../../assets/logo.svg';
+import { BgColor } from "../../models/BgColor";
 
 import "./Home.scss";
 
 function Home(props:any) {
 
+  useEffect(() => {
+    props.changeColor(BgColor.Yellow);
+
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="home">
-      <header className="header">
-        <img src={logo} className="home-logo" alt="logo" />
-      </header>
-      <div className="subheader">
+      <div className="convo-list">
         <h1>RxC Deliberation</h1>
         <p>Click on a conversation below to participate! Powered by Pol.is.</p>
-      </div>
-      <div className="convo-list">
         <h2>Active</h2>
           {props.conversations.length ? (
             <ul>
