@@ -1,12 +1,22 @@
 ## Deploy Instructions (untested)
 
-1. Export .env file to enviroment and fill up suitable environment variables
+1. Install Docker
+
+2. Install docker-compose (Version > 1.25.5) `docker-compose --version`
+
+3. Clone Project -
+```
+git clone https://github.com/alexrandaccio/QVtool.git
+git checkout production
+```
+
+4. Create .env file and fill up suitable environment variables
 
 ```
-cp .env.test .env
+touch .env
 ```
 
-2. Build Images and Stand up containers
+5. Build Images and Stand up containers
 
 ```
 docker-compose up --build

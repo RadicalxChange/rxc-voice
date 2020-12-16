@@ -3,8 +3,6 @@ from django.urls import path, re_path
 from .rootview import RootView
 from .authviews import (DelegateList, DelegateDetail,
                         CustomAuthToken, PermissionList, GroupList)
-from .electionviews import (ElectionList, ElectionDetail, ProposalList,
-                            VoteList, VoteListAll, ProposalListAll)
 from .conversationviews import (ConversationList, ConversationDetail)
 
 urlpatterns = [

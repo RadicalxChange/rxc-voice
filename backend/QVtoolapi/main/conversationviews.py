@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import generics, mixins, status
 from .serializers import ConversationSerializer
 from .models import Conversation
+from .permissions import ConversationPermission
 
 
 class ConversationList(mixins.CreateModelMixin,
@@ -10,8 +11,9 @@ class ConversationList(mixins.CreateModelMixin,
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
 
+    permission_classes = (ConversationPermission,)
+
     def get(self, request, *args, **kwargs):
-        # TODO: restrict permissions
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -30,6 +32,8 @@ class ConversationDetail(mixins.RetrieveModelMixin,
 
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+
+    permission_classes = (ConversationPermission,)
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)

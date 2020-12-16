@@ -74,7 +74,6 @@ class Vote(models.Model):
 
 class Conversation(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
-    site_id = models.CharField(max_length=256, blank=False)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True)
     start_date = models.DateTimeField(blank=False)
