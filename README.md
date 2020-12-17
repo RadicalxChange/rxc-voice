@@ -1,4 +1,4 @@
-## Deploy Instructions (untested)
+## Deploy Instructions
 
 1. Install Docker
 
