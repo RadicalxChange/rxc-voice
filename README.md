@@ -1,4 +1,4 @@
-## Deploy Instructions (untested)
+## Deploy Instructions
 
 1. Install Docker
 
@@ -16,7 +16,7 @@ git checkout production
 touch .env
 ```
 
-5. Build images and stand up containers
+5. Build images and stand up containers (make sure docker is running first)
 
 ```
 docker-compose up --build
