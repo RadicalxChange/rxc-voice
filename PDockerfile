@@ -6,6 +6,13 @@ COPY scripts/ /scripts
 
 WORKDIR /polis-app
 
-RUN npm install
-
 EXPOSE 3000
+
+RUN npm install
+RUN npm build
+
+FROM nginx
+
+COPY --from=builder /polis-app/build /var/www/polis-app
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
