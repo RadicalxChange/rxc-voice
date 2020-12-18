@@ -6,6 +6,7 @@ COPY backend/QVtoolapi/ /backend
 
 WORKDIR /backend
 
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 ADD . /backend/

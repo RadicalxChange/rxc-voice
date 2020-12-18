@@ -29,15 +29,13 @@ if os.environ.get('PRODUCTION', "False") == "False":
 else:
     DEBUG = False
 
-# PRODUCTION: only allow api requests from local server
+# PRODUCTION: only allow api requests from loadbalancer or localhost
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '.radicalxchange.org']
 
-# PRODUCTION: only allow api requests from local server
-# CORS_ALLOWED_ORIGINS = [
-#     "https://radicalxchange.org",
-#     "http://localhost:3000",
-#     ]
-CORS_ORIGIN_ALLOW_ALL = True
+# PRODUCTION: only allow api requests from loadbalancer or localhost
+CORS_ALLOWED_ORIGINS = [
+    "https://radicalxchange.org",
+    ]
 
 # Application definition
 
@@ -146,4 +144,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'

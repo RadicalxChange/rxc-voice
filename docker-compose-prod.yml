@@ -6,11 +6,11 @@ services:
       dockerfile: ./backend/Dockerfile
     command: bash /scripts/deploy/api_deploy.sh
     ports:
-      - "8000:8000"
+      - "8000:80"
     volumes:
       - ./backend:/backend
       - ./scripts:/scripts
-    working_dir: /backend/QVtoolapi/
+    working_dir: /backend/QVtoolapi/ 
     environment:
       - PRODUCTION=True
       - DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
@@ -20,16 +20,20 @@ services:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     restart: always
 
-  nginx:
-    image:
-    ports:
-      - "80:80"
-      - "443:443"
+  web:
+    build:
+      context: .
+      dockerfile: ./PDockerfile
+    command: serve -s build -l 3000
     volumes:
-      - ./nginx/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./backend/QVtoolapi/static:/var/www/backend
+    - ./polis-app/src:/polis-app/src
+    ports:
+      - "3000:30"
     depends_on:
       - api
+    environment:
+      - REACT_APP_SITE_ID=$REACT_APP_SITE_ID
+    stdin_open: true
     restart: always
 
 volumes:
