@@ -9,7 +9,7 @@ import "./CookieBanner.scss";
 
 function CookieBanner(props:any) {
   const { conversationId } = useParams<PolisPageRouteParams>();
-  const [showCookieBanner, setShowCookieBanner] = useState(!!!props.thisCookie);
+  const [showCookieBanner, setShowCookieBanner] = useState(!props.thisCookie);
   const [showPolicy, setShowPolicy] = useState(true);
 
   const allowCookies = () => {

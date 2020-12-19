@@ -30,7 +30,7 @@ else:
     DEBUG = False
 
 # PRODUCTION: only allow api requests from loadbalancer or localhost
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '.radicalxchange.org']
+ALLOWED_HOSTS = ['.radicalxchange.org']
 
 # PRODUCTION: only allow api requests from loadbalancer or localhost
 CORS_ALLOWED_ORIGINS = [

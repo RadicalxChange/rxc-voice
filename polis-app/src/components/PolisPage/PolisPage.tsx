@@ -17,9 +17,12 @@ function PolisPage(props:PolisProps) {
   const canComment = conversation !== undefined &&
     moment(conversation.end_date) > moment();
   // user can only vote if we have a cookie identifying them
-  const thisCookie = props.cookies[conversationId];
-  console.log("cookie found on page load: " + thisCookie);
-  const [canVote, setCanVote] = useState(!!thisCookie);
+  let thisCookie = props.cookies[conversationId];
+  const ongoing = conversation ? (moment(conversation.end_date) > moment()) : false;
+  const [canVote, setCanVote] = useState(!!thisCookie && ongoing);
+  if (!ongoing) {
+    thisCookie = 1;
+  }
 
   useEffect(() => {
     props.changeColor(BgColor.White);
