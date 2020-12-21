@@ -8,6 +8,9 @@ WORKDIR /polis-app
 
 EXPOSE 3000
 
+ARG REACT_APP_SITE_ID
+ENV REACT_APP_SITE_ID=${REACT_APP_SITE_ID}
+
 RUN npm install
 RUN npm run build
 RUN npm install -g serve

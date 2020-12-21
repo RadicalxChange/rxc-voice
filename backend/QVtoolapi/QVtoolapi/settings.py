@@ -29,13 +29,27 @@ if os.environ.get('PRODUCTION', "False") == "False":
 else:
     DEBUG = False
 
-# PRODUCTION: only allow api requests from loadbalancer or localhost
-ALLOWED_HOSTS = ['.radicalxchange.org']
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'handlers': {
+       'console': {
+           'class': 'logging.StreamHandler',
+       },
+   },
+   'loggers': {
+       'django': {
+           'handlers': ['console'],
+           'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+       },
+   },
+}
 
 # PRODUCTION: only allow api requests from loadbalancer or localhost
-CORS_ALLOWED_ORIGINS = [
-    "https://radicalxchange.org",
-    ]
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1', '64.225.61.72', '138.197.60.87', 'cloud.digitalocean.com', '.radicalxchange.org']
+
+# PRODUCTION: only allow api requests from loadbalancer or localhost
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -56,6 +70,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

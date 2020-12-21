@@ -6,7 +6,8 @@ services:
       dockerfile: ./backend/Dockerfile
     command: bash /scripts/deploy/api_deploy.sh
     ports:
-      - "8000:80"
+      - "8000:8000"
+    expose: [8000]
     volumes:
       - ./backend:/backend
       - ./scripts:/scripts
@@ -29,7 +30,8 @@ services:
     volumes:
     - ./polis-app/src:/polis-app/src
     ports:
-      - "3000:30"
+      - "3000:3000"
+    expose: [3000]
     depends_on:
       - api
     environment:

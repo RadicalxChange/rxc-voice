@@ -9,7 +9,7 @@ import { BgColor } from "../../models/BgColor";
 import "./PolisPage.scss";
 
 function PolisPage(props:PolisProps) {
-  const POLIS_SITE_ID = process.env.REACT_APP_SITE_ID;
+  const POLIS_SITE_ID = 'polis_site_id_cG2opQF5hsqj9jGCsr';
   const { conversationId } = useParams<PolisPageRouteParams>();
   const conversation = props.conversations.find(
     conversation => conversation.id === +conversationId);
