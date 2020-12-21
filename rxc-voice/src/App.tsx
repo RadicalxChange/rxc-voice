@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Route } from "react-router-dom";
 import Home from "./components/Home";
 import Header from './components/Header';
+import Login from './components/Login';
+import Account from './components/Account';
 // import VotingPage from "./components/VotingPage";
 import { BgColor } from "./models/BgColor"
 
@@ -12,7 +14,6 @@ function App() {
   const whiteColor = "var(--whiteColor)";
 
   const [color, setColor] = useState(yellowColor);
-
   const changeColor = (newColor: BgColor) => {
     switch (newColor) {
       case BgColor.Yellow: {
@@ -26,9 +27,14 @@ function App() {
     }
   };
 
+  const [user, setUser] = useState(sessionStorage.getItem("user"));
+  if (!user) {
+    return <Login changeColor={changeColor} setUser={setUser} />
+  }
 
   return (
     <div className="App" style={{ background: color }} >
+      {console.log(sessionStorage.getItem("user"))}
 
       <Header></Header>
 
@@ -36,6 +42,12 @@ function App() {
         path="/"
         exact
         render={() => <Home changeColor={changeColor}></Home>}
+      />
+
+      <Route
+        path="/account"
+        exact
+        render={() => <Account changeColor={changeColor} setUser={setUser} ></Account>}
       />
 
     </div>

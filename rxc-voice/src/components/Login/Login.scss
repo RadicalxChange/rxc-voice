@@ -1,0 +1,61 @@
+.login {
+  padding: 4.5vmin;
+
+  .login-logo {
+    width: 91vw;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .app-title {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    font-family: var(--primaryFont);
+    font-size: 5em;
+  }
+
+  .login-input {
+    display: block;
+    text-align: center;
+    margin: 8vmin auto 0 auto;
+    width: 80%;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid black;
+    font-size: 1rem;
+
+  }
+
+  .login-button {
+    display: block;
+    text-align: center;
+    margin: 10vmin auto;
+    padding: 1vmin 4vmin;
+    background: var(--whiteColor);
+    border: 1px solid black;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+}
+
+@media only screen and (min-width: 768px) {
+  .login {
+    padding: 10vw 30vw;
+
+    .login-logo {
+      width: 39.31vw;
+    }
+
+    .app-title {
+
+    }
+
+    .login-input {
+      font-size: 1.5vw;
+    }
+  }
+}

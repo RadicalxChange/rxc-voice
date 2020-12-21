@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 // import { Link } from "react-router-dom";
-import Header from "../Header";
-import logo from '../../assets/logo.svg';
 import { BgColor } from "../../models/BgColor";
 
 import "./Home.scss";
