@@ -26,7 +26,7 @@ function Home(props:any) {
   return (
     <div className="home">
       <div className="convo-list">
-        <h1>RxC Deliberation</h1>
+        <h1>RxC Conversations</h1>
         <p>Click on a conversation below to participate!</p>
         <h2>Active</h2>
           {activeList.length ? (
