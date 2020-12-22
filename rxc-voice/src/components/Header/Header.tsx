@@ -28,7 +28,6 @@ function Header() {
         >
         DELEGATES
         </Link>
-
         <Link
         to={`/account`}
         className="nav-link"
