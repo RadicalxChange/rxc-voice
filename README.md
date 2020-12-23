@@ -7,7 +7,7 @@
 3. Clone project -
 ```
 git clone https://github.com/alexrandaccio/QVtool.git
-git checkout production
+git checkout master
 ```
 
 4. Create .env file and fill up suitable environment variables
