@@ -1,12 +1,22 @@
-## Deploy Instructions (untested)
+## Deploy Instructions
 
-1. Export .env file to enviroment and fill up suitable environment variables
+1. Install Docker
+
+2. Install docker-compose
+
+3. Clone project -
+```
+git clone https://github.com/alexrandaccio/QVtool.git
+git checkout production
+```
+
+4. Create .env file and fill up suitable environment variables
 
 ```
-cp .env.test .env
+touch .env
 ```
 
-2. Build Images and Stand up containers
+5. Build images and stand up containers (make sure docker is running first)
 
 ```
 docker-compose up --build
@@ -14,11 +24,21 @@ docker-compose up --build
 
 Note - If images are already present ```docker-compose up```
 
-The Project is now up and running -
+The project is now up and running -
 
 Backend API - http://127.0.0.1:8000
 
-QV App Frontend - http://localhost:3000
+Polis app frontend - http://localhost:3000
+
+6. Create a superuser to access the admin site
+
+```
+docker exec -it QVtool_api_1 QVtoolapi/manage.py createsuperuser
+```
+
+7. Log in to the admin site at http://127.0.0.1:8000/admin
+
+8. Click "Conversations", to add conversations
 
 
 ## known bugs
