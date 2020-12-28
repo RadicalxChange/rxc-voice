@@ -33,11 +33,17 @@
     text-align: center;
     margin: 10vmin auto;
     padding: 1vmin 4vmin;
-    background: var(--whiteColor);
+    background: var(--blackColor);
+    color: white;
     border: 1px solid black;
     border-radius: 15px;
+    outline: none;
     cursor: pointer;
     font-size: 1rem;
+  }
+  .login-button:hover {
+    background: var(--whiteColor);
+    color: black;
   }
 
 }

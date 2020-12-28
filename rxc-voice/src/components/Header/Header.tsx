@@ -14,25 +14,25 @@ function Header() {
         to={`/about`}
         className="nav-link"
         >
-        ABOUT
+        About
         </Link>
         <Link
         to={`/`}
         className="nav-link"
         >
-        PARTICIPATE
+        Participate
         </Link>
         <Link
         to={`/delegates`}
         className="nav-link"
         >
-        DELEGATES
+        Delegates
         </Link>
         <Link
         to={`/account`}
         className="nav-link"
         >
-        ACCOUNT
+        Account
         </Link>
       </ul>
     </div>

@@ -3,6 +3,7 @@ import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
 import { Voter } from "../models/Voter";
 import { Permission } from "../models/Permission";
+import { Process } from "../models/Process";
 
 export const standInElection = (): Election => ({
   id: 0,
@@ -50,5 +51,25 @@ export const mapToVote = (vote: Vote): Vote => {
     proposal: vote.proposal,
     amount: vote.amount,
     date: vote.date,
+  };
+};
+
+export const mapToProcesses = (processes: Process[]): Process[] => {
+  return processes.map(mapToProcess);
+};
+
+export const mapToProcess = (process: Process): Process => {
+  return {
+    id: process.id,
+    title: process.title,
+    description: process.description,
+    start_date: process.start_date,
+    end_date: process.end_date,
+    delegates: process.delegates,
+    matching_pool: process.matching_pool,
+    conversation: process.conversation,
+    curation_info: process.curation_info,
+    top_posts: process.top_posts,
+    election: process.election,
   };
 };

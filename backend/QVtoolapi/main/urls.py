@@ -6,6 +6,7 @@ from .authviews import (DelegateList, DelegateDetail,
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
                             VoteList, VoteListAll, ProposalListAll)
 from .conversationviews import (ConversationList, ConversationDetail)
+from .processviews import (ProcessList, ProcessDetail)
 
 urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
@@ -17,6 +18,10 @@ urlpatterns = [
     path('groups/', GroupList.as_view(), name='group-list'),
     path('permissions/', PermissionList.as_view(), name='permission-list'),
     re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
+
+    # Process APIs
+    path('processes/', ProcessList.as_view(), name='process-list'),
+    path('processes/<int:pk>/', ProcessDetail.as_view(), name='process-detail'),
 
     # Election APIs
     path('elections/', ElectionList.as_view(), name='election-list'),

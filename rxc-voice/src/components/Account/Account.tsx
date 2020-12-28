@@ -6,7 +6,7 @@ import "./Account.scss";
 function Account(props: any) {
 
   useEffect(() => {
-    props.changeColor(BgColor.White);
+    props.changeColor(BgColor.Yellow);
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

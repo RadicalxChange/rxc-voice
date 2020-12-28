@@ -1,8 +1,9 @@
 import { Observable, defer, from } from "rxjs";
 import { Election } from "../models/Election";
+import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
-import { mapToProposals, mapToVotes } from "../utils";
+import { mapToProcesses, mapToProposals, mapToVotes } from "../utils";
 
 const ROOT_URL = "http://127.0.0.1:8000";
 
@@ -26,6 +27,21 @@ export const postDelegates = (users: any): Observable<any> => {
         method: "POST",
         body: JSON.stringify(users),
       }),
+    );
+  });
+};
+
+export const fetchProcesses = (): Observable<Process[]> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<Process[]>>(
+      fetch(`${ROOT_URL}/processes/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      }).then((res) => res.json())
+        .then(mapToProcesses),
     );
   });
 };

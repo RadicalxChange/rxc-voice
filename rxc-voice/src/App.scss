@@ -21,6 +21,32 @@
   }
 }
 
+h1 {
+  font-weight: normal;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+h3 {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+p {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+span {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
 a {
   text-decoration: none;
   color: black;
@@ -28,6 +54,10 @@ a {
 
 a:visited {
   color: black;
+}
+
+ul {
+  list-style-type: none;
 }
 
 @font-face {
