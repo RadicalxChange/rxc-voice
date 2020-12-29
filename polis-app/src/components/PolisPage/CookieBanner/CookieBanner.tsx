@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import publicIp from "public-ip";
 import { fromString } from "uuidv4";
 import moment from "moment";
 import { useParams } from "react-router-dom";
@@ -14,8 +13,7 @@ function CookieBanner(props:any) {
 
   const allowCookies = () => {
    (async () => {
-       const userIp = await publicIp.v6();
-       props.setCookie(conversationId, fromString(moment().toDate() + userIp + conversationId), {
+       props.setCookie(conversationId, fromString(moment().toDate() + conversationId), {
          path: "/",
          expires: moment().add(1, "days").toDate(),
          sameSite: "lax",
