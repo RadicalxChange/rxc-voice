@@ -76,11 +76,21 @@ function PolisPage(props:PolisProps) {
             data-auth_needed_to_write='false'
           >
           </div>
+          {conversation.show_report ? (
+            <iframe
+              title="conversation-results"
+              className="results-iframe"
+              src={"https://pol.is/report/" + conversation.report_id}
+            >
+            </iframe>
+          ) : (
+            <h3>No report to show at this time.</h3>
+          )}
           <CookieBanner thisCookie={thisCookie} setCookie={props.setCookie} setCanVote={setCanVote} />
         </div>
       ) : (
         <div className="body">
-          <h2>Conversation not found. Head back to home to find what you're looking for.</h2>
+          <h3>Conversation not found. Head back to home to find what you're looking for.</h3>
         </div>
       )}
     </div>

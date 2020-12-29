@@ -11,5 +11,7 @@ export const mapToConversation = (conversation: Conversation): Conversation => {
     description: conversation.description,
     start_date: conversation.start_date,
     end_date: conversation.end_date,
+    show_report: conversation.show_report,
+    report_id: conversation.report_id,
   };
 };

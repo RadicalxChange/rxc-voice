@@ -4,4 +4,6 @@ export interface Conversation {
   description: string,
   start_date: string,
   end_date: string,
+  show_report: boolean,
+  report_id: string,
 }

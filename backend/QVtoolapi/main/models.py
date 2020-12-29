@@ -78,6 +78,8 @@ class Conversation(models.Model):
     description = models.TextField(blank=True)
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
+    show_report = models.BooleanField(default=False, blank=True)
+    report_id = models.CharField(max_length=256, blank=True)
     groups = models.ManyToManyField(Group, blank=True, default=[])
 
     class Meta:
