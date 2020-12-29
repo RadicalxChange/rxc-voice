@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, mixins, status
-from .serializers import ProcessSerializer
+from .serializers import ProcessSerializer, TransferSerializer
 from .permissions import ProcessPermission
-from .models import Process
+from .models import Process, Transfer
 from guardian.shortcuts import assign_perm
 
 
@@ -54,7 +54,6 @@ class ProcessDetail(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
                     mixins.DestroyModelMixin,
                     generics.GenericAPIView):
-
     queryset = Process.objects.all()
     serializer_class = ProcessSerializer
 
@@ -66,3 +65,13 @@ class ProcessDetail(mixins.RetrieveModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class TransferList(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   generics.GenericAPIView):
+    queryset = Transfer.objects.all()
+    serializer_class = TransferSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

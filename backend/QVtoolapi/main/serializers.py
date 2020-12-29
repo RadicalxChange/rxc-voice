@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from guardian.shortcuts import assign_perm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Process, Election, Vote, Proposal, Delegate, Conversation
+from .models import Process, Election, Vote, Proposal, Delegate, Conversation, Transfer
 from django.contrib.auth.models import (User, Group, Permission)
 
 
@@ -91,6 +91,22 @@ class ProcessSerializer(serializers.ModelSerializer):
         process.groups.set(validated_data.get('groups', []))
         process.delegates.set(validated_data.get('delegates', []))
         return process
+
+
+class TransferSerializer(serializers.modelSerializer):
+    process = ProcessSerializer(required=False)
+
+    class Meta:
+        model = Process
+        fields = '__all__'
+
+    def create(self, validated_data, recipient_exists):
+        if recipient_exists:
+            status = 'A'
+        else:
+            recipient_data = validated_data.get('recipient')
+            email_invite(recipient_data.email)
+        transfer = Transfer.object.create(
 
 
 class UserSerializer(serializers.ModelSerializer):
