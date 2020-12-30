@@ -1,4 +1,5 @@
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework import generics, mixins, status
@@ -7,6 +8,7 @@ from .serializers import (DelegateSerializer,
                           PermissionSerializer,
                           GroupSerializer
                           )
+from .permissions import DelegatePermission
 from .models import Delegate
 
 
@@ -15,6 +17,9 @@ class DelegateList(mixins.CreateModelMixin,
                    generics.GenericAPIView):
     queryset = Delegate.objects.all()
     serializer_class = DelegateSerializer
+
+    permission_classes = (DelegatePermission,)
+    authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
