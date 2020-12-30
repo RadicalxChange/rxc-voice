@@ -8,11 +8,7 @@ function GiveCreditsPage() {
     const [recipientEmail, setRecipientEmail] = useState("");
     const [amount, setAmount] = useState("");
 
-    useEffect(() => {
-      props.changeColor(BgColor.White);
-
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // TODO: use fetchDelegates to get delegates and transfer if already exists
 
     const transfer = () => {
       if (recipientEmail && amount) {

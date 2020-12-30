@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'djrill',
+
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
@@ -121,6 +123,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email backend variables
+
+MANDRILL_API_KEY = os.environ.get('MAILCHIMP_API_KEY')
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+# DEFAULT_FROM_EMAIL = "you@example.com"  # get email from alex
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

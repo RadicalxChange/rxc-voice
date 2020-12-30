@@ -19,14 +19,28 @@ export const loginUser = (user: any): Observable<any> => {
   });
 };
 
-export const validateUser = (user: any): Observable<any> => {
+export const modifyUser = (user: any, id: string): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/delegates/${delegate_id}`, {
-        headers: { "Content-Type": "application/json; charset=utf-8" },
+      fetch(`${ROOT_URL}/delegates/${id}`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+         },
         method: "PUT",
         body: JSON.stringify(user),
       }),
+    );
+  });
+};
+
+export const fetchDelegates = (): Observable<Delegate[]> => {
+  return defer(() => {
+    return from<Promise<Delegate[]>>(
+      fetch(`${ROOT_URL}/delegates/`)
+        .then((res) => res.json())
+        .then(mapToVotes),
     );
   });
 };
