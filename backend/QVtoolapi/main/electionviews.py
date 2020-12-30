@@ -2,7 +2,7 @@ from guardian.shortcuts import assign_perm
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import generics, mixins, status
-from .permissions import ElectionPermission
+from .permissions import ElectionPermission, TransferPermission
 from .serializers import (ElectionSerializer,
                           VoteSerializer,
                           ProposalSerializer,
@@ -122,6 +122,9 @@ class TransferList(mixins.CreateModelMixin,
                    generics.GenericAPIView):
     queryset = Transfer.objects.all()
     serializer_class = TransferSerializer
+
+    permission_classes = (TransferPermission,)
+    authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
         election_id = self.kwargs['pk']
