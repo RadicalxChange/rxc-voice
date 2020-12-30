@@ -18,8 +18,7 @@ function ValidationPage() {
           },
           profile_pic: profilePic,
           phone_number: number
-          },
-          ).subscribe(async (data) => {
+        }, sessionStorage.getItem("user").id).subscribe(async (data) => {
           if (data.ok) {
             const user = await data.json();
             sessionStorage.setItem("user", JSON.stringify(user));
