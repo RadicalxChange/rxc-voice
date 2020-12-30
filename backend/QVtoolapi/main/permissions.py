@@ -4,8 +4,6 @@ from rest_framework import permissions
 class ProcessPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        print(request.user)
-
         if request.method == 'GET':
             return True
         elif request.method == 'POST':

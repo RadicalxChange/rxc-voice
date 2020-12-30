@@ -32,7 +32,7 @@ function Home(props: any) {
     <div className="home">
       <h1>Active</h1>
         {activeProcesses.length ? (
-          <ul>
+          <ul className="process-list">
             {activeProcesses.map((process: Process) => (
               <ProcessCard process={process} key={process.id} />
             ))}
@@ -40,9 +40,9 @@ function Home(props: any) {
         ) : (
           <h3>None</h3>
         )}
-      <h1>Archived</h1>
+      <h1>Past</h1>
         {pastProcesses.length ? (
-          <ul>
+          <ul className="process-list">
             {pastProcesses.map((process: Process) => (
               <ProcessCard process={process} key={process.id} />
             ))}

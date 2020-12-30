@@ -71,5 +71,6 @@ export const mapToProcess = (process: Process): Process => {
     curation_info: process.curation_info,
     top_posts: process.top_posts,
     election: process.election,
+    status: process.status,
   };
 };

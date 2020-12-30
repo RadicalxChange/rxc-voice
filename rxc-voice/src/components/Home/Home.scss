@@ -1,3 +1,22 @@
 .home {
-  text-align: left;
+  text-align: center;
+  padding-top: 10vh;
+
+  .process-list {
+    margin: 2.5em 0 2.5em 0;
+    width: auto;
+    padding-inline-start: 0;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .home {
+    text-align: left;
+
+    .process-list {
+      margin: 2.5em 0 2.5em 0;
+      width: auto;
+      padding-inline-start: 40px;
+    }
+  }
 }

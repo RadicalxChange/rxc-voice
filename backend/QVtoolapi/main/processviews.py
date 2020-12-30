@@ -19,6 +19,9 @@ class ProcessList(mixins.CreateModelMixin,
     def get(self, request, *args, **kwargs):
         processes = []
         for process in self.get_queryset():
+            groups = process.groups.all()
+            for group in groups:
+                assign_perm('can_view', group, process)
             if request.user.has_perm('can_view', process):
                 processes.append(process)
         page = self.paginate_queryset(processes)
@@ -35,7 +38,7 @@ class ProcessList(mixins.CreateModelMixin,
         process_id = serializer.data.get('id')
         process_object = Process.objects.get(pk=process_id)
         headers = self.get_success_headers(serializer.data)
-        # assign can_vote permission to any groups the process belongs to.
+        # assign can_view permission to any groups the process belongs to.
         groups = process_object.groups.all()
         for group in groups:
             assign_perm('can_view', group, process_object)

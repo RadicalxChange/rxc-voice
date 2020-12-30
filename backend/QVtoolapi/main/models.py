@@ -105,6 +105,22 @@ class Process(models.Model):
         models.CharField(max_length=140), blank=True)
     election = models.OneToOneField(
         Election, null=True, on_delete=models.SET_NULL)
+    INITIALIZATION = 'Init'
+    DELEGATION = 'Dlg'
+    DELIBERATION = 'Dlb'
+    CURATION = 'Cur'
+    ELECTION = 'Elec'
+    RESULT = 'Res'
+    STATUS_CHOICES = (
+        (INITIALIZATION, 'Initialization'),
+        (DELEGATION, 'Delegation'),
+        (DELIBERATION, 'Deliberation'),
+        (CURATION, 'Curation'),
+        (ELECTION, 'Election'),
+        (RESULT, 'Result'),
+    )
+    status = models.CharField(max_length=4, choices=STATUS_CHOICES,
+                              default=INITIALIZATION)
 
     class Meta:
         permissions = [

@@ -1,5 +1,6 @@
 import { Conversation } from "./Conversation"
 import { Election } from "./Election"
+import { Status } from "./Status"
 import { Voter } from "./Voter"
 
 export interface Process {
@@ -14,4 +15,5 @@ export interface Process {
   curation_info: string,
   top_posts: string[],
   election: Election,
+  status: Status,
 }
