@@ -40,8 +40,8 @@ class DelegatePermission(permissions.BasePermission):
         if request.method == 'GET':
             return True
         elif request.method == 'POST':
-            if request.data.get('credit_balance', 0) != 0:
-                return request.user.is_staff
+                if request.data.get('credit_balance', 0) != 0:
+                    return request.user.is_staff
             return True
         elif request.method in ['PUT', 'PATCH']:
             if request.data.get('credit_balance', 0) != 0:

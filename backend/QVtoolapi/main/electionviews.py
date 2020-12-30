@@ -9,6 +9,7 @@ from .serializers import (ElectionSerializer,
                           TransferSerializer
                           )
 from .models import Election, Vote, Proposal, Group, Transfer
+from django.core.exceptions import ValidationError
 
 
 class ElectionList(mixins.CreateModelMixin,
@@ -135,6 +136,8 @@ class TransferList(mixins.CreateModelMixin,
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+        if request.data.get('amount') > request.data.get('sender').get('credit_balance'):
+            raise ValidationError()
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
