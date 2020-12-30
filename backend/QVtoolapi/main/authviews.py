@@ -47,7 +47,15 @@ class DelegateDetail(mixins.RetrieveModelMixin,
         return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = self.get_serializer(data=instance)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_ACCEPTED,
+            headers=headers)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)

@@ -6,8 +6,9 @@ from .permissions import ElectionPermission
 from .serializers import (ElectionSerializer,
                           VoteSerializer,
                           ProposalSerializer,
+                          TransferSerializer
                           )
-from .models import Election, Vote, Proposal, Group
+from .models import Election, Vote, Proposal, Group, Transfer
 
 
 class ElectionList(mixins.CreateModelMixin,
@@ -115,6 +116,34 @@ class VoteList(mixins.CreateModelMixin,
             headers=headers)
 
 
+class TransferList(mixins.CreateModelMixin,
+                   mixins.ListModelMixin,
+                   generics.GenericAPIView):
+    queryset = Transfer.objects.all()
+    serializer_class = TransferSerializer
+
+    def get(self, request, *args, **kwargs):
+        election_id = self.kwargs['pk']
+        election_proposals = self.get_queryset().filter(
+            election__id=election_id)
+        page = self.paginate_queryset(election_proposals)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(election_proposals, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers)
+
+
 class ProposalList(mixins.CreateModelMixin,
                    mixins.ListModelMixin,
                    generics.GenericAPIView):
@@ -150,6 +179,26 @@ class ProposalListAll(mixins.CreateModelMixin,
 
     queryset = Proposal.objects.all()
     serializer_class = ProposalSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        for instance in self.get_queryset():
+            instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# for testing only.
+class TransferListAll(mixins.CreateModelMixin,
+                      mixins.ListModelMixin,
+                      generics.GenericAPIView):
+
+    queryset = Transfer.objects.all()
+    serializer_class = TransferSerializer
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

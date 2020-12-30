@@ -19,6 +19,18 @@ export const loginUser = (user: any): Observable<any> => {
   });
 };
 
+export const validateUser = (user: any): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/delegates/${delegate_id}`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "PUT",
+        body: JSON.stringify(user),
+      }),
+    );
+  });
+};
+
 export const postDelegates = (users: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
@@ -112,6 +124,18 @@ export const postVotes = (votes: any, election_id: number): Observable<any> => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         method: "POST",
         body: JSON.stringify(votes),
+      }),
+    );
+  });
+};
+
+export const postTransfer = (transfers: any, recipient_id: number): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/delegates/${recipient_id}/transfers/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+        body: JSON.stringify(transfers),
       }),
     );
   });
