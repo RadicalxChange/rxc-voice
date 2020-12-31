@@ -27,6 +27,9 @@ function Login(props: any) {
           props.setUser(() => user);
           console.log(user);
         } else {
+          if (data.status === 400) {
+            console.log("do function")
+          }
           const error = await data.json();
           console.log(error);
         }
@@ -46,7 +49,7 @@ function Login(props: any) {
       />
 
       <input
-        type="text"
+        type="password"
         placeholder="Password"
         className="login-input"
         value={password}
