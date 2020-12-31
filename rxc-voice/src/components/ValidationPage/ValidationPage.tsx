@@ -18,7 +18,7 @@ function ValidationPage() {
           },
           profile_pic: profilePic,
           phone_number: number
-        }, JSON.parse(sessionStorage.getItem("user") || '{}').id).subscribe(async (data) => {
+        }, WebService.userobj.id).subscribe(async (data) => {
           if (data.ok) {
             const user = await data.json();
             console.log(user);
