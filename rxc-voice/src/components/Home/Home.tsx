@@ -1,31 +1,21 @@
-import React, { useEffect, useState } from "react";
-import moment from "moment";
+import React, { useContext, useEffect } from "react";
 // import { Link } from "react-router-dom";
+import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { Process } from "../../models/Process";
-import { WebService } from "../../services";
 import ProcessCard from "./components/ProcessCard";
 
 import "./Home.scss";
 
-function Home(props: any) {
-  const [activeProcesses, setActiveProcesses] = useState(new Array<Process>());
-  const [pastProcesses, setPastProcesses] = useState(new Array<Process>());
+function Home() {
+  const { setColor, fetchProcesses } = useContext(ActionContext);
+  const { activeProcesses, pastProcesses } = useContext(StateContext);
 
   useEffect(() => {
-    props.changeColor(BgColor.Yellow);
+    setColor(BgColor.Yellow);
+    fetchProcesses();
 
-    WebService.fetchProcesses().subscribe((data: Process[]) => {
-      data.forEach((process: Process) => {
-        if (moment(process.end_date) > moment()) {
-          setActiveProcesses(activeProcesses => [...activeProcesses, process]);
-        } else {
-          setPastProcesses(pastProcesses => [...pastProcesses, process]);
-        }
-      });
-    });
-
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

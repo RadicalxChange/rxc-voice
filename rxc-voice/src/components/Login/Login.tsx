@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
-// import logo from '../../assets/logo.svg';
 
 import "./Login.scss";
 
-function Login(props: any) {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setColor, setUserData } = useContext(ActionContext);
 
   useEffect(() => {
-    props.changeColor(BgColor.White);
+    setColor(BgColor.White)
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -23,9 +24,7 @@ function Login(props: any) {
       }).subscribe(async (data) => {
         if (data.ok) {
           const user = await data.json();
-          sessionStorage.setItem("user", JSON.stringify(user));
-          props.setUser(() => user);
-          console.log(user);
+          setUserData(user);
         } else {
           const error = await data.json();
           console.log(error);
