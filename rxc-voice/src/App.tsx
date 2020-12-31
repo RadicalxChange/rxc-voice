@@ -4,7 +4,7 @@ import Home from "./components/Home";
 import Header from './components/Header';
 import Login from './components/Login';
 import Account from './components/Account';
-// import VotingPage from "./components/VotingPage";
+import ProcessPages from './components/ProcessPages';
 import { BgColor } from "./models/BgColor"
 
 import './App.scss';
@@ -42,6 +42,12 @@ function App() {
         path="/"
         exact
         render={() => <Home changeColor={changeColor}></Home>}
+      />
+
+      <Route
+        path="/:processId/:processSlug/:stage"
+        exact
+        render={() => <ProcessPages changeColor={changeColor}></ProcessPages>}
       />
 
       <Route
