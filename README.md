@@ -16,6 +16,20 @@ git checkout master
 touch .env
 ```
 
+The variables needed are as follows:
+
+```
+DJANGO_SECRET_KEY=
+MAILCHIMP_API_KEY=
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5432
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+```
+
 5. Build images and stand up containers (make sure docker is running first)
 
 ```

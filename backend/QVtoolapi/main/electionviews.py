@@ -8,7 +8,7 @@ from .serializers import (ElectionSerializer,
                           ProposalSerializer,
                           TransferSerializer
                           )
-from .models import Election, Vote, Proposal, Group, Transfer
+from .models import Election, Vote, Proposal, Group, Transfer, Delegate
 from django.core.exceptions import ValidationError
 
 
@@ -127,19 +127,11 @@ class TransferList(mixins.CreateModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        election_id = self.kwargs['pk']
-        election_proposals = self.get_queryset().filter(
-            election__id=election_id)
-        page = self.paginate_queryset(election_proposals)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(election_proposals, many=True)
-        return Response(serializer.data)
+        return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        if request.data.get('amount') > request.data.get('sender').get('credit_balance'):
+        if request.data.get('amount') > Delegate.objects.all().filter(pk=request.data.get('sender')).first().credit_balance:
             raise ValidationError()
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

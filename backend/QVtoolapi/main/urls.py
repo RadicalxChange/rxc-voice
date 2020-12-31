@@ -28,7 +28,7 @@ urlpatterns = [
     path('proposals/', ProposalListAll.as_view(), name='all-proposals-list'),
     path('votes/', VoteListAll.as_view(), name='all-votes-list'),
     path('transfers/', TransferListAll.as_view(), name='transfer-list-all'),
-    path('delegates/<int:pk>/transfers', TransferList.as_view(),
+    path('delegates/<int:pk>/transfers/', TransferList.as_view(),
          name='transfer-list'),
     path('elections/', ElectionList.as_view(), name='election-list'),
     path('elections/<int:pk>/', ElectionDetail.as_view(),
