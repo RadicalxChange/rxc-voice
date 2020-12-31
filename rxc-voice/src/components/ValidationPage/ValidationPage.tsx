@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { WebService } from "../../services";
 
 import "./ValidationPage.scss";
@@ -18,11 +18,9 @@ function ValidationPage() {
           },
           profile_pic: profilePic,
           phone_number: number
-        }, sessionStorage.getItem("user").id).subscribe(async (data) => {
+        }, JSON.parse(sessionStorage.getItem("user") || '{}').id).subscribe(async (data) => {
           if (data.ok) {
             const user = await data.json();
-            sessionStorage.setItem("user", JSON.stringify(user));
-            props.setUser(() => user);
             console.log(user);
           } else {
             const error = await data.json();
