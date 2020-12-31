@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
+import { useAlert } from 'react-alert'
 // import logo from '../../assets/logo.svg';
 
 import "./Login.scss";
@@ -8,6 +9,8 @@ import "./Login.scss";
 function Login(props: any) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const alert = useAlert()
 
   useEffect(() => {
     props.changeColor(BgColor.White);
@@ -27,11 +30,9 @@ function Login(props: any) {
           props.setUser(() => user);
           console.log(user);
         } else {
-          if (data.status === 400) {
-            console.log("do function")
-          }
           const error = await data.json();
           console.log(error);
+          alert.error(error.non_field_errors[0]);
         }
       });
     }
