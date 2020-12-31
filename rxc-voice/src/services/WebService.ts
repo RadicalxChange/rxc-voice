@@ -9,6 +9,8 @@ import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates } from "../u
 
 const ROOT_URL = "http://127.0.0.1:8000";
 
+export const userobj = JSON.parse(sessionStorage.getItem("user") || '{}')
+
 export const loginUser = (user: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
