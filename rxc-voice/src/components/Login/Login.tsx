@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
+import { useAlert } from 'react-alert'
+// import logo from '../../assets/logo.svg';
 
 import "./Login.scss";
 
@@ -9,6 +11,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setColor, setUserData } = useContext(ActionContext);
+
+  const alert = useAlert()
 
   useEffect(() => {
     setColor(BgColor.White)
@@ -28,6 +32,7 @@ function Login() {
         } else {
           const error = await data.json();
           console.log(error);
+          alert.error(error.non_field_errors[0]);
         }
       });
     }
@@ -45,7 +50,7 @@ function Login() {
       />
 
       <input
-        type="text"
+        type="password"
         placeholder="Password"
         className="login-input"
         value={password}
