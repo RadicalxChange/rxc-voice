@@ -57,7 +57,6 @@ class ProcessDetail(mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,
                     mixins.DestroyModelMixin,
                     generics.GenericAPIView):
-
     queryset = Process.objects.all()
     serializer_class = ProcessSerializer
 

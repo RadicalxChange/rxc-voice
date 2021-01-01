@@ -2,10 +2,14 @@ import { Observable, defer, from } from "rxjs";
 import { Election } from "../models/Election";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
+import { Delegate } from "../models/Delegate";
+// import { Transfer } from "../models/Transfer";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToProposals, mapToVotes } from "../utils";
+import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates } from "../utils";
 
 const ROOT_URL = "http://127.0.0.1:8000";
+
+export const userobj = JSON.parse(sessionStorage.getItem("user") || '{}')
 
 export const loginUser = (user: any): Observable<any> => {
   return defer(() => {
@@ -15,6 +19,32 @@ export const loginUser = (user: any): Observable<any> => {
         method: "POST",
         body: JSON.stringify(user),
       }),
+    );
+  });
+};
+
+export const modifyUser = (moddata: any, id: string): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/delegates/${id}`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+         },
+        method: "PUT",
+        body: JSON.stringify(moddata),
+      }),
+    );
+  });
+};
+
+export const fetchDelegates = (): Observable<Delegate[]> => {
+  return defer(() => {
+    return from<Promise<Delegate[]>>(
+      fetch(`${ROOT_URL}/delegates/`)
+        .then((res) => res.json())
+        .then(mapToDelegates),
     );
   });
 };
@@ -112,6 +142,21 @@ export const postVotes = (votes: any, election_id: number): Observable<any> => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         method: "POST",
         body: JSON.stringify(votes),
+      }),
+    );
+  });
+};
+
+export const postTransfer = (transfers: any, recipient_id: number): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/delegates/${recipient_id}/transfers/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8", 
+        Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify(transfers),
       }),
     );
   });
