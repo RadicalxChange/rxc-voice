@@ -6,6 +6,7 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import AppProvider from './hooks';
 
 const options = {
   position: positions.TOP_CENTER,
@@ -17,8 +18,10 @@ const options = {
 
 ReactDOM.render(
   <BrowserRouter>
-	<AlertProvider template={AlertTemplate} {...options}>
+	  <AlertProvider template={AlertTemplate} {...options}>
+      <AppProvider>
         <App />
+      </AppProvider>
     </AlertProvider>
   </BrowserRouter>,
   document.getElementById('root')

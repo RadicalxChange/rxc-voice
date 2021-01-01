@@ -1,27 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
+import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 
 import "./Account.scss";
 
-function Account(props: any) {
+function Account() {
+  const { setColor, logoutUser } = useContext(ActionContext);
 
   useEffect(() => {
-    props.changeColor(BgColor.Yellow);
+    setColor(BgColor.Yellow);
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const logout = () => {
-    sessionStorage.setItem("user", "");
-    props.setUser(() => "");
-  };
 
   return (
     <div className="account">
       <button
         type="button"
         className="logout-button"
-        onClick={() => logout()}
+        onClick={() => logoutUser()}
         >
         log out
       </button>

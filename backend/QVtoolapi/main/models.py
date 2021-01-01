@@ -16,7 +16,7 @@ class Delegate(models.Model):
     invited_by = models.ForeignKey(
         'self', null=True, on_delete=models.SET_NULL)
     credit_balance = models.DecimalField(
-        default=0, blank=True, max_digits=6, decimal_places=0)
+        default=0, blank=True, max_digits=6, decimal_places=0) # must be staff to change from default
     # oauth_uuid = models.CharField(max_length=256, null=True)
 
     def __str__(self):
@@ -91,18 +91,18 @@ class Conversation(models.Model):
 class Process(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     title = models.CharField(max_length=256, blank=False)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
     groups = models.ManyToManyField(Group, blank=True, default=[])
     delegates = models.ManyToManyField(Delegate, blank=True, default=[])
     matching_pool = models.DecimalField(
-        default=0, max_digits=10, decimal_places=0, blank=True)
+        default=0, max_digits=10, decimal_places=0, blank=True, null=True)
     conversation = models.OneToOneField(
         Conversation, null=True, on_delete=models.SET_NULL)
-    curation_info = models.TextField(blank=True)
+    curation_info = models.TextField(blank=True, null=True)
     top_posts = ArrayField(
-        models.CharField(max_length=140), blank=True)
+        models.CharField(max_length=140), blank=True, null=True)
     election = models.OneToOneField(
         Election, null=True, on_delete=models.SET_NULL)
     INITIALIZATION = 'Init'
@@ -131,9 +131,9 @@ class Process(models.Model):
 class Transfer(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     sender = models.ForeignKey(
-        User, related_name="sender", null=True, on_delete=models.SET_NULL)
+        Delegate, related_name="sender", null=True, on_delete=models.SET_NULL)
     recipient = models.ForeignKey(
-        User, related_name="recipient", null=True, on_delete=models.SET_NULL)
+        Delegate, related_name="recipient", null=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0)
     date = models.DateTimeField(blank=False)
