@@ -20,8 +20,10 @@ function Login() {
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const login = () => {
+  const login = (e: any) => {
+    e.preventDefault()
     if (email && password) {
+      console.log({username: email, password: password});
       WebService.loginUser({
         username: email,
         password: password,
@@ -39,7 +41,7 @@ function Login() {
   };
 
   return (
-    <div className="login">
+    <form className="login" onSubmit={login}>
       <label className="app-title">RxC Voice</label>
       <input
         type="text"
@@ -58,13 +60,12 @@ function Login() {
       />
 
       <button
-        type="button"
+        type="submit"
         className="login-button"
-        onClick={() => login()}
         >
         sign in
       </button>
-    </div>
+    </form>
   );
 }
 
