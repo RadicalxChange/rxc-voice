@@ -15,6 +15,7 @@ const actionInitialValue = {
   setUserData: (user: any) => {},
   selectProcess: (selectedProcess: any) => {},
   fetchProcesses: () => {},
+  stageTransfer: (transfer: any) => {},
 };
 const stateInitialValue = {
   color: yellowColor,
@@ -23,6 +24,7 @@ const stateInitialValue = {
   activeProcesses: [],
   pastProcesses: [],
   selectedProcess: null,
+  stagedTransfer: null,
 };
 export const ActionContext = createContext(actionInitialValue);
 export const StateContext = createContext(stateInitialValue);
@@ -54,6 +56,11 @@ export const AppProvider = (props: any) => {
             ...prevState,
             selectedProcess: action.selectedProcess,
           };
+        case "SET_TRANSFER":
+          return {
+            ...prevState,
+            stagedTransfer: action.transfer,
+          };
       }
     }, {
       color: yellowColor,
@@ -63,7 +70,8 @@ export const AppProvider = (props: any) => {
       processes: [],
       activeProcesses: [],
       pastProcesses: [],
-      selectProcess: null,
+      selectedProcess: null,
+      stagedTransfer: null,
     }
   );
 
@@ -135,6 +143,12 @@ export const AppProvider = (props: any) => {
       selectProcess: (selectedProcessId: any) => {
         WebService.fetchSingleProcess(selectedProcessId).subscribe((data: any) => {
           dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: data });
+        });
+      },
+      stageTransfer: (transfer: any) => {
+        dispatch({
+          type: "SET_TRANSFER",
+          transfer: transfer,
         });
       },
 

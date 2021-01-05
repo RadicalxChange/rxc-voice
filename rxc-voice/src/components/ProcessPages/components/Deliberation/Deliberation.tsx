@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import "./Deliberation.scss";
 
-function Deliberation(props: any) {
+function Deliberation() {
 
 
   return (

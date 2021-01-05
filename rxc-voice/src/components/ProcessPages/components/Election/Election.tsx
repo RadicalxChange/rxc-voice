@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import "./Election.scss";
 
-function Election(props: any) {
+function Election() {
 
 
   return (

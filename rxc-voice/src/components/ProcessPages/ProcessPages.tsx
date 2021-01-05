@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { ActionContext, StateContext } from "../../hooks";
-import { Process } from "../../models/Process";
 import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
 import { Status } from "../../models/Status";
 import Curation from "./components/Curation";

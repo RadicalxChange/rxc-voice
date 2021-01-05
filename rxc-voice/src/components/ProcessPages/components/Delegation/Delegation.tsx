@@ -7,7 +7,6 @@ import { ActionContext, StateContext } from "../../../../hooks";
 import { BgColor } from "../../../../models/BgColor";
 import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
-import statusBar from '../../../../assets/bars/bar_delegation.svg'
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../../../models/Delegate";
 import init from '../../../../assets/bars/bar_initialization.svg';
@@ -21,7 +20,7 @@ import { Status } from "../../../../models/Status";
 
 function Delegation() {
   const { processId } = useParams<ProcessPageRouteParams>();
-  const { selectedProcess, user } = useContext(StateContext);
+  const { selectedProcess } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
   console.log(sessionStorage.getItem("user"));
 

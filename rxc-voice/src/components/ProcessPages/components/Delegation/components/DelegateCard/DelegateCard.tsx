@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import slugify from "react-slugify";
 import defaultPic from '../../../../../../assets/profile_icon.svg';
+import { ActionContext } from "../../../../../../hooks";
 
 import "./DelegateCard.scss";
 
 function DelegateCard(props: any) {
+  const { stageTransfer } = useContext(ActionContext);
 
   return (
     <li className="delegate-card" key={props.delegate.id} >
@@ -20,8 +21,13 @@ function DelegateCard(props: any) {
         <h3 className="credit-balance">Credit Balance: {props.delegate.credit_balance}</h3>
       </div>
       <Link
-      to={`/${props.process.id}/${slugify(props.process.title)}/give-credits`}
+      to={`/give-credits`}
       className="give-credits"
+      onClick={(e) => stageTransfer({
+        sender: sessionStorage.getItem("user") ? (JSON.parse(sessionStorage.getItem("user")!).id) : (null),
+        recipient: props.delegate.id,
+        process: props.process.id,
+      })}
       >
       give credits
       </Link>
