@@ -132,10 +132,9 @@ export const AppProvider = (props: any) => {
           });
         });
       },
-      selectProcess: (selectedProcess: any) => {
-        dispatch({
-          type: "SET_SELECTED_PROCESS",
-          selectedProcess: selectedProcess
+      selectProcess: (selectedProcessId: any) => {
+        WebService.fetchSingleProcess(selectedProcessId).subscribe((data: any) => {
+          dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: data });
         });
       },
 

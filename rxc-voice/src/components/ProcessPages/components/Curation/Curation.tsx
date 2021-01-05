@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import slugify from "react-slugify";
@@ -12,14 +12,23 @@ import delg from '../../../../assets/bars/bar_delegation.svg';
 import delb from '../../../../assets/bars/bar_delegation.svg';
 import cur from '../../../../assets/bars/bar_curation.svg';
 import elec from '../../../../assets/bars/bar_election.svg';
-
-import "./Initialization.scss";
 import { Status } from "../../../../models/Status";
 
-function Initialization() {
+import "./Curation.scss";
+
+function Curation() {
   const { processId } = useParams<ProcessPageRouteParams>();
   const { selectedProcess } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
+
+  useEffect(() => {
+    setColor(BgColor.Yellow);
+    if (processId && !selectedProcess) {
+      selectProcess(processId);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [processId]);
 
   const getTitle = (process: Process | null) => {
     if (process) {
@@ -45,9 +54,9 @@ function Initialization() {
     }
   };
 
-  const getDescription = (process: Process | null) => {
+  const getCurationInfo = (process: Process | null) => {
     if (process) {
-      return process.description;
+      return process.curation_info;
     } else {
       return undefined;
     }
@@ -80,19 +89,9 @@ function Initialization() {
     }
   };
 
-
-  useEffect(() => {
-    setColor(BgColor.Yellow);
-    if (processId && !selectedProcess) {
-      selectProcess(processId);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processId]);
-
   return (
     selectedProcess ? (
-      <div className="init-page">
+      <div className="cur-page">
         <h1 className="title">{getTitle(selectedProcess)}</h1>
         <div className="stages">
           <Link
@@ -136,8 +135,8 @@ function Initialization() {
             Closes {moment(getEndDate(selectedProcess), "YYYYMMDD").fromNow()}
           </p>
         </div>
-        <h2 className="content-header">Initialization</h2>
-        <p>{getDescription(selectedProcess)}</p>
+        <h2 className="content-header">Curation</h2>
+        <p>{getCurationInfo(selectedProcess)}</p>
 
       </div>
     ) : (
@@ -146,4 +145,4 @@ function Initialization() {
   );
 }
 
-export default Initialization;
+export default Curation;

@@ -105,12 +105,12 @@ class Process(models.Model):
         models.CharField(max_length=140), blank=True, null=True)
     election = models.OneToOneField(
         Election, null=True, on_delete=models.SET_NULL)
-    INITIALIZATION = 'Init'
-    DELEGATION = 'Dlg'
-    DELIBERATION = 'Dlb'
-    CURATION = 'Cur'
-    ELECTION = 'Elec'
-    RESULT = 'Res'
+    INITIALIZATION = 'Initialization'
+    DELEGATION = 'Delegation'
+    DELIBERATION = 'Deliberation'
+    CURATION = 'Curation'
+    ELECTION = 'Election'
+    RESULT = 'Result'
     STATUS_CHOICES = (
         (INITIALIZATION, 'Initialization'),
         (DELEGATION, 'Delegation'),
@@ -119,7 +119,7 @@ class Process(models.Model):
         (ELECTION, 'Election'),
         (RESULT, 'Result'),
     )
-    status = models.CharField(max_length=4, choices=STATUS_CHOICES,
+    status = models.CharField(max_length=14, choices=STATUS_CHOICES,
                               default=INITIALIZATION)
 
     class Meta:

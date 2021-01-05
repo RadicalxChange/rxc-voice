@@ -3,7 +3,6 @@
 
   .logo-container {
     width: 91vw;
-    height: auto;
 
     .App-logo {
       width: 91vw;
@@ -30,8 +29,12 @@
     grid-template-columns: 1fr 33%;
     text-align: left;
 
-    .App-logo {
+    .logo-container {
       width: 39.31vw;
+
+      .App-logo {
+        width: 39.31vw;
+      }
     }
 
     .nav {

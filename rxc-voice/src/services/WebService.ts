@@ -5,7 +5,7 @@ import { Proposal } from "../models/Proposal";
 import { Delegate } from "../models/Delegate";
 // import { Transfer } from "../models/Transfer";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates } from "../utils";
+import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates, mapToProcess } from "../utils";
 
 const ROOT_URL = "http://127.0.0.1:8000";
 
@@ -72,6 +72,21 @@ export const fetchProcesses = (): Observable<Process[]> => {
         }
       }).then((res) => res.json())
         .then(mapToProcesses),
+    );
+  });
+};
+
+export const fetchSingleProcess = (id: string): Observable<Process> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<Process>>(
+      fetch(`${ROOT_URL}/processes/${id}/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      }).then((res) => res.json())
+        .then(mapToProcess),
     );
   });
 };
@@ -152,7 +167,7 @@ export const postTransfer = (transfers: any, recipient_id: number): Observable<a
   return defer(() => {
     return from<Promise<any>>(
       fetch(`${ROOT_URL}/delegates/${recipient_id}/transfers/`, {
-        headers: { "Content-Type": "application/json; charset=utf-8", 
+        headers: { "Content-Type": "application/json; charset=utf-8",
         Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
         },
         method: "POST",

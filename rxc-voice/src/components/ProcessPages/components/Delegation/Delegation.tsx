@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import slugify from "react-slugify";
@@ -7,19 +7,32 @@ import { ActionContext, StateContext } from "../../../../hooks";
 import { BgColor } from "../../../../models/BgColor";
 import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
+import statusBar from '../../../../assets/bars/bar_delegation.svg'
+import DelegateCard from "./components/DelegateCard";
+import { Delegate } from "../../../../models/Delegate";
 import init from '../../../../assets/bars/bar_initialization.svg';
 import delg from '../../../../assets/bars/bar_delegation.svg';
 import delb from '../../../../assets/bars/bar_delegation.svg';
 import cur from '../../../../assets/bars/bar_curation.svg';
 import elec from '../../../../assets/bars/bar_election.svg';
 
-import "./Initialization.scss";
+import "./Delegation.scss";
 import { Status } from "../../../../models/Status";
 
-function Initialization() {
+function Delegation() {
   const { processId } = useParams<ProcessPageRouteParams>();
-  const { selectedProcess } = useContext(StateContext);
+  const { selectedProcess, user } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
+  console.log(sessionStorage.getItem("user"));
+
+  useEffect(() => {
+    setColor(BgColor.Yellow);
+    if (processId && !selectedProcess) {
+      selectProcess(processId);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [processId]);
 
   const getTitle = (process: Process | null) => {
     if (process) {
@@ -45,9 +58,9 @@ function Initialization() {
     }
   };
 
-  const getDescription = (process: Process | null) => {
+  const getDelegates = (process: Process | null) => {
     if (process) {
-      return process.description;
+      return process.delegates;
     } else {
       return undefined;
     }
@@ -80,19 +93,9 @@ function Initialization() {
     }
   };
 
-
-  useEffect(() => {
-    setColor(BgColor.Yellow);
-    if (processId && !selectedProcess) {
-      selectProcess(processId);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processId]);
-
   return (
     selectedProcess ? (
-      <div className="init-page">
+      <div className="delg-page">
         <h1 className="title">{getTitle(selectedProcess)}</h1>
         <div className="stages">
           <Link
@@ -136,9 +139,27 @@ function Initialization() {
             Closes {moment(getEndDate(selectedProcess), "YYYYMMDD").fromNow()}
           </p>
         </div>
-        <h2 className="content-header">Initialization</h2>
-        <p>{getDescription(selectedProcess)}</p>
-
+        <div className="content-header">
+          <h2>Delegation</h2>
+          <div className="credit-balance">
+            {(sessionStorage.getItem("user") ? (
+                JSON.parse(sessionStorage.getItem("user")!).credit_balance
+              ) : (
+                "0"
+              )) + " credits"}
+          </div>
+        </div>
+        <div className="delegation-content">
+          {getDelegates(selectedProcess)!.length ? (
+            <ul className="delegate-list">
+              {getDelegates(selectedProcess)!.map((delegate: Delegate) => (
+                <DelegateCard delegate={delegate} process={selectedProcess} key={delegate.id}></DelegateCard>
+              ))}
+            </ul>
+          ) : (
+            <h3>No delegates found.</h3>
+          )}
+        </div>
       </div>
     ) : (
       <h1>Process not found. Return to home.</h1>
@@ -146,4 +167,4 @@ function Initialization() {
   );
 }
 
-export default Initialization;
+export default Delegation;

@@ -58,40 +58,6 @@ class PermissionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ProcessSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Process
-        fields = '__all__'
-
-    def create(self, validated_data):
-        conversation_data = validated_data.get('conversation')
-        if conversation_data is not None:
-            conversation_data = ConversationSerializer.create(
-                ConversationSerializer(),
-                validated_data=conversation_data,
-                )
-        election_data = validated_data.get('election')
-        if election_data is not None:
-            election_data = ElectionSerializer.create(
-                ElectionSerializer(),
-                validated_data=election_data,
-            )
-        process, created = Process.objects.update_or_create(
-            title=validated_data.get('title'),
-            description=validated_data.get('description'),
-            start_date=validated_data.get('start_date'),
-            end_date=validated_data.get('end_date'),
-            matching_pool=validated_data.get('matching_pool'),
-            conversation=conversation_data,
-            curation_info=validated_data.get('curation_info'),
-            top_posts=validated_data.get('top_posts', []),
-            election=election_data,
-            )
-        process.groups.set(validated_data.get('groups', []))
-        process.delegates.set(validated_data.get('delegates', []))
-        return process
-
-
 class TransferSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transfer
@@ -230,3 +196,39 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+
+
+class ProcessSerializer(serializers.ModelSerializer):
+    delegates = DelegateSerializer(many=True)
+
+    class Meta:
+        model = Process
+        fields = '__all__'
+
+    def create(self, validated_data):
+        conversation_data = validated_data.get('conversation')
+        if conversation_data is not None:
+            conversation_data = ConversationSerializer.create(
+                ConversationSerializer(),
+                validated_data=conversation_data,
+                )
+        election_data = validated_data.get('election')
+        if election_data is not None:
+            election_data = ElectionSerializer.create(
+                ElectionSerializer(),
+                validated_data=election_data,
+            )
+        process, created = Process.objects.update_or_create(
+            title=validated_data.get('title'),
+            description=validated_data.get('description'),
+            start_date=validated_data.get('start_date'),
+            end_date=validated_data.get('end_date'),
+            matching_pool=validated_data.get('matching_pool'),
+            conversation=conversation_data,
+            curation_info=validated_data.get('curation_info'),
+            top_posts=validated_data.get('top_posts', []),
+            election=election_data,
+            )
+        process.groups.set(validated_data.get('groups', []))
+        process.delegates.set(validated_data.get('delegates', []))
+        return process

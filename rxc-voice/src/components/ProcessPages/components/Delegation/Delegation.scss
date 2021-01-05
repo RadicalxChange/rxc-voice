@@ -1,4 +1,4 @@
-.init-page {
+.delg-page {
 
   .title {
     font-size: 8vw;
@@ -31,11 +31,26 @@
 
   .content-header {
     margin-top: 20vw;
+    display: grid;
+    grid-template-columns: auto auto;
+    text-align: left;
+
+    .credit-balance {
+      background: black;
+      color: var(--yellowColor);
+      padding: .5em 1em .5em 1em;
+      margin: auto 0 auto auto;
+      border-radius: 50px;
+    }
+  }
+
+  .delegation-content {
+    text-align: left;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  .init-page {
+  .delg-page {
     text-align: left;
     width: 60vw;
 

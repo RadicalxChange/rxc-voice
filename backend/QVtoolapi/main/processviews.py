@@ -61,7 +61,10 @@ class ProcessDetail(mixins.RetrieveModelMixin,
     serializer_class = ProcessSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        print(serializer.data)
+        return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)

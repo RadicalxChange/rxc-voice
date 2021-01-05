@@ -1,7 +1,7 @@
 import { Conversation } from "./Conversation"
+import { Delegate } from "./Delegate"
 import { Election } from "./Election"
 import { Status } from "./Status"
-import { Voter } from "./Voter"
 
 export interface Process {
   id: number,
@@ -9,7 +9,7 @@ export interface Process {
   description: string,
   start_date: string,
   end_date: string,
-  delegates: Voter[],
+  delegates: Delegate[],
   matching_pool: number,
   conversation: Conversation,
   curation_info: string,

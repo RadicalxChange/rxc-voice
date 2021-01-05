@@ -18,6 +18,11 @@
 
       .stage {
         width: 18vw;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+      }
+      .stage:hover {
+        text-decoration: underline;
       }
     }
 

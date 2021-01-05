@@ -10,7 +10,7 @@ function Header() {
     <div className="App-header">
       <a
       href='https://radicalxchange.org'
-      className="App-logo"
+      className="logo-container"
       >
         <img src={logo} className="App-logo" alt="logo" />
       </a>

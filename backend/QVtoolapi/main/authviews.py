@@ -113,6 +113,7 @@ class CustomAuthToken(ObtainAuthToken):
         if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
+            delegate = Delegate.objects.get(user=token.user)
             return Response({
                 'token': token.key,
                 'id': token.user.pk,
@@ -121,7 +122,7 @@ class CustomAuthToken(ObtainAuthToken):
                 # 'phone_number': token.user.phone_number,
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
-                # 'profile_pic': token.user.profile_pic,
+                'profile_pic': delegate.profile_pic,
                 # 'invited_by': token.user.invited_by,
-                # 'credit_balance': token.user.credit_balance,
+                'credit_balance': delegate.credit_balance,
             })
