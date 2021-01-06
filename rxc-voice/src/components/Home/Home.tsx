@@ -9,12 +9,14 @@ import "./Home.scss";
 
 function Home() {
   const { setColor, fetchProcesses } = useContext(ActionContext);
-  const { activeProcesses, pastProcesses, user } = useContext(StateContext);
-  console.log("home" + user);
+  const { processes, activeProcesses, pastProcesses } = useContext(StateContext);
 
   useEffect(() => {
     setColor(BgColor.Yellow);
-    fetchProcesses();
+
+    if (!processes.length) {
+      fetchProcesses();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

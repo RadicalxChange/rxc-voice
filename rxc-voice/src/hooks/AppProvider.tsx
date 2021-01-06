@@ -90,7 +90,6 @@ export const AppProvider = (props: any) => {
         }
       },
       setUserData: (user: any) => {
-        console.log("appprovider: setting user data..." + user)
         sessionStorage.setItem("user", JSON.stringify(user));
         dispatch({
           type: "SET_USER",

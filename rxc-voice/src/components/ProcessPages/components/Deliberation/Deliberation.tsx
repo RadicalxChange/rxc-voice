@@ -1,12 +1,11 @@
 import moment from "moment";
 import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
 import { ActionContext, StateContext } from "../../../../hooks";
 import { BgColor } from "../../../../models/BgColor";
-import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import { WebService } from "../../../../services";
+import { getConversation } from "../../../../utils";
 
 import "./Deliberation.scss";
 
@@ -15,20 +14,11 @@ function Deliberation() {
   const { processId } = useParams<ProcessPageRouteParams>();
   const { selectedProcess } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
-
-  const getConversation = (process: Process | null) => {
-    if (process) {
-      return process.conversation;
-    } else {
-      return undefined;
-    }
-  };
-
   const conversation = getConversation(selectedProcess);
 
   useEffect(() => {
     setColor(BgColor.White);
-    if (processId && !selectedProcess) {
+    if (processId) {
       selectProcess(processId);
     }
     // load pol.is embed script
@@ -57,6 +47,7 @@ function Deliberation() {
 
   return (
     <div className="polis-page">
+      <h2 className="content-header">Deliberation</h2>
       {(conversation && WebService.userobj) ? (
           (moment(conversation.end_date) > moment()) ? (
             <div className="body">

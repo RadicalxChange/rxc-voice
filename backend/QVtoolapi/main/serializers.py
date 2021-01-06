@@ -27,12 +27,6 @@ class ConversationSerializer(serializers.ModelSerializer):
         return conversation
 
 
-class ElectionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Election
-        fields = '__all__'
-
-
 class VoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vote
@@ -55,6 +49,12 @@ class VoteSerializer(serializers.ModelSerializer):
 class ProposalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Proposal
+        fields = '__all__'
+
+
+class ElectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Election
         fields = '__all__'
 
 
@@ -213,6 +213,7 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 class ProcessSerializer(serializers.ModelSerializer):
     delegates = DelegateSerializer(many=True)
     conversation = ConversationSerializer()
+    election = ElectionSerializer()
 
     class Meta:
         model = Process

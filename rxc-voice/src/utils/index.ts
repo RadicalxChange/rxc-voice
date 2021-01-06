@@ -5,6 +5,16 @@ import { Voter } from "../models/Voter";
 import { Delegate } from "../models/Delegate"
 import { Permission } from "../models/Permission";
 import { Process } from "../models/Process";
+import { Status } from "../models/Status";
+import init from '../assets/bars/bar_initialization.svg';
+import delg from '../assets/bars/bar_delegation.svg';
+import delb from '../assets/bars/bar_delegation.svg';
+import cur from '../assets/bars/bar_curation.svg';
+import init_white from '../assets/bars/bar_initialization_white.svg';
+import delg_white from '../assets/bars/bar_delegation_white.svg';
+import delb_white from '../assets/bars/bar_delegation_white.svg';
+import cur_white from '../assets/bars/bar_curation_white.svg';
+import elec from '../assets/bars/bar_election.svg';
 
 export const standInElection = (): Election => ({
   id: 0,
@@ -25,6 +35,21 @@ export const standInVoter = (): Voter => ({
   email: '',
   password: '',
 });
+
+export const standInProcess = {
+  id: 0,
+  title: 'loading process...',
+  description: '',
+  start_date: '',
+  end_date: '',
+  delegates: new Array<Delegate>(),
+  matching_pool: 0,
+  conversation: {},
+  curation_info: '',
+  top_posts: new Array<string>(),
+  election: {},
+  status: Status.Initialization,
+}
 
 export const defaultPermission = (): Permission => (Permission.None);
 
@@ -74,7 +99,6 @@ export const mapToProcesses = (processes: Process[]): Process[] => {
 };
 
 export const mapToProcess = (process: Process): Process => {
-  console.log(process.delegates);
   return {
     id: process.id,
     title: process.title,
@@ -89,4 +113,103 @@ export const mapToProcess = (process: Process): Process => {
     election: process.election,
     status: process.status,
   };
+};
+
+export const getTitle = (process: Process | null) => {
+  if (process) {
+    return process.title;
+  } else {
+    return undefined;
+  }
+};
+
+export const getId = (process: Process | null) => {
+  if (process) {
+    return process.id;
+  } else {
+    return undefined;
+  }
+};
+
+export const getConversation = (process: Process | null) => {
+  if (process) {
+    return process.conversation;
+  } else {
+    return undefined;
+  }
+};
+
+export const getElection = (process: Process | null) => {
+  if (process) {
+    return process.election;
+  } else {
+    return undefined;
+  }
+};
+
+export const getEndDate = (process: Process | null) => {
+  if (process) {
+    return process.end_date;
+  } else {
+    return undefined;
+  }
+};
+
+export const getStatus = (process: Process | null) => {
+  if (process) {
+    return process.status;
+  } else {
+    return undefined;
+  }
+};
+
+export const getStatusBar = (process: Process | null, color: string) => {
+  if (process) {
+    if (color === "var(--whiteColor)") {
+      console.log("here");
+      switch (process.status) {
+        case Status.Initialization: {
+          return init_white;
+        }
+        case Status.Delegation: {
+          return delg_white;
+        }
+        case Status.Deliberation: {
+          return delb_white;
+        }
+        case Status.Curation: {
+          return cur_white;
+        }
+        case Status.Election: {
+          return elec;
+        }
+        case undefined: {
+          return undefined;
+        }
+      }
+    } else {
+      switch (process.status) {
+        case Status.Initialization: {
+          return init;
+        }
+        case Status.Delegation: {
+          return delg;
+        }
+        case Status.Deliberation: {
+          return delb;
+        }
+        case Status.Curation: {
+          return cur;
+        }
+        case Status.Election: {
+          return elec;
+        }
+        case undefined: {
+          return undefined;
+        }
+      }
+    }
+  } else {
+    return undefined;
+  }
 };
