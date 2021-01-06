@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from guardian.shortcuts import assign_perm
 from django.utils.translation import gettext_lazy as _
+import uuid
 
 from .utils import mailcredits
 
@@ -13,6 +14,17 @@ class ConversationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Conversation
         fields = '__all__'
+
+    def create(self, validated_data):
+        conversation = Conversation.objects.create(
+            uuid=uuid.uuid1(),
+            title=validated_data.get('title'),
+            description=validated_data.get('description'),
+            start_date=validated_data.get('start_date'),
+            end_date=validated_data.get('end_date'),
+            )
+        conversation.groups.set(validated_data.get('groups', []))
+        return conversation
 
 
 class ElectionSerializer(serializers.ModelSerializer):
@@ -200,6 +212,7 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
 class ProcessSerializer(serializers.ModelSerializer):
     delegates = DelegateSerializer(many=True)
+    conversation = ConversationSerializer()
 
     class Meta:
         model = Process

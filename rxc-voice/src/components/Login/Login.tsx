@@ -23,7 +23,6 @@ function Login() {
   const login = (e: any) => {
     e.preventDefault()
     if (email && password) {
-      console.log({username: email, password: password});
       WebService.loginUser({
         username: email,
         password: password,
