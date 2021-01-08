@@ -2,7 +2,11 @@ from guardian.shortcuts import assign_perm
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import generics, mixins, status
-from .permissions import ElectionPermission, TransferPermission
+from .permissions import (ElectionPermission,
+                          TransferPermission,
+                          VotePermission,
+                          ProposalPermission
+                          )
 from .serializers import (ElectionSerializer,
                           VoteSerializer,
                           ProposalSerializer,
@@ -18,8 +22,13 @@ class ElectionList(mixins.CreateModelMixin,
     queryset = Election.objects.all()
     serializer_class = ElectionSerializer
 
+    permission_classes = (ElectionPermission,)
+    authentication_classes = [TokenAuthentication]
+
+    def get_queryset(self):
+        return Conversation.objects.filter(groups__name="RxC QV")
+
     def get(self, request, *args, **kwargs):
-        # TODO: restrict permissions
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -46,10 +55,6 @@ class ElectionList(mixins.CreateModelMixin,
         return Response(result.data,
                         status=status.HTTP_201_CREATED,
                         headers=headers)
-        # headers = self.get_success_headers(serializer.data)
-        # return Response(serializer.data,
-        #                 status=status.HTTP_201_CREATED,
-        #                 headers=headers)
 
     # Deletes ALL elections. For testing only.
     def delete(self, request, *args, **kwargs):
@@ -102,6 +107,9 @@ class VoteList(mixins.CreateModelMixin,
                generics.GenericAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
+
+    permission_classes = (VotePermission,)
+    authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
         election_id = self.kwargs['pk']
@@ -165,6 +173,9 @@ class ProposalList(mixins.CreateModelMixin,
     queryset = Proposal.objects.all()
     serializer_class = ProposalSerializer
 
+    permission_classes = (ProposalPermission,)
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request, *args, **kwargs):
         election_id = self.kwargs['pk']
         election_proposals = self.get_queryset().filter(
@@ -188,23 +199,23 @@ class ProposalList(mixins.CreateModelMixin,
 
 
 # for testing only.
-class ProposalListAll(mixins.CreateModelMixin,
-                      mixins.ListModelMixin,
-                      generics.GenericAPIView):
-
-    queryset = Proposal.objects.all()
-    serializer_class = ProposalSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        for instance in self.get_queryset():
-            instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+# class ProposalListAll(mixins.CreateModelMixin,
+#                       mixins.ListModelMixin,
+#                       generics.GenericAPIView):
+#
+#     queryset = Proposal.objects.all()
+#     serializer_class = ProposalSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+#
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+#
+#     def delete(self, request, *args, **kwargs):
+#         for instance in self.get_queryset():
+#             instance.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # for testing only.
@@ -228,23 +239,23 @@ class TransferListAll(mixins.CreateModelMixin,
 
 
 # for testing only.
-class VoteListAll(mixins.CreateModelMixin,
-                  mixins.ListModelMixin,
-                  generics.GenericAPIView):
-
-    queryset = Vote.objects.all()
-    serializer_class = VoteSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        for instance in self.get_queryset():
-            instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+# class VoteListAll(mixins.CreateModelMixin,
+#                   mixins.ListModelMixin,
+#                   generics.GenericAPIView):
+#
+#     queryset = Vote.objects.all()
+#     serializer_class = VoteSerializer
+#
+#     def get(self, request, *args, **kwargs):
+#         return self.list(request, *args, **kwargs)
+#
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+#
+#     def delete(self, request, *args, **kwargs):
+#         for instance in self.get_queryset():
+#             instance.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Stub for proposal list detail view. Note: no one should be able to edit a
 # proposal once an election has started. However, we could eventually allow

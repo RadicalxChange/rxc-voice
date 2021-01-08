@@ -8,8 +8,11 @@ from .serializers import (DelegateSerializer,
                           PermissionSerializer,
                           GroupSerializer
                           )
-from .permissions import DelegatePermission
+from .permissions import DelegatePermission, GroupPermission
 from .models import Delegate
+import requests
+from django.conf import settings
+from rest_framework.decorators import api_view
 
 
 class DelegateList(mixins.CreateModelMixin,
@@ -48,6 +51,9 @@ class DelegateDetail(mixins.RetrieveModelMixin,
     queryset = Delegate.objects.all()
     serializer_class = DelegateSerializer
 
+    permission_classes = (DelegatePermission,)
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
@@ -72,6 +78,9 @@ class GroupList(mixins.CreateModelMixin,
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+    permission_classes = (GroupPermission,)
+    authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -126,3 +135,19 @@ class CustomAuthToken(ObtainAuthToken):
                 # 'invited_by': token.user.invited_by,
                 'credit_balance': delegate.credit_balance,
             })
+
+
+@api_view(['GET'])
+def getGithubCreds(request):
+    response = Response({
+    'github_client_id': settings.GITHUB_CLIENT_ID,
+    'github_client_secret': settings.GITHUB_CLIENT_SECRET,
+    })
+    return response
+
+
+@api_view(['POST'])
+def getGithubToken(request):
+    r = requests.post('https://github.com/login/oauth/access_token', data=request.data)
+    response = Response(r)
+    return response

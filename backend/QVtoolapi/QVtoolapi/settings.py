@@ -103,6 +103,10 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
+GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID')
+
+GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET')
+
 GUARDIAN_RAISE_403 = True
 
 # Password validation

@@ -9,7 +9,8 @@ import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates, mapToProces
 
 const ROOT_URL = "http://127.0.0.1:8000";
 
-export const userobj = JSON.parse(sessionStorage.getItem("user") || '{}')
+export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null;
+export const githubState = sessionStorage.getItem("githubState");
 
 export const loginUser = (user: any): Observable<any> => {
   return defer(() => {
@@ -118,7 +119,7 @@ export const fetchElection = (id: string): Observable<Election> => {
 //   });
 // };
 
-export const fetchProposals = (election_id: string): Observable<Proposal[]> => {
+export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
   return defer(() => {
     return from<Promise<Proposal[]>>(
       fetch(`${ROOT_URL}/elections/${election_id}/proposals/`)
@@ -140,7 +141,7 @@ export const fetchProposals = (election_id: string): Observable<Proposal[]> => {
 //   });
 // };
 
-export const fetchVotes = (election_id: string): Observable<Vote[]> => {
+export const fetchVotes = (election_id: number): Observable<Vote[]> => {
   return defer(() => {
     return from<Promise<Vote[]>>(
       fetch(`${ROOT_URL}/elections/${election_id}/votes/`)

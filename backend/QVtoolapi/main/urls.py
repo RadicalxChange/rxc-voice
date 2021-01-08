@@ -1,10 +1,10 @@
 from django.urls import path, re_path
 
 from .rootview import RootView
-from .authviews import (DelegateList, DelegateDetail,
-                        CustomAuthToken, PermissionList, GroupList)
+from .authviews import (DelegateList, DelegateDetail, getGithubCreds, getGithubToken, CustomAuthToken, PermissionList,
+                        GroupList)
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
-                            VoteList, VoteListAll, ProposalListAll,
+                            VoteList,
                             TransferList, TransferListAll)
 from .conversationviews import (ConversationList, ConversationDetail)
 from .processviews import (ProcessList, ProcessDetail)
@@ -18,15 +18,16 @@ urlpatterns = [
          name='delegate-detail'),
     path('groups/', GroupList.as_view(), name='group-list'),
     path('permissions/', PermissionList.as_view(), name='permission-list'),
-    re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
+    # path('github/creds/', getGithubCreds),
+    # path('github/token/', getGithubToken),
+    # path('authorize-twitter/', TwitterAuthToken.as_view()),
+    # re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
 
     # Process APIs
     path('processes/', ProcessList.as_view(), name='process-list'),
     path('processes/<int:pk>/', ProcessDetail.as_view(), name='process-detail'),
 
     # Election APIs
-    path('proposals/', ProposalListAll.as_view(), name='all-proposals-list'),
-    path('votes/', VoteListAll.as_view(), name='all-votes-list'),
     path('transfers/', TransferListAll.as_view(), name='transfer-list-all'),
     path('delegates/<int:pk>/transfers/', TransferList.as_view(),
          name='transfer-list'),
@@ -37,7 +38,6 @@ urlpatterns = [
          ProposalList.as_view(), name='proposal-list'),
     path('elections/<int:pk>/votes/',
          VoteList.as_view(), name='vote-list'),
-
 
     # Conversation APIs
     path('conversations/', ConversationList.as_view(),
@@ -50,4 +50,6 @@ urlpatterns = [
     # See note in views.py.
     # path('proposals/<int:pk>', ProposalDetail.as_view(),
     #      name='proposal-detail'),
+    # path('proposals/', ProposalListAll.as_view(), name='all-proposals-list'),
+    # path('votes/', VoteListAll.as_view(), name='all-votes-list'),
 ]
