@@ -15,7 +15,7 @@ function Initialization() {
 
   useEffect(() => {
     setColor(BgColor.Yellow);
-    if (processId && (!selectedProcess || getId(selectedProcess) !== processId)) {
+    if (processId && (!selectedProcess || getId(selectedProcess) !== +processId)) {
       selectProcess(processId);
     }
 

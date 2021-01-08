@@ -8,6 +8,7 @@ import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../../../models/Delegate";
 
 import "./Delegation.scss";
+import { getId } from "../../../../utils";
 
 function Delegation() {
   const { processId } = useParams<ProcessPageRouteParams>();
@@ -16,7 +17,7 @@ function Delegation() {
 
   useEffect(() => {
     setColor(BgColor.Yellow);
-    if (processId) {
+    if (processId && (!selectedProcess || (getId(selectedProcess) !== +processId))) {
       selectProcess(processId);
     }
 

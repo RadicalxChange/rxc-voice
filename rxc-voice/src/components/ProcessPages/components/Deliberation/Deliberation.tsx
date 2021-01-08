@@ -5,7 +5,7 @@ import { ActionContext, StateContext } from "../../../../hooks";
 import { BgColor } from "../../../../models/BgColor";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import { WebService } from "../../../../services";
-import { getConversation } from "../../../../utils";
+import { getConversation, getId } from "../../../../utils";
 
 import "./Deliberation.scss";
 
@@ -18,7 +18,7 @@ function Deliberation() {
 
   useEffect(() => {
     setColor(BgColor.White);
-    if (processId) {
+    if (processId && (!selectedProcess || getId(selectedProcess) !== +processId)) {
       selectProcess(processId);
     }
     // load pol.is embed script

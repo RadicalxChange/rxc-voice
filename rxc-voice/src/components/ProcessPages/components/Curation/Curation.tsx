@@ -4,6 +4,7 @@ import { ActionContext, StateContext } from "../../../../hooks";
 import { BgColor } from "../../../../models/BgColor";
 import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
+import { getId } from "../../../../utils";
 
 import "./Curation.scss";
 
@@ -14,7 +15,7 @@ function Curation() {
 
   useEffect(() => {
     setColor(BgColor.Yellow);
-    if (processId) {
+    if (processId && (!selectedProcess || (getId(selectedProcess) !== +processId))) {
       selectProcess(processId);
     }
 
