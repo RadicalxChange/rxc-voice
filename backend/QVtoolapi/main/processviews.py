@@ -60,10 +60,20 @@ class ProcessDetail(mixins.RetrieveModelMixin,
     queryset = Process.objects.all()
     serializer_class = ProcessSerializer
 
+    permission_classes = (ProcessPermission,)
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
+        election_object = instance.election
         serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        response_election = {
+            'show_results': request.user.has_perm('can_view_results', election_object)
+            }
+        response_election.update(serializer.data['election'])
+        result = serializer.data
+        result['election'] = response_election
+        return Response(result)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)

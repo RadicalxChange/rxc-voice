@@ -60,6 +60,8 @@ class Proposal(models.Model):
         default=0, max_digits=10, decimal_places=0, editable=False)
     num_contributors = models.DecimalField(
         default=0, max_digits=10, decimal_places=0, editable=False)
+    votes_received = models.DecimalField(
+        default=0, max_digits=10, decimal_places=0, editable=False)
 
 
 class Vote(models.Model):
@@ -76,11 +78,15 @@ class Vote(models.Model):
 
 class Conversation(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
+    # uuid = models.CharField(max_length=256, null=True, editable=False)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True)
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
     groups = models.ManyToManyField(Group, blank=True, default=[])
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         permissions = [

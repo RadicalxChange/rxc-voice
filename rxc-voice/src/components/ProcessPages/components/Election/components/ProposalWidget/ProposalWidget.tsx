@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import { Proposal } from "../../../../models/Proposal";
+
 import "./ProposalWidget.scss";
 
 function ProposalWidget(props: any) {
@@ -27,23 +27,30 @@ function ProposalWidget(props: any) {
 
 
   return (
-    <div className="proposal-widget">
-      <label>{props.proposal.title}
+    <li className="proposal-widget">
+      <label className="proposal-info">{props.proposal.title}</label>
+      <div className="counter-container">
         <button
           type="button"
-          className="vote-counter"
-          onClick={() => handleChange(-1)}>
-          -
+          className="arrow"
+          onClick={() => handleChange(1)}
+          >
+            <svg className="svg" width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path className="path" d="M13 8L7 2L1 8" stroke="black" strokeWidth="1.5"/>
+            </svg>
         </button>
         <h3 className="vote-counter">{amount}</h3>
         <button
           type="button"
-          className="vote-counter"
-          onClick={() => handleChange(1)}>
-          +
+          className="arrow"
+          onClick={() => handleChange(-1)}
+          >
+            <svg className="svg" width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path className="path" d="M1 1L7 7L13 1" stroke="black" strokeWidth="1.5"/>
+            </svg>
         </button>
-      </label>
-    </div>
+      </div>
+    </li>
   );
 }
 

@@ -11,8 +11,10 @@ import { ActionContext, StateContext } from "../../../../hooks";
 
 import "./Election.scss";
 import { BgColor } from "../../../../models/BgColor";
+import ProposalResults from "./components/ProposalResults";
 
 function Election() {
+  const [votesCast, setVotesCast] = useState(0);
 
   function voteReducer(votes: Vote[], change: any) {
     const voteToChange: Vote | undefined = votes.find(
@@ -24,8 +26,10 @@ function Election() {
                               amount: change.amount,
                               date: '',
                             };
+      setVotesCast(votesCast + Math.abs(change.amount));
       return [...votes, newVote];
     } else {
+      setVotesCast(votesCast - Math.abs(voteToChange.amount) + Math.abs(voteToChange.amount + change.amount));
       voteToChange.amount = voteToChange.amount + change.amount;
       return votes;
     }
@@ -37,25 +41,35 @@ function Election() {
   const [creditsRemaining, setCreditsRemaining] = useState(initCredits);
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
+  const [viewResults, setViewResults] = useState(false);
   const { selectedProcess } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
 
   useEffect(() => {
     setColor(BgColor.White);
-
-    if (processId && (!selectedProcess || getId(selectedProcess) !== processId)) {
+    if (processId && (!selectedProcess || (getId(selectedProcess) !== +processId))) {
       selectProcess(processId);
     } else if (selectedProcess) {
       const thisElection = getElection(selectedProcess);
-      if (election) {
-        setElection(election => thisElection!);
-        WebService.fetchProposals(election.id)
-        .subscribe((data: Proposal[]) => {
-          setProposals(proposals => data);
-          data.forEach(proposal => {
-            voteDispatch({ proposal: proposal.id, amount: 0, });
+      if (thisElection) {
+        if (election.id !== thisElection.id) {
+          setElection(election => thisElection!);
+          if (thisElection.show_results) {
+            setViewResults(true);
+          } else {
+            setCreditsRemaining(WebService.userobj.credit_balance);
+          }
+          WebService.fetchProposals(thisElection.id)
+          .subscribe((data: Proposal[]) => {
+            data.sort((a: Proposal, b: Proposal) => {
+              return Number(b.votes_received) - Number(a.votes_received);
+            })
+            setProposals(proposals => data);
+            data.forEach(proposal => {
+              voteDispatch({ proposal: proposal.id, amount: 0, });
+            });
           });
-        });
+        }
       }
     }
 
@@ -63,7 +77,6 @@ function Election() {
  }, [processId, selectedProcess]);
 
   const onChangeVoteCount = (change: any) => {
-    // console.log(change);
     setCreditsRemaining(creditsRemaining =>
       Number(creditsRemaining) - Number(change.cost));
     voteDispatch({ proposal: change.proposal, amount: change.amount, });
@@ -78,14 +91,13 @@ function Election() {
       date: moment().format('YYYY-MM-DDTHH:MM'),
       sender: user ? JSON.parse(user).id : '',
     }));
-    // console.log(postData);
     WebService.postVotes(postData, election.id).subscribe(async (data) => {
                     if (data.ok) {
-                      // console.log("votes submitted!");
+                      setViewResults(true);
                     } else {
                       const error = await data.json();
                       Object.keys(error).forEach((key) => {
-                        // console.log(error[key]);
+                        console.log(error[key]);
                       });
                     }
                   });
@@ -93,14 +105,35 @@ function Election() {
 
   if (moment() < moment(election.start_date)) {
     return (
-      <div className="sticky-header">
-        <h2>This election begins {moment(election.start_date, "YYYYMMDD").fromNow()}</h2>
+      <div className="voting-page">
+        <div className="sticky-header">
+          <h2 className="content-header">Election</h2>
+          <p>This election begins {moment(election.start_date, "YYYYMMDD").fromNow()}</p>
+        </div>
       </div>
     );
   } else if (moment() > moment(election.end_date)) {
     return (
-      <div className="sticky-header">
-        <h2>Show results here.</h2>
+      <div className="voting-page">
+        <div className="sticky-header">
+          <h2 className="content-header">Election Results</h2>
+        </div>
+        <ol>
+          {proposals.map((proposal: Proposal, i) => (
+            <ProposalResults key={i} proposal={proposal} />
+          ))}
+        </ol>
+      </div>
+    );
+  } else if (viewResults === true) {
+    return (
+      <div className="voting-page">
+        <div className="sticky-header">
+          <h2 className="content-header">Election</h2>
+          <p className="already-voted">Thanks for voting! The results will
+            appear here when the election stage is over.
+          </p>
+        </div>
       </div>
     );
   } else {
@@ -125,13 +158,14 @@ function Election() {
                               onChange={onChangeVoteCount} />
             ))}
           </ul>
-          <div className="button-wrapper">
+          <div className="button-container">
+            <label className="votes-cast">total votes cast: {votesCast}</label>
             <button
               type="button"
               className="submit-button"
               onClick={() => submitVotes()}
               >
-              submit
+              submit votes
             </button>
           </div>
         </div>

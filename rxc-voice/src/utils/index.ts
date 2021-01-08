@@ -63,6 +63,10 @@ export const mapToProposal = (proposal: Proposal): Proposal => {
     title: proposal.title,
     description: proposal.description,
     link: proposal.link,
+    sum_contributions: proposal.sum_contributions,
+    num_contributors: proposal.num_contributors,
+    current_match: proposal.current_match,
+    votes_received: proposal.votes_received,
   };
 };
 
@@ -166,7 +170,6 @@ export const getStatus = (process: Process | null) => {
 export const getStatusBar = (process: Process | null, color: string) => {
   if (process) {
     if (color === "var(--whiteColor)") {
-      console.log("here");
       switch (process.status) {
         case Status.Initialization: {
           return init_white;

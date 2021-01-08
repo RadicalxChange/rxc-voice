@@ -61,6 +61,20 @@ ul {
   padding-inline-start: 0;
 }
 
+ol {
+  list-style: none;
+  counter-reset: mycounter;
+  padding: 0;
+}
+
+ol li {
+  counter-increment: mycounter;
+}
+
+ol li:before {
+  content: counter(mycounter) ". ";
+}
+
 @font-face {
     font-family: 'suisse_intlbook_italic';
     src: url('./assets/fonts/suisseintl-bookitalic-webfont.woff2') format('woff2'),

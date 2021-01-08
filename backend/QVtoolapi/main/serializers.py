@@ -37,6 +37,13 @@ class VoteSerializer(serializers.ModelSerializer):
         sender = validated_data['sender']
         assign_perm('can_view_results', sender, election)
 
+        proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
+        amount = int(validated_data['amount'])
+        proposal.votes_received = proposal.votes_received + amount
+        proposal.sum_contributions = proposal.sum_contributions + (amount * amount)
+        proposal.num_contributors = proposal.num_contributors + 1
+        proposal.save()
+
         vote = Vote.objects.create(
             sender=sender,
             proposal=validated_data['proposal'],

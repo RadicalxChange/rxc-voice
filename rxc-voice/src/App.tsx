@@ -7,6 +7,8 @@ import Login from './components/Login';
 import Account from './components/Account';
 import ProcessPages from './components/ProcessPages';
 import GiveCreditsPage from './components/GiveCreditsPage';
+import ValidationPage from './components/ValidationPage';
+import About from './components/About';
 
 import './App.scss';
 
@@ -43,6 +45,18 @@ function App() {
         path="/account"
         exact
         render={() => <Account></Account>}
+      />
+
+      <Route
+        path="/about"
+        exact
+        render={() => <About></About>}
+      />
+
+      <Route
+        path="/verify"
+        exact
+        render={() => <ValidationPage></ValidationPage>}
       />
 
     </div>

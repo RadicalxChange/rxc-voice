@@ -4,7 +4,7 @@ import { Election } from "./Election"
 import { Status } from "./Status"
 
 export interface Process {
-  id: string,
+  id: number,
   title: string,
   description: string,
   start_date: string,

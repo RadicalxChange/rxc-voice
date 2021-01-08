@@ -70,16 +70,28 @@ class ElectionDetail(mixins.RetrieveModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
+        election_object = self.get_object()
+        serializer = self.get_serializer(election_object)
         result = {
-            'show_results': request.user.has_perm('can_view_results', instance)
+            'show_results': request.user.has_perm('can_view_results', election_object)
             }
         result.update(serializer.data)
         return Response(result)
 
     def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        election_id = serializer.data.get('id')
+        election_object = Election.objects.get(pk=election_id)
+        # assign can_vote permission to any groups the election belongs to.
+        election_groups = election_object.groups.all()
+        for group in election_groups:
+            assign_perm('can_vote', group, election_object)
+        return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
@@ -115,6 +127,11 @@ class VoteList(mixins.CreateModelMixin,
             serializer.data,
             status=status.HTTP_201_CREATED,
             headers=headers)
+
+    def delete(self, request, *args, **kwargs):
+        for instance in self.get_queryset():
+            instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TransferList(mixins.CreateModelMixin,

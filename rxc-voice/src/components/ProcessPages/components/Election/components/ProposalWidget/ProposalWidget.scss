@@ -1,7 +1,48 @@
 .proposal-widget {
+  margin: 15vw 0 10vw 0;
+  display: grid;
+  grid-template-columns: 50vw 1fr;
 
-  .vote-counter {
-    display: inline-block;
-    margin: 20px;
+  .proposal-info {
+    grid-column: 1;
+    margin: auto 0 auto 0;
+  }
+
+  .counter-container {
+    grid-column: 2;
+    text-align: center;
+
+    .arrow {
+      border: none;
+      outline: none;
+      background: inherit;
+    }
+    .arrow:active {
+      .svg {
+        .path {
+          stroke-width: 2.5;
+        }
+      }
+    }
+
+    .vote-counter {
+      margin: 2vw;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .proposal-widget {
+    margin: 3vw 0 3vw 0;
+
+    .proposal-info {
+    }
+
+    .counter-container {
+
+      .vote-counter {
+        margin: 2vw;
+      }
+    }
   }
 }
