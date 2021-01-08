@@ -1,0 +1,27 @@
+.account {
+  text-align: center;
+
+  .title {
+    font-size: 1.5em;
+  }
+
+  .logout-button {
+    border: none;
+    outline: none;
+    background: inherit;
+    cursor: pointer;
+  }
+  .logout-button:hover {
+    text-decoration: underline;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .account {
+    text-align: left;
+
+    .title {
+      font-size: 2em;
+    }
+  }
+}
