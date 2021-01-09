@@ -7,13 +7,28 @@
 3. Clone project -
 ```
 git clone https://github.com/alexrandaccio/QVtool.git
-git checkout production
+git checkout master
 ```
 
 4. Create .env file and fill up suitable environment variables
 
 ```
 touch .env
+```
+
+The variables needed are as follows:
+
+```
+DJANGO_SECRET_KEY=
+MAILCHIMP_API_KEY=
+TRANSACTION_EMAIL=
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5432
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
 ```
 
 5. Build images and stand up containers (make sure docker is running first)
@@ -33,7 +48,7 @@ Polis app frontend - http://localhost:3000
 6. Create a superuser to access the admin site
 
 ```
-docker exec -it QVtool_api_1 ./manage.py createsuperuser
+docker exec -it QVtool_api_1 QVtoolapi/manage.py createsuperuser
 ```
 
 7. Log in to the admin site at http://127.0.0.1:8000/admin

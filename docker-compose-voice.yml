@@ -1,0 +1,48 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    command: bash /scripts/deploy/api_deploy_dev.sh
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/backend
+      - ./scripts:/scripts
+    environment:
+      - DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_PORT=$POSTGRES_PORT
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+
+  web:
+    build:
+      context: .
+      dockerfile: ./rxc-voice/Dockerfile
+    command: npm start
+    volumes:
+    - ./rxc-voice/src:/rxc-voice/src
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    stdin_open: true
+
+volumes:
+  db-data:

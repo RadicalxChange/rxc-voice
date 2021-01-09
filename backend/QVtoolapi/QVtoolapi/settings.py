@@ -45,10 +45,10 @@ LOGGING = {
    },
 }
 
-# PRODUCTION: only allow api requests from loadbalancer or localhost
+# PRODUCTION: only allow api requests from local server
 ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1', '64.225.61.72', '138.197.60.87', 'cloud.digitalocean.com', '.radicalxchange.org']
 
-# PRODUCTION: only allow api requests from loadbalancer or localhost
+# PRODUCTION: only allow api requests from local server
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'djrill',
 
     'rest_framework',
     'corsheaders',
@@ -108,11 +110,11 @@ WSGI_APPLICATION = 'QVtoolapi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB'),
         'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT'),
+        'NAME': os.environ.get('POSTGRES_DB'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
 
@@ -120,6 +122,10 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # this is default
     'guardian.backends.ObjectPermissionBackend',
 )
+
+GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID')
+
+GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET')
 
 GUARDIAN_RAISE_403 = True
 
@@ -141,6 +147,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email backend variables
+
+MANDRILL_API_KEY = os.environ.get('MAILCHIMP_API_KEY')
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+RXC_EMAIL = os.environ.get('TRANSACTION_EMAIL')
+MANDRILL_IGNORE_RECIPIENT_STATUS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

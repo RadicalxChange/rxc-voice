@@ -1,0 +1,109 @@
+:root {
+  --yellowColor: #edff38;
+  --blackColor: #000000;
+  --whiteColor: #ffffff;
+
+  --primaryFont: 'messerv2.1condensed';
+  --secondaryFont: 'suisse_intlbook';
+  --ItallicFont: 'suisse_intlbook_italic';
+}
+
+.App {
+  text-align: center;
+  font-family: var(--secondaryFont);
+  padding: 4.5vmin;
+  min-height: 100vh;
+}
+
+@media only screen and (min-width: 768px) {
+  .App {
+    padding: 3vw 2vw 3vw 2vw;
+  }
+}
+
+h1 {
+  font-weight: normal;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+h3 {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+p {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+span {
+  font-family: var(--secondaryFont);
+  font-weight: normal;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:visited {
+  color: black;
+}
+
+ul {
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
+ol {
+  list-style: none;
+  counter-reset: mycounter;
+  padding: 0;
+}
+
+ol li {
+  counter-increment: mycounter;
+}
+
+ol li:before {
+  content: counter(mycounter) ". ";
+}
+
+@font-face {
+    font-family: 'suisse_intlbook_italic';
+    src: url('./assets/fonts/suisseintl-bookitalic-webfont.woff2') format('woff2'),
+         url('./assets/fonts/suisseintl-bookitalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'suisse_intlbook';
+    src: url('./assets/fonts/suisseintl-book-webfont.woff2') format('woff2'),
+         url('./assets/fonts/suisseintl-book-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+@font-face {
+    font-family: 'messerv2.1condensed';
+    src: url('./assets/fonts/messerv2.1-condensed-webfont.woff2') format('woff2'),
+         url('./assets/fonts/messerv2.1-condensed-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}

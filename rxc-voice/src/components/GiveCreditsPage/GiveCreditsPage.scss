@@ -1,0 +1,106 @@
+.give-credits-page {
+  text-align: center;
+
+  .title {
+    font-size: 1.5em;
+  }
+
+  .amount-field {
+    border: 1px solid black;
+    border-radius: 0;
+    width: 90vw;
+    height: 15vh;
+    font-size: 2em;
+    text-align: right;
+    margin-bottom: 5vw;
+  }
+  .amount-field:focus {
+    outline: none;
+    border: 2.5px solid black;
+  }
+
+  .recipient-field {
+    border: 1px solid black;
+    border-radius: 0;
+    width: 90vw;
+    height: 15vh;
+    font-size: 1em;
+    text-align: right;
+    margin-bottom: 5vw;
+  }
+  .recipient-field:focus {
+    outline: none;
+    border: 2.5px solid black;
+  }
+
+  .select-process {
+    width: 50vw;
+    height: 6vh;
+    display: inline;
+    text-overflow: ellipsis;
+    margin-bottom: 5vw;
+  }
+  .select-process:focus {
+    outline: none;
+  }
+
+  .submit-button {
+    display: block;
+    margin: 0 auto 0 auto;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: .5em 1em .5em 1em;
+  }
+  .submit-button:focus {
+    outline: none;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .give-credits-page {
+    text-align: left;
+
+    .title {
+      font-size: 2em;
+    }
+
+    .amount-field {
+      width: 39vw;
+      height: 10vh;
+      margin-bottom: 3vh;
+    }
+
+    .recipient-field {
+      display: block;
+      width: 39vw;
+      height: 10vh;
+      margin-bottom: 3vh;
+    }
+
+    .select-process {
+      width: 39vw;
+      height: 4vh;
+      margin-bottom: 3vh;
+    }
+
+    .submit-button {
+      margin: 0;
+    }
+  }
+}
+
+// hide arrows in number fields
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

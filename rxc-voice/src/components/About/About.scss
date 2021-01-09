@@ -1,0 +1,17 @@
+.about {
+  text-align: center;
+
+  .title {
+    font-size: 1.5em;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .about {
+    text-align: left;
+
+    .title {
+      font-size: 2em;
+    }
+  }
+}

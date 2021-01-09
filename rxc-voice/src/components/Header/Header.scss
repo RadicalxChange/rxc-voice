@@ -1,0 +1,48 @@
+.App-header {
+  margin-bottom: 10vh;
+
+  .logo-container {
+    width: 91vw;
+
+    .App-logo {
+      width: 91vw;
+    }
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    margin: 3em 0 0 0;
+    padding: 0;
+    font-size: 3.5vw;
+    text-transform: uppercase;
+
+    .nav-link {
+      margin-bottom: 4em;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .App-header {
+    display: grid;
+    grid-template-columns: 1fr 25%;
+    text-align: left;
+
+    .logo-container {
+      width: 39.31vw;
+
+      .App-logo {
+        width: 39.31vw;
+      }
+    }
+
+    .nav {
+      margin: 0;
+      font-size: 1.5vw;
+
+      .nav-link {
+      }
+    }
+  }
+}

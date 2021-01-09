@@ -1,0 +1,19 @@
+.polis-page {
+  text-align: center;
+
+  .body {
+    grid-column: 1 / -1;
+
+    .results-iframe {
+      width: 99%;
+      border: none;
+      min-height: 6000px;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .polis-page {
+    text-align: left;
+  }
+}

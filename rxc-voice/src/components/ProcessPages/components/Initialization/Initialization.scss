@@ -1,0 +1,71 @@
+.init-page {
+
+  .title {
+    font-size: 8vw;
+  }
+
+  .stages {
+    width: 90vw;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    font-size: 3vw;
+
+    .stage {
+      width: 18vw;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+    }
+    .stage:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .status-bar {
+    width: 76vw;
+  }
+
+  .time-remaining {
+    text-align: center;
+  }
+
+  .content-header {
+    margin-top: 20vw;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .init-page {
+    text-align: left;
+    width: 60vw;
+
+    .title {
+      font-size: 1.5em;
+    }
+
+    .stages {
+      width: 60vw;
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      font-size: 1.5vw;
+
+      .stage {
+        width: 12vw;
+      }
+    }
+
+    .status-bar {
+      width: 50vw;
+      margin-left: 5vw;
+    }
+
+    .time-remaining {
+      text-align: right;
+    }
+
+    .content-header {
+      margin-top: 5vw;
+    }
+  }
+}

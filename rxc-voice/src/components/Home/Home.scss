@@ -1,0 +1,20 @@
+.home {
+  text-align: center;
+
+  .process-list {
+    margin: 2.5em 0 2.5em 0;
+    width: auto;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .home {
+    text-align: left;
+
+    .process-list {
+      margin: 2.5em 0 2.5em 0;
+      width: auto;
+      padding-inline-start: 40px;
+    }
+  }
+}
