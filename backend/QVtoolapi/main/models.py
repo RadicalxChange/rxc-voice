@@ -14,7 +14,7 @@ class Delegate(models.Model):
     # When a user deletes their account, their user object is not deleted.
     # "is_active" field is set to 'False'.
     invited_by = models.ForeignKey(
-        'self', null=True, on_delete=models.SET_NULL)
+        'self', blank=True, on_delete=models.SET_NULL)
     credit_balance = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0) # must be staff to change from default
     # oauth_uuid = models.CharField(max_length=256, null=True)
