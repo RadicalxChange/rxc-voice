@@ -7,7 +7,7 @@ import { Delegate } from "../models/Delegate";
 import { Vote } from "../models/Vote";
 import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates, mapToProcess } from "../utils";
 
-const ROOT_URL = "http://127.0.0.1:8000";
+const ROOT_URL = "http://voiceapi.radicalxchange.org";
 
 export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null;
 export const githubState = sessionStorage.getItem("githubState");
