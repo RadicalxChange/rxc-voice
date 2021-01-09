@@ -6,7 +6,7 @@ COPY scripts/ /scripts
 
 WORKDIR /rxc-voice
 
-EXPOSE 8000
+EXPOSE 4000
 
 RUN npm install
 RUN npm run build
