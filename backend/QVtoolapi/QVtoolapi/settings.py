@@ -24,10 +24,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.environ.get('PRODUCTION', "False") == "False":
+    DEBUG = True
+else:
+    DEBUG = False
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'handlers': {
+       'console': {
+           'class': 'logging.StreamHandler',
+       },
+   },
+   'loggers': {
+       'django': {
+           'handlers': ['console'],
+           'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
+       },
+   },
+}
 
 # PRODUCTION: only allow api requests from local server
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.radicalxchange.org']
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1', '64.225.61.72', '138.197.60.87', 'cloud.digitalocean.com', '.radicalxchange.org']
 
 # PRODUCTION: only allow api requests from local server
 CORS_ORIGIN_ALLOW_ALL = True
@@ -53,6 +72,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -151,4 +171,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
