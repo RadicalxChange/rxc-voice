@@ -1,0 +1,71 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    command: bash /scripts/deploy/api_deploy.sh
+    ports:
+      - "8000:8000"
+    expose: [8000]
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/backend
+      - ./scripts:/scripts
+    working_dir: /backend/QVtoolapi/
+    environment:
+      - PRODUCTION=True
+      - DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_PORT=$POSTGRES_PORT
+      - POSTGRES_DB=$POSTGRES_DB
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    restart: always
+
+  polis:
+    build:
+      context: .
+      dockerfile: ./polis-app/PDockerfile
+    command: serve -s build -l 3000
+    volumes:
+    - ./polis-app/src:/polis-app/src
+    ports:
+      - "3000:3000"
+    expose: [3000]
+    depends_on:
+      - api
+    environment:
+      - REACT_APP_SITE_ID=$REACT_APP_SITE_ID
+    stdin_open: true
+    restart: always
+
+  voice:
+    build:
+      context: .
+      dockerfile: ./rxc-voice/PDockerfile
+    command: serve -s build -l 4000
+    volumes:
+    - ./rxc-voice/src:/rxc-voice/src
+    ports:
+      - "4000:4000"
+    expose: [4000]
+    depends_on:
+      - api
+    stdin_open: true
+    restart: always
+
+volumes:
+  db-data:
