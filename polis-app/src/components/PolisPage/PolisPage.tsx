@@ -3,13 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import { PolisPageRouteParams } from "../../models/PolisPageRouteParams";
 import { PolisProps } from "../../models/PolisProps"
 import moment from "moment";
-import logo from '../../assets/logo.svg';
 import CookieBanner from "./CookieBanner";
+import { BgColor } from "../../models/BgColor";
 
 import "./PolisPage.scss";
 
 function PolisPage(props:PolisProps) {
-  const POLIS_SITE_ID = process.env.REACT_APP_SITE_ID;
+  const POLIS_SITE_ID = 'polis_site_id_cG2opQF5hsqj9jGCsr';
   const { conversationId } = useParams<PolisPageRouteParams>();
   const conversation = props.conversations.find(
     conversation => conversation.id === +conversationId);
@@ -17,11 +17,15 @@ function PolisPage(props:PolisProps) {
   const canComment = conversation !== undefined &&
     moment(conversation.end_date) > moment();
   // user can only vote if we have a cookie identifying them
-  const thisCookie = props.cookies[conversationId];
-  console.log("cookie found on page load: " + thisCookie);
-  const [canVote, setCanVote] = useState(!!thisCookie);
+  let thisCookie = props.cookies[conversationId];
+  const ongoing = conversation ? (moment(conversation.end_date) > moment()) : false;
+  const [canVote, setCanVote] = useState(!!thisCookie && ongoing);
+  if (!ongoing) {
+    thisCookie = 1;
+  }
 
   useEffect(() => {
+    props.changeColor(BgColor.White);
     // load pol.is embed script
     console.log("loading script...")
     const script = document.createElement('script');
@@ -48,15 +52,12 @@ function PolisPage(props:PolisProps) {
 
   return (
     <div className="polis-page">
-      <header className="header">
-        <img src={logo} className="logo" alt="logo" />
-        <Link
-          to='/'
-          className="back-button"
-        >
-        Back to Home
-        </Link>
-      </header>
+      <Link
+        to='/'
+        className="back-button"
+      >
+      Back to Home
+      </Link>
       {conversation ? (
         <div className="body">
           <h2 id="head" className="title">{conversation.title}</h2>
@@ -75,11 +76,21 @@ function PolisPage(props:PolisProps) {
             data-auth_needed_to_write='false'
           >
           </div>
+          {conversation.show_report ? (
+            <iframe
+              title="conversation-results"
+              className="results-iframe"
+              src={"https://pol.is/report/" + conversation.report_id}
+            >
+            </iframe>
+          ) : (
+            <h3>No report to show at this time.</h3>
+          )}
           <CookieBanner thisCookie={thisCookie} setCookie={props.setCookie} setCanVote={setCanVote} />
         </div>
       ) : (
         <div className="body">
-          <h2>Conversation not found. Head back to home to find what you're looking for.</h2>
+          <h3>Conversation not found. Head back to home to find what you're looking for.</h3>
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@ import { Observable, defer, from } from "rxjs";
 import { Conversation } from "../models/Conversation";
 import { mapToConversations } from "../utils";
 
-const ROOT_URL = "http://127.0.0.1:8000";
+const ROOT_URL = "http://localhost:8000";
 
 export const fetchConversations = (): Observable<Conversation[]> => {
   return defer(() => {

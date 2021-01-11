@@ -7,10 +7,11 @@ export const mapToConversations = (conversations: Conversation[]): Conversation[
 export const mapToConversation = (conversation: Conversation): Conversation => {
   return {
     id: conversation.id,
-    site_id: conversation.site_id,
     title: conversation.title,
     description: conversation.description,
     start_date: conversation.start_date,
     end_date: conversation.end_date,
+    show_report: conversation.show_report,
+    report_id: conversation.report_id,
   };
 };

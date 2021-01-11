@@ -4,4 +4,5 @@ export interface PolisProps {
   cookies: { [name: string]: any },
   setCookie: any,
   conversations: Conversation[],
+  changeColor: any,
 }

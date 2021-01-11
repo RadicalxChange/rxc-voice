@@ -10,54 +10,27 @@
 
 .App {
   text-align: center;
-  display: grid;
-  grid-template-rows: auto 1fr;
-}
-
-.logo {
-  width: 91vw;
-  grid-column-start: 1;
+  font-family: var(--secondaryFont);
+  padding: 4.5vmin;
+  min-height: 100vh;
 }
 
 @media only screen and (min-width: 768px) {
-  .logo {
-    width: 39.31vw;
-  }
-  .App-header {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    padding: 3vw 2vw 2vw 2vw;
-  }
-}
-
-.App-header {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  column-gap: 1rem;
-  padding: 4.5vmin;
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  .App {
+    padding: 3vw 2vw 3vw 2vw;
   }
 }
 
 h1 {
   font-family: var(--secondaryFont);
   font-weight: normal;
+  font-size: 2rem;
 }
 
 h2 {
   font-family: var(--secondaryFont);
   font-weight: normal;
+  text-transform: uppercase;
 }
 
 h3 {
@@ -83,6 +56,7 @@ ul {
 
 a {
   text-decoration: none;
+  color: black;
 }
 
 a:visited {
