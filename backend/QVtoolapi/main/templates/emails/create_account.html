@@ -5,7 +5,7 @@
     <h4>Hi, {{ user_name }}</h4>
     <p>You have been invited to participate in a democratic process at RxC Voice!</p>
     <p>Use the link below to create an account and contribute your voice to this collective decision.</p>
-    <a href='http://localhost:3000/verify?email=<%=user_email %>&token=<%=token %>'>RxC Voice</a>
+    <a href="http://localhost:3000/verify?email={{ user_email }}&token={{ token }}">RxC Voice</a>
 
     <p>Best wishes,</p>
 
