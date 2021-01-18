@@ -21,11 +21,11 @@ function DelegateCard(props: any) {
         <h3 className="credit-balance">Credit Balance: {props.delegate.credit_balance}</h3>
       </div>
       <Link
-      to={`/give-credits`}
+      to={`/${props.process.id}/give-credits`}
       className="give-credits"
       onClick={(e) => stageTransfer({
         sender: sessionStorage.getItem("user") ? (JSON.parse(sessionStorage.getItem("user")!).id) : (null),
-        recipient: props.delegate.id,
+        recipient: props.delegate,
         process: props.process.id,
       })}
       >

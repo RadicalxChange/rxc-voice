@@ -167,6 +167,14 @@ export const getStatus = (process: Process | null) => {
   }
 };
 
+export const getRecipient = (transferData: any) => {
+  if (transferData) {
+    return transferData.recipient;
+  } else {
+    return null;
+  }
+};
+
 export const getStatusBar = (process: Process | null, color: string) => {
   if (process) {
     if (color === "var(--whiteColor)") {

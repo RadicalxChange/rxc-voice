@@ -1,15 +1,24 @@
-from django.core.mail import send_mail
-from django.conf import settings
+import premailer
 
-def mailcredits(amount, sender, recipient):
-    send_mail(
-        "You have recieved voting credits",
-        f"You have recieved {amount} voting credits from {sender}!",
-        settings.RXC_EMAIL,
-        [recipient])
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+import six
 
-    send_mail(
-        "You have sent voting credits",
-        f"You have successfully sent {amount} voting credits to {recipient}!",
-        settings.RXC_EMAIL,
-        [sender])
+def premailer_transform(html):
+    p = premailer.Premailer(html)
+    return p.transform()
+
+
+def get_mail_body(mail_name, mail_params):
+    response_html = premailer_transform(render_to_string("emails/" + mail_name + ".html", mail_params))
+    return response_html
+
+
+class TokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, delegate, timestamp):
+        return (
+            six.text_type(delegate.user.pk) + six.text_type(timestamp) +
+            six.text_type(delegate.user.is_active)
+        )
+
+account_activation_token = TokenGenerator()

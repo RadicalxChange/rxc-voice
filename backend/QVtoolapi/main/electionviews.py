@@ -3,17 +3,14 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import generics, mixins, status
 from .permissions import (ElectionPermission,
-                          TransferPermission,
                           VotePermission,
                           ProposalPermission
                           )
 from .serializers import (ElectionSerializer,
                           VoteSerializer,
-                          ProposalSerializer,
-                          TransferSerializer
+                          ProposalSerializer
                           )
-from .models import Election, Vote, Proposal, Group, Transfer, Delegate
-from django.core.exceptions import ValidationError
+from .models import Election, Vote, Proposal, Group, Delegate
 
 
 class ElectionList(mixins.CreateModelMixin,
@@ -142,31 +139,6 @@ class VoteList(mixins.CreateModelMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class TransferList(mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   generics.GenericAPIView):
-    queryset = Transfer.objects.all()
-    serializer_class = TransferSerializer
-
-    permission_classes = (TransferPermission,)
-    authentication_classes = [TokenAuthentication]
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if request.data.get('amount') > Delegate.objects.all().filter(pk=request.data.get('sender')).first().credit_balance:
-            raise ValidationError()
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED,
-            headers=headers)
-
-
 class ProposalList(mixins.CreateModelMixin,
                    mixins.ListModelMixin,
                    generics.GenericAPIView):
@@ -216,26 +188,6 @@ class ProposalList(mixins.CreateModelMixin,
 #         for instance in self.get_queryset():
 #             instance.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# for testing only.
-class TransferListAll(mixins.CreateModelMixin,
-                      mixins.ListModelMixin,
-                      generics.GenericAPIView):
-
-    queryset = Transfer.objects.all()
-    serializer_class = TransferSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        for instance in self.get_queryset():
-            instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # for testing only.

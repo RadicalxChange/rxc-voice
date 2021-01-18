@@ -163,17 +163,60 @@ export const postVotes = (votes: any, election_id: number): Observable<any> => {
   });
 };
 
-export const postTransfer = (transfers: any, recipient_id: number): Observable<any> => {
+export const postTransfer = (transfers: any): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/delegates/${recipient_id}/transfers/`, {
+      fetch(`${ROOT_URL}/transfers/`, {
         headers: { "Content-Type": "application/json; charset=utf-8",
         Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
         },
         method: "POST",
         body: JSON.stringify(transfers),
       }),
+    );
+  });
+};
+
+export const verifyGithub = (token: any): Observable<any> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/github/verify/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify(token),
+      }),
+    );
+  });
+};
+
+export const getGithubToken = (creds: any): Observable<any> => {
+    return defer(() => {
+      return from<Promise<any>>(
+        fetch(`${ROOT_URL}/github/token/`, {
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Accept': 'application/json',
+         },
+          method: "POST",
+          body: JSON.stringify({
+            'code': creds.code,
+            'state': creds.state,
+            }),
+        }),
+      );
+    });
+};
+
+export const twitterAuthorize = (): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/authorize-twitter/`)
+        .then((res) => res.json())
     );
   });
 };

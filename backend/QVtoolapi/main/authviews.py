@@ -13,6 +13,7 @@ from .models import Delegate
 import requests
 from django.conf import settings
 from rest_framework.decorators import api_view
+import json
 
 
 class DelegateList(mixins.CreateModelMixin,
@@ -125,7 +126,7 @@ class CustomAuthToken(ObtainAuthToken):
             delegate = Delegate.objects.get(user=token.user)
             return Response({
                 'token': token.key,
-                'id': token.user.pk,
+                'id': delegate.pk,
                 'username': token.user.username,
                 'email': token.user.email,
                 # 'phone_number': token.user.phone_number,
@@ -137,17 +138,41 @@ class CustomAuthToken(ObtainAuthToken):
             })
 
 
-@api_view(['GET'])
-def getGithubCreds(request):
-    response = Response({
-    'github_client_id': settings.GITHUB_CLIENT_ID,
-    'github_client_secret': settings.GITHUB_CLIENT_SECRET,
-    })
-    return response
-
-
 @api_view(['POST'])
 def getGithubToken(request):
-    r = requests.post('https://github.com/login/oauth/access_token', data=request.data)
-    response = Response(r)
-    return response
+    headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    }
+    data = {
+        "client_id": settings.GITHUB_CLIENT_ID,
+        "client_secret": settings.GITHUB_CLIENT_SECRET,
+        "code": request.data["code"]
+    }
+    r = requests.post(
+        'https://github.com/login/oauth/access_token',
+        headers=headers,
+        data=json.dumps(data)
+    )
+    # save token
+    cors_header = {
+        'Access-Control-Allow-Origin': '*',
+    }
+    r.headers.update(cors_header)
+    return Response(r.json())
+
+@api_view(['POST'])
+def getGithubUser(request):
+    headers = {
+        'Authorization': 'token ' + request.data["access_token"]
+    }
+    r = requests.get(
+        'https://api.github.com/user',
+        headers=headers
+    )
+    # save github handle
+    cors_header = {
+        'Access-Control-Allow-Origin': '*',
+    }
+    r.headers.update(cors_header)
+    return Response(r)

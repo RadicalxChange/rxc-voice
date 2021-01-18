@@ -11,6 +11,7 @@ import ValidationPage from './components/ValidationPage';
 import About from './components/About';
 
 import './App.scss';
+import Callback from './components/Callback';
 
 function App() {
   const { user, color } = useContext(StateContext);
@@ -36,7 +37,7 @@ function App() {
       />
 
       <Route
-        path="/give-credits"
+        path="/:processId/give-credits"
         exact
         render={() => <GiveCreditsPage></GiveCreditsPage>}
       />
@@ -57,6 +58,11 @@ function App() {
         path="/verify"
         exact
         render={() => <ValidationPage></ValidationPage>}
+      />
+
+      <Route
+        path="/oauth2/callback"
+        render={() => <Callback></Callback>}
       />
 
     </div>

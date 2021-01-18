@@ -1,7 +1,7 @@
 from django.contrib import admin
 from guardian.shortcuts import assign_perm
 
-from .models import (Election, Proposal, Delegate, Process, Conversation)
+from .models import (Election, Proposal, Delegate, Process, Conversation, Transfer)
 
 # Register your models here.
 
@@ -21,3 +21,4 @@ admin.site.register(Proposal)
 admin.site.register(Delegate)
 admin.site.register(Process)
 admin.site.register(Conversation)
+admin.site.register(Transfer)
