@@ -7,7 +7,7 @@ import { Delegate } from "../models/Delegate";
 import { Vote } from "../models/Vote";
 import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates, mapToProcess } from "../utils";
 
-const ROOT_URL = "http://voiceapi.radicalxchange.org";
+const ROOT_URL = "https://voiceapi.radicalxchange.org";
 
 export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null;
 export const githubState = sessionStorage.getItem("githubState");
@@ -41,10 +41,15 @@ export const modifyUser = (moddata: any, id: string): Observable<any> => {
 };
 
 export const fetchDelegates = (): Observable<Delegate[]> => {
+  const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<Delegate[]>>(
-      fetch(`${ROOT_URL}/delegates/`)
-        .then((res) => res.json())
+      fetch(`${ROOT_URL}/delegates/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      }).then((res) => res.json())
         .then(mapToDelegates),
     );
   });
@@ -120,10 +125,15 @@ export const fetchElection = (id: string): Observable<Election> => {
 // };
 
 export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
+  const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<Proposal[]>>(
-      fetch(`${ROOT_URL}/elections/${election_id}/proposals/`)
-        .then((res) => res.json())
+      fetch(`${ROOT_URL}/elections/${election_id}/proposals/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      }).then((res) => res.json())
         .then(mapToProposals),
     );
   });

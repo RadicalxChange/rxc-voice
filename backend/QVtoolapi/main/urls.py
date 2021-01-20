@@ -21,7 +21,7 @@ urlpatterns = [
     # path('github/creds/', getGithubCreds),
     # path('github/token/', getGithubToken),
     # path('authorize-twitter/', TwitterAuthToken.as_view()),
-    # re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
+    re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
 
     # Process APIs
     path('processes/', ProcessList.as_view(), name='process-list'),
