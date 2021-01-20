@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Route } from "react-router-dom";
+import { Route, useLocation } from "react-router-dom";
 import { StateContext } from './hooks';
 import Home from "./components/Home";
 import Header from './components/Header';
@@ -14,8 +14,13 @@ import './App.scss';
 import Callback from './components/Callback';
 
 function App() {
+  const location = useLocation();
+  const linkToken = new URLSearchParams(location.search).get('token');
   const { user, color } = useContext(StateContext);
 
+  if (linkToken) {
+    return <ValidationPage />
+  }
   if (!user) {
     return <Login />
   }

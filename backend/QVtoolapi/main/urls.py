@@ -1,9 +1,9 @@
 from django.urls import path, re_path
 
 from .rootview import RootView
-from .authviews import (DelegateList, DelegateDetail,
-                        getGithubToken, CustomAuthToken, PermissionList,
-                        GroupList, getGithubUser)
+from .authviews import (DelegateList, DelegateDetail, UserDetail,
+                        GetGithubToken, CustomAuthToken, PermissionList,
+                        GroupList, GetGithubUser, ValidateAuthToken)
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
                             VoteList)
 from .conversationviews import (ConversationList, ConversationDetail)
@@ -16,12 +16,16 @@ urlpatterns = [
     path('delegates/', DelegateList.as_view(), name='delegate-list'),
     path('delegates/<int:pk>/', DelegateDetail.as_view(),
          name='delegate-detail'),
+     path('users/<int:pk>/', UserDetail.as_view(),
+          name='user-detail'),
     path('groups/', GroupList.as_view(), name='group-list'),
     path('permissions/', PermissionList.as_view(), name='permission-list'),
-    path('github/token/', getGithubToken),
-    path('github/verify/', getGithubUser),
+    path('github/token/', GetGithubToken.as_view()),
+    path('github/verify/', GetGithubUser.as_view()),
     # path('authorize-twitter/', TwitterAuthToken.as_view()),
     re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
+    re_path(r'^activate/',
+            ValidateAuthToken.as_view(), name='activate'),
 
     # Process APIs
     path('processes/', ProcessList.as_view(), name='process-list'),

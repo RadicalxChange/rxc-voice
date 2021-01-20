@@ -106,7 +106,6 @@ export const AppProvider = (props: any) => {
       },
       // updateUser: async (id: string, updatedUser: any) => {
       //   WebService.updateUser(id, updatedUser)
-      //     .pipe(catchError((err) => of(`I caught: ${err}`)))
       //     .subscribe(async (data) => {
       //       if (data.ok) {
       //         const user = await data.json();

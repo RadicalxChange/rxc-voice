@@ -119,6 +119,56 @@ export const mapToProcess = (process: Process): Process => {
   };
 };
 
+export const containsSpecialCharacters = (str: string) => {
+  // eslint-disable-next-line
+  const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  return format.test(str);
+};
+
+export const containsLowerCase = (str: string) => {
+  // eslint-disable-next-line
+  return /[a-z]/.test(str);
+};
+
+export const containsUpperCase = (str: string) => {
+  // eslint-disable-next-line
+  return /[A-Z]/.test(str);
+};
+
+export const containsNumber = (str: string) => {
+  // eslint-disable-next-line
+  return /\d/.test(str);
+};
+
+export const validateEmail = (email: string) => {
+  // eslint-disable-next-line
+  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+};
+
+export const validatePasswordLength = (password: string) => {
+  if (password.length >= 8) {
+    return true;
+  }
+  return false;
+};
+
+export const getDelegateId = (user: any) => {
+  if (user) {
+    return user.id;
+  } else {
+    return undefined;
+  }
+};
+
+export const getUserId = (user: any) => {
+  if (user) {
+    return user.user_id;
+  } else {
+    return undefined;
+  }
+};
+
 export const getTitle = (process: Process | null) => {
   if (process) {
     return process.title;

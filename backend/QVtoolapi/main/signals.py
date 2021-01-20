@@ -13,10 +13,12 @@ from .models import Delegate
 def send_register_mail(sender, instance, **kwargs):
     if kwargs['created']:
         # current_site = 'https://voice.radicalxchange.org'
+        uid = urlsafe_base64_encode(force_bytes(instance.pk))
         token = account_activation_token.make_token(instance)
         params = {
             'delegate_email': instance.user.email,
             # 'domain': current_site,
+            'uid': uid,
             'token': token,
             'delegate': instance,
         }
