@@ -84,18 +84,20 @@ class TransferSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # change recipient field  from email to username
-        recipient_email = validated_data.get('recipient')
+        recipient = validated_data.get('recipient')
         sender = validated_data.get('sender')
         process = validated_data.get('process')
-        recipient_object = Delegate.objects.filter(user__email=recipient_email).first()
+        recipient_object = Delegate.objects.filter(user__email=recipient).first()
+        if not recipient_object:
+            recipient_object = Delegate.objects.filter(public_username=recipient).first()
         is_invitation = not recipient_object
         if is_invitation:
             new_delegate = DelegateSerializer.create(
                 DelegateSerializer(),
                 validated_data={
                 'user': {
-                    'username': recipient_email,
-                    'email': recipient_email,
+                    'username': recipient,
+                    'email': recipient,
                     'password': str(uuid.uuid1()),
                 },
                 'credit_balance': validated_data.get('amount'),
@@ -116,7 +118,7 @@ class TransferSerializer(serializers.ModelSerializer):
         # mailcredits(validated_data.get('amount'), validated_data.get('sender'), recipient_data.user.email)
         transfer = Transfer.objects.create(
             sender=sender,
-            recipient=recipient_email,
+            recipient=recipient,
             amount=validated_data.get('amount'),
             date=validated_data.get('date'),
             status=('P' if is_invitation else 'A'),
@@ -184,6 +186,20 @@ class DelegateSerializer(serializers.ModelSerializer):
         return delegate
 
 
+class PrivateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
+
+
+class PrivateDelegateSerializer(serializers.ModelSerializer):
+    user = PrivateUserSerializer(required=True)
+
+    class Meta:
+        model = Delegate
+        fields = ['id', 'user', 'public_username', 'credit_balance']
+
+
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.EmailField(
         label=_("Email"),
@@ -224,7 +240,7 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
 
 class ProcessSerializer(serializers.ModelSerializer):
-    delegates = DelegateSerializer(many=True)
+    delegates = PrivateDelegateSerializer(many=True)
     conversation = ConversationSerializer()
     election = ElectionSerializer()
 

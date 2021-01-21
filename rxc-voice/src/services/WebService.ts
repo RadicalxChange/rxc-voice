@@ -2,10 +2,9 @@ import { Observable, defer, from } from "rxjs";
 import { Election } from "../models/Election";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
-import { Delegate } from "../models/Delegate";
 // import { Transfer } from "../models/Transfer";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates, mapToProcess } from "../utils";
+import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess } from "../utils";
 
 const ROOT_URL = "http://127.0.0.1:8000";
 
@@ -68,15 +67,15 @@ export const validateToken = (creds: any): Observable<any> => {
   });
 };
 
-export const fetchDelegates = (): Observable<Delegate[]> => {
-  return defer(() => {
-    return from<Promise<Delegate[]>>(
-      fetch(`${ROOT_URL}/delegates/`)
-        .then((res) => res.json())
-        .then(mapToDelegates),
-    );
-  });
-};
+// export const fetchDelegates = (): Observable<Delegate[]> => {
+//   return defer(() => {
+//     return from<Promise<Delegate[]>>(
+//       fetch(`${ROOT_URL}/delegates/`)
+//         .then((res) => res.json())
+//         .then(mapToDelegates),
+//     );
+//   });
+// };
 
 export const postDelegates = (users: any): Observable<any> => {
   return defer(() => {
