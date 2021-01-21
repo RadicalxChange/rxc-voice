@@ -149,7 +149,7 @@ class Transfer(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     sender = models.ForeignKey(
         Delegate, related_name="sender", null=True, on_delete=models.SET_NULL)
-    recipient = models.EmailField(null=False, blank=False)
+    recipient = models.CharField(max_length=64, blank=True, null=True)
     amount = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0)
     date = models.DateTimeField(blank=False)

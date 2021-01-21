@@ -19,10 +19,8 @@ function GiveCreditsPage() {
       setColor(BgColor.White)
       fetchProcesses();
       if (stagedTransfer) {
-        console.log(stagedTransfer);
         if (getRecipient(stagedTransfer)) {
-          console.log(getRecipient(stagedTransfer));
-          setRecipientEmail(recipientEmail => getRecipient(stagedTransfer).user.email);
+          setRecipientEmail(recipientEmail => getRecipient(stagedTransfer).public_username);
         }
       }
 
