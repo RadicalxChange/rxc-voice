@@ -1,5 +1,37 @@
 .home {
   text-align: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+
+  .about {
+    grid-column: 1 / -1;
+
+    .title {
+      font-family: var(--primaryFont);
+      font-size: 5vw;
+      margin: 2vh 0 2vh 0;
+    }
+
+    .show-hide {
+      grid-row: 3;
+      font-size: 1rem;
+      font-weight: bold;
+      display: block;
+      background: none;
+      border: none;
+      outline: none;
+      margin: .5em auto;
+      cursor: pointer;
+    }
+
+    .polis-link {
+      display: block;
+      margin-top: .5em;
+    }
+    .polis-link:hover {
+      text-decoration: underline;
+    }
+  }
 
   .process-list {
     margin: 2.5em 0 2.5em 0;
@@ -11,10 +43,16 @@
   .home {
     text-align: left;
 
+    .about {
+      grid-column: 2 / -1;
+      grid-row-start: 1;
+    }
+
     .process-list {
       margin: 2.5em 0 2.5em 0;
       width: auto;
-      padding-inline-start: 40px;
+      padding-inline-start: 20px;
+      margin-right: 2vw;
     }
   }
 }

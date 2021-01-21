@@ -47,11 +47,11 @@
       }
 
       .stages {
-        width: 60vw;
+        width: 53vw;
         display: flex;
         justify-content: space-between;
         text-align: center;
-        font-size: 1.5vw;
+        font-size: 1.3vw;
 
         .stage {
           width: 12vw;
@@ -59,12 +59,13 @@
       }
 
       .status-bar {
-        width: 50vw;
-        margin-left: 5vw;
+        width: 45vw;
+        margin-left: 4vw;
       }
 
       .time-remaining {
         text-align: right;
+        margin-right: 2vw;
       }
     }
   }
