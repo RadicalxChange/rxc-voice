@@ -1,13 +1,13 @@
 from django.urls import path, re_path
 
 from .rootview import RootView
-from .authviews import (DelegateList, DelegateDetail, getGithubCreds, getGithubToken, CustomAuthToken, PermissionList,
-                        GroupList)
+from .authviews import (DelegateList, DelegateDetail, UserDetail,
+                        GetGithubToken, CustomAuthToken, PermissionList,
+                        GroupList, GetGithubUser, ValidateAuthToken)
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
-                            VoteList,
-                            TransferList, TransferListAll)
+                            VoteList)
 from .conversationviews import (ConversationList, ConversationDetail)
-from .processviews import (ProcessList, ProcessDetail)
+from .processviews import (ProcessList, ProcessDetail, TransferList)
 
 urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
@@ -16,21 +16,25 @@ urlpatterns = [
     path('delegates/', DelegateList.as_view(), name='delegate-list'),
     path('delegates/<int:pk>/', DelegateDetail.as_view(),
          name='delegate-detail'),
+     path('users/<int:pk>/', UserDetail.as_view(),
+          name='user-detail'),
     path('groups/', GroupList.as_view(), name='group-list'),
     path('permissions/', PermissionList.as_view(), name='permission-list'),
-    # path('github/creds/', getGithubCreds),
-    # path('github/token/', getGithubToken),
+    path('github/token/', GetGithubToken.as_view()),
+    path('github/verify/', GetGithubUser.as_view()),
     # path('authorize-twitter/', TwitterAuthToken.as_view()),
     re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
+    re_path(r'^activate/',
+            ValidateAuthToken.as_view(), name='activate'),
 
     # Process APIs
     path('processes/', ProcessList.as_view(), name='process-list'),
     path('processes/<int:pk>/', ProcessDetail.as_view(), name='process-detail'),
 
     # Election APIs
-    path('transfers/', TransferListAll.as_view(), name='transfer-list-all'),
-    path('delegates/<int:pk>/transfers/', TransferList.as_view(),
-         name='transfer-list'),
+    path('transfers/', TransferList.as_view(), name='transfer-list'),
+    # path('delegates/<int:pk>/transfers/', TransferList.as_view(),
+    #      name='transfer-list'),
     path('elections/', ElectionList.as_view(), name='election-list'),
     path('elections/<int:pk>/', ElectionDetail.as_view(),
          name='election-detail'),

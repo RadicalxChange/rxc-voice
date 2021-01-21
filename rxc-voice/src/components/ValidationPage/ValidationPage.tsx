@@ -1,111 +1,214 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useAlert } from "react-alert";
 import { useLocation } from "react-router";
-import { uuid } from 'uuidv4';
+import { uuid } from "uuidv4";
+import { ActionContext, StateContext } from "../../hooks";
+import { BgColor } from "../../models/BgColor";
+import { OauthProvider } from "../../models/OauthProvider";
 import { WebService } from "../../services";
+import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, getDelegateId, getUserId, validateEmail, validatePasswordLength } from "../../utils";
 
 import "./ValidationPage.scss";
 
 function ValidationPage() {
-    // const [password, setPassword] = useState("");
-    // const [username, setUsername] = useState("");
-    // const [profilePic, setProfilePic] = useState("");
-    // const [number, setNumber] = useState("");
+    const github_client_id = 'f9be73dc7af4857809e0';
     const location = useLocation();
-    const code = new URLSearchParams(location.search).get('code');
-    const state = new URLSearchParams(location.search).get('state');
-    console.log(code);
-    console.log(state);
-    console.log(WebService.githubState);
+    const linkUid = new URLSearchParams(location.search).get('uidb64');
+    const linkToken = new URLSearchParams(location.search).get('token');
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passReEntry, setPassReEntry] = useState("");
+    // const [username, setUsername] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    // const [profilePic, setProfilePic] = useState("");
+    const [oauthProvider, setOauthProvider] = useState(OauthProvider.Github)
+    const { setUserData, setColor } = useContext(ActionContext);
+    const { user } = useContext(StateContext);
+
+    const alert = useAlert()
 
     useEffect(() => {
-      if (!code || (state !== WebService.githubState)) {
-        WebService.getGithubCreds().subscribe(async (data) => {
-          if (data.github_client_id && data.github_client_secret) {
-            const stateUUID = uuid();
-            sessionStorage.setItem("githubState", stateUUID);
-            window.location.href =
-              'https://github.com/login/oauth/authorize?client_id='
-              + data.github_client_id +
-              '&redirect_uri=http://localhost:3000/verify&state=' + stateUUID;
+      setColor(BgColor.White);
+
+      if (linkToken && linkUid) {
+        WebService.validateToken({
+          uidb64: linkUid,
+          token: linkToken,
+        }).subscribe(async (data) => {
+          if (data.ok) {
+            const user = await data.json();
+            setUserData(user);
+              console.log(user);
           } else {
-            console.log("could not retrieve github credentials from server.");
+            const error = await data.json();
+            console.log(error);
+            alert.error(error.non_field_errors[0]);
           }
         });
-      } else {
-        console.log("all set to get an access token");
-        WebService.getGithubCreds().subscribe(async (data) => {
-          if (data.github_client_id && data.github_client_secret) {
-            const params: any = [
-              { key: 'client_id', value: data.github_client_id },
-              { key: 'client_secret', value: data.github_client_secret },
-              { key: 'code', value: code },
-              { key: 'redirect_uri', value: 'http://localhost:3000/verify' },
-              { key: 'state', value: state },
-            ]
-
-            WebService.getGithubToken(params).subscribe(async (data) => {
-              if (data.ok) {
-                console.log("got the token");
-                console.log(data);
-              } else {
-                const error = await data.json();
-                console.log(error);
-              }
-            });
-            // params.forEach((param: any) => {
-            //   var field = document.createElement('input');
-            //   field.setAttribute('type', 'hidden');
-            //   field.setAttribute('name', param.key);
-            //   field.setAttribute('value', param.value);
-            //
-            //   form.appendChild(field);
-            // });
-            // var form = document.createElement('form');
-            // form.setAttribute('method', 'POST');
-            // form.setAttribute('action', 'https://github.com/login/oauth/access_token');
-            //
-            //
-            //
-            // document.body.appendChild(form);
-            // form.submit();
-
-          } else {
-            console.log("could not retrieve github credentials from server. submit code with form");
-          }
-        })
       }
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    // const modify = () => {
-    //   if (password && username) {
-    //     WebService.modifyUser({
-    //       user: {
-    //         username: username,
-    //         password: password,
-    //       },
-    //       profile_pic: profilePic,
-    //       phone_number: number
-    //     }, WebService.userobj.id).subscribe(async (data) => {
-    //       if (data.ok) {
-    //         const user = await data.json();
-    //         console.log(user);
-    //       } else {
-    //         const error = await data.json();
-    //         console.log(error);
-    //       }
-    //     });
-    //   }
-    // };
-
-    return (
-        <div className="validation-page"> {// redirect to login if no user token
+    const modify = (e: any) => {
+      e.preventDefault()
+      if (formIsComplete()) {
+        if (validateEmail(email)) {
+          if (password === passReEntry) {
+            if (validatePasswordLength(password)) {
+              if (containsSpecialCharacters(password)) {
+                if (containsUpperCase(password)) {
+                  if (containsLowerCase(password)) {
+                    if (containsNumber(password)) {
+                      const updatedUser = {
+                        username: email,
+                        email: email,
+                        password: password,
+                        first_name: firstName,
+                        last_name: lastName,
+                      }
+                      WebService.modifyUser(updatedUser, getUserId(user))
+                        .subscribe(async (data) => {
+                          if (data.ok) {
+                            WebService.modifyDelegate({
+                              oauth_provider: oauthProvider,
+                            }, getDelegateId(user))
+                              .subscribe(async (data) => {
+                                if (data.ok) {
+                                  // const user = await data.json();
+                                  // setUserData(user);
+                                  // redirect to 3rd party oauth app
+                                  if (oauthProvider === OauthProvider.Github) {
+                                    const stateUUID = uuid();
+                                    sessionStorage.setItem("githubState", stateUUID);
+                                    window.location.href =
+                                      'https://github.com/login/oauth/authorize?client_id='
+                                      + github_client_id
+                                      + '&redirect_uri=http://localhost:3000/oauth2/callback&state='
+                                      + stateUUID;
+                                  }
+                                } else {
+                                  console.error("Error", await data.json());
+                                }
+                              });
+                          } else {
+                            console.error("Error", await data.json());
+                          }
+                        });
+                    } else {
+                      alert.error("Password must contain at least one number")
+                    }
+                  } else {
+                    alert.error("Password must contain at least one lower case character")
+                  }
+                } else {
+                  alert.error("Password must contain at least one upper case character")
+                }
+              } else {
+                alert.error("Password must contain at least 1 special character")
+              }
+            } else {
+              alert.error("Password length must be at least 8 characters")
+            }
+          } else {
+            alert.error("Re-entered password does not match")
+          }
+        } else {
+          alert.error("Please enter a valid email address")
         }
-          <h2>Verify</h2>
-        </div>
+      } else {
+        alert.error("Please fill all the fields")
+      }
+    };
+
+    const formIsComplete = () => {
+      if (firstName && lastName && email && password && passReEntry) {
+        return true;
+      }
+      return false;
+    };
+
+  if (!user) {
+    return (
+      <h2>Sorry! This activation link is invalid or expired.</h2>
     );
+  }
+  return (
+    <form className="create-account" onSubmit={modify}>
+      <label className="app-title">RxC Voice</label>
+      <p>Create your account to participate in the democratic process!</p>
+
+      <input
+        type="text"
+        placeholder="First Name"
+        className="login-input"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+      />
+
+      <input
+        type="text"
+        placeholder="Last Name"
+        className="login-input"
+        value={lastName}
+        onChange={(e) => setLastName(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Email"
+        className="login-input"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        className="login-input"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Re-Enter Password"
+        className="login-input"
+        value={passReEntry}
+        onChange={(e) => setPassReEntry(e.target.value)}
+      />
+
+      <select
+        className="oauth-provider"
+        id="select-oauth-provider"
+        onChange={(e) => setOauthProvider(oauthProvider => {
+          switch (e.target.value) {
+            case OauthProvider.Github: {
+              return OauthProvider.Github;
+            }
+            case OauthProvider.Twitter: {
+              return OauthProvider.Twitter;
+            }
+            default: {
+              return OauthProvider.Github;
+            }
+          }
+        })}
+      >
+        <option value={OauthProvider.Github}>Verify with Github</option>
+        <option value={OauthProvider.Twitter}>Verify with Twitter</option>
+      </select>
+
+      <button
+        type="submit"
+        className="create-account-button"
+        >
+        create account
+      </button>
+    </form>
+  );
+
 }
 
 export default ValidationPage;

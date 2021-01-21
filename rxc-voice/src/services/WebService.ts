@@ -2,10 +2,9 @@ import { Observable, defer, from } from "rxjs";
 import { Election } from "../models/Election";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
-import { Delegate } from "../models/Delegate";
 // import { Transfer } from "../models/Transfer";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToProposals, mapToVotes, mapToDelegates, mapToProcess } from "../utils";
+import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess } from "../utils";
 
 const ROOT_URL = "https://voiceapi.radicalxchange.org";
 
@@ -28,7 +27,7 @@ export const modifyUser = (moddata: any, id: string): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/delegates/${id}`, {
+      fetch(`${ROOT_URL}/users/${id}/`, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
@@ -40,20 +39,43 @@ export const modifyUser = (moddata: any, id: string): Observable<any> => {
   });
 };
 
-export const fetchDelegates = (): Observable<Delegate[]> => {
+export const modifyDelegate = (moddata: any, id: string): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
-    return from<Promise<Delegate[]>>(
-      fetch(`${ROOT_URL}/delegates/`, {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/delegates/${id}/`, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
-        }
-      }).then((res) => res.json())
-        .then(mapToDelegates),
+         },
+        method: "PUT",
+        body: JSON.stringify(moddata),
+      }),
     );
   });
 };
+
+export const validateToken = (creds: any): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/activate/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+        body: JSON.stringify(creds),
+      }),
+    );
+  });
+};
+
+// export const fetchDelegates = (): Observable<Delegate[]> => {
+//   return defer(() => {
+//     return from<Promise<Delegate[]>>(
+//       fetch(`${ROOT_URL}/delegates/`)
+//         .then((res) => res.json())
+//         .then(mapToDelegates),
+//     );
+//   });
+// };
 
 export const postDelegates = (users: any): Observable<any> => {
   return defer(() => {
@@ -125,15 +147,10 @@ export const fetchElection = (id: string): Observable<Election> => {
 // };
 
 export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
-  const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<Proposal[]>>(
-      fetch(`${ROOT_URL}/elections/${election_id}/proposals/`, {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
-        }
-      }).then((res) => res.json())
+      fetch(`${ROOT_URL}/elections/${election_id}/proposals/`)
+        .then((res) => res.json())
         .then(mapToProposals),
     );
   });
@@ -173,11 +190,11 @@ export const postVotes = (votes: any, election_id: number): Observable<any> => {
   });
 };
 
-export const postTransfer = (transfers: any, recipient_id: number): Observable<any> => {
+export const postTransfer = (transfers: any): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/delegates/${recipient_id}/transfers/`, {
+      fetch(`${ROOT_URL}/transfers/`, {
         headers: { "Content-Type": "application/json; charset=utf-8",
         Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
         },
@@ -188,11 +205,18 @@ export const postTransfer = (transfers: any, recipient_id: number): Observable<a
   });
 };
 
-export const getGithubCreds = (): Observable<any> => {
+export const verifyGithub = (token: any): Observable<any> => {
   return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/github/creds/`)
-        .then((res) => res.json())
+      fetch(`${ROOT_URL}/github/verify/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify(token),
+      }),
     );
   });
 };
@@ -200,13 +224,16 @@ export const getGithubCreds = (): Observable<any> => {
 export const getGithubToken = (creds: any): Observable<any> => {
     return defer(() => {
       return from<Promise<any>>(
-        fetch(`https://github.com/login/oauth/access_token`, {
+        fetch(`${ROOT_URL}/github/token/`, {
           headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Accept": "application/json",
+            'Content-Type': 'application/json; charset=utf-8',
+            'Accept': 'application/json',
          },
           method: "POST",
-          body: JSON.stringify(creds),
+          body: JSON.stringify({
+            'code': creds.code,
+            'state': creds.state,
+            }),
         }),
       );
     });

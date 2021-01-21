@@ -1,5 +1,5 @@
 export enum Status {
-  Initialization = "Initialization",
+  Introduction = "Introduction",
   Delegation = "Delegation",
   Deliberation = "Deliberation",
   Curation = "Curation",

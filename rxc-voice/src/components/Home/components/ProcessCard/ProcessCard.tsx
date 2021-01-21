@@ -2,13 +2,12 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import slugify from "react-slugify";
-import { ActionContext, StateContext } from "../../../../hooks";
+import { StateContext } from "../../../../hooks";
 import { getStatusBar } from "../../../../utils";
 
 import "./ProcessCard.scss";
 
 function ProcessCard(props: any) {
-  const { selectProcess } = useContext(ActionContext);
   const { color } = useContext(StateContext);
 
   return (
@@ -16,16 +15,15 @@ function ProcessCard(props: any) {
       <div className="process-item">
         <Link
         to={`/${props.process.id}/${slugify(props.process.title)}/${props.process.status}`}
-        onClick={() => selectProcess(props.process)}
         >
           <h2 className="title">{props.process.title}</h2>
         </Link>
         <div className="stages">
           <Link
-          to={`/${props.process.id}/${slugify(props.process.title)}/Initialization`}
+          to={`/${props.process.id}/${slugify(props.process.title)}/Introduction`}
           className="stage"
           >
-          Initialization
+          Introduction
           </Link>
           <Link
           to={`/${props.process.id}/${slugify(props.process.title)}/Delegation`}
@@ -54,7 +52,6 @@ function ProcessCard(props: any) {
         </div>
         <Link
         to={`/${props.process.id}/${slugify(props.process.title)}/${props.process.status}`}
-        onClick={() => selectProcess(props.process)}
         >
           <img
             src={getStatusBar(props.process, color)}

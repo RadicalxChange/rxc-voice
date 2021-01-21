@@ -17,15 +17,15 @@ function DelegateCard(props: any) {
       )}
       <div className="info">
         <h3 className="name">{props.delegate.user.first_name + " " + props.delegate.user.last_name}</h3>
-        <h3 className="email">{props.delegate.user.email}</h3>
+        <h3 className="username">{props.delegate.public_username}</h3>
         <h3 className="credit-balance">Credit Balance: {props.delegate.credit_balance}</h3>
       </div>
       <Link
-      to={`/give-credits`}
+      to={`/${props.process.id}/give-credits`}
       className="give-credits"
       onClick={(e) => stageTransfer({
         sender: sessionStorage.getItem("user") ? (JSON.parse(sessionStorage.getItem("user")!).id) : (null),
-        recipient: props.delegate.id,
+        recipient: props.delegate,
         process: props.process.id,
       })}
       >

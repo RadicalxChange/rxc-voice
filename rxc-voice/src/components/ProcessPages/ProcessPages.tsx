@@ -6,7 +6,7 @@ import Curation from "./components/Curation";
 import Delegation from "./components/Delegation";
 import Deliberation from "./components/Deliberation";
 import Election from "./components/Election";
-import Initialization from "./components/Initialization";
+import Introduction from "./components/Introduction";
 import ProcessSubheader from "./components/ProcessSubheader";
 
 import "./ProcessPages.scss";
@@ -16,10 +16,10 @@ function ProcessPages() {
 
 
   switch (stage) {
-    case Status.Initialization: {
+    case Status.Introduction: {
       return (
         <><ProcessSubheader></ProcessSubheader>
-          <Initialization></Initialization></>
+          <Introduction></Introduction></>
       );
     }
     case Status.Delegation: {

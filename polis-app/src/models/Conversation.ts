@@ -1,5 +1,6 @@
 export interface Conversation {
   id: number,
+  uuid: string,
   title: string,
   description: string,
   start_date: string,
