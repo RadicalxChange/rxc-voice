@@ -20,10 +20,10 @@ function ProcessCard(props: any) {
         </Link>
         <div className="stages">
           <Link
-          to={`/${props.process.id}/${slugify(props.process.title)}/Initialization`}
+          to={`/${props.process.id}/${slugify(props.process.title)}/Introduction`}
           className="stage"
           >
-          Initialization
+          Introduction
           </Link>
           <Link
           to={`/${props.process.id}/${slugify(props.process.title)}/Delegation`}

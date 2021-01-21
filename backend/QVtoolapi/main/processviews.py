@@ -25,7 +25,6 @@ class ProcessList(mixins.CreateModelMixin,
                 assign_perm('can_view', group, process)
             if request.user.has_perm('can_view', process):
                 processes.append(process)
-                print(process.conversation.uuid)
         page = self.paginate_queryset(processes)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

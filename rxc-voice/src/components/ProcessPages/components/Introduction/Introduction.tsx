@@ -6,9 +6,9 @@ import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import { getId } from "../../../../utils";
 
-import "./Initialization.scss";
+import "./Introduction.scss";
 
-function Initialization() {
+function Introduction() {
   const { processId } = useParams<ProcessPageRouteParams>();
   const { selectedProcess } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
@@ -32,8 +32,8 @@ function Initialization() {
 
   return (
     selectedProcess ? (
-      <div className="init-page">
-        <h2 className="content-header">Initialization</h2>
+      <div className="intro-page">
+        <h2 className="content-header">Introduction</h2>
         <p>{getDescription(selectedProcess)}</p>
 
       </div>
@@ -43,4 +43,4 @@ function Initialization() {
   );
 }
 
-export default Initialization;
+export default Introduction;

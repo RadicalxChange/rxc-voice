@@ -27,10 +27,10 @@ function ProcessSubheader() {
       <h1 className="title">{getTitle(selectedProcess)}</h1>
       <div className="stages">
         <Link
-        to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Initialization`}
+        to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Introduction`}
         className="stage"
         >
-        Initialization
+        Introduction
         </Link>
         <Link
         to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Delegation`}

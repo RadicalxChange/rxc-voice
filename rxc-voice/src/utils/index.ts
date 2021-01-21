@@ -6,11 +6,11 @@ import { Delegate } from "../models/Delegate"
 import { Permission } from "../models/Permission";
 import { Process } from "../models/Process";
 import { Status } from "../models/Status";
-import init from '../assets/bars/bar_initialization.svg';
+import intro from '../assets/bars/bar_introduction.svg';
 import delg from '../assets/bars/bar_delegation.svg';
 import delb from '../assets/bars/bar_deliberation.svg';
 import cur from '../assets/bars/bar_curation.svg';
-import init_white from '../assets/bars/bar_initialization_white.svg';
+import intro_white from '../assets/bars/bar_introduction_white.svg';
 import delg_white from '../assets/bars/bar_delegation_white.svg';
 import delb_white from '../assets/bars/bar_deliberation_white.svg';
 import cur_white from '../assets/bars/bar_curation_white.svg';
@@ -48,7 +48,7 @@ export const standInProcess = {
   curation_info: '',
   top_posts: new Array<string>(),
   election: {},
-  status: Status.Initialization,
+  status: Status.Introduction,
 }
 
 export const defaultPermission = (): Permission => (Permission.None);
@@ -228,8 +228,8 @@ export const getStatusBar = (process: Process | null, color: string) => {
   if (process) {
     if (color === "var(--whiteColor)") {
       switch (process.status) {
-        case Status.Initialization: {
-          return init_white;
+        case Status.Introduction: {
+          return intro_white;
         }
         case Status.Delegation: {
           return delg_white;
@@ -249,8 +249,8 @@ export const getStatusBar = (process: Process | null, color: string) => {
       }
     } else {
       switch (process.status) {
-        case Status.Initialization: {
-          return init;
+        case Status.Introduction: {
+          return intro;
         }
         case Status.Delegation: {
           return delg;
