@@ -17,7 +17,7 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         conversation = Conversation.objects.create(
-            uuid=uuid.uuid1(),
+            uuid=str(uuid.uuid1()),
             title=validated_data.get('title'),
             description=validated_data.get('description'),
             start_date=validated_data.get('start_date'),

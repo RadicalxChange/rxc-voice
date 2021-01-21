@@ -87,7 +87,7 @@ class Vote(models.Model):
 
 class Conversation(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
-    # uuid = models.CharField(max_length=256, null=True, editable=False)
+    uuid = models.CharField(max_length=256, null=True, editable=False)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True)
     start_date = models.DateTimeField(blank=False)

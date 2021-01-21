@@ -8,11 +8,11 @@ import { Process } from "../models/Process";
 import { Status } from "../models/Status";
 import init from '../assets/bars/bar_initialization.svg';
 import delg from '../assets/bars/bar_delegation.svg';
-import delb from '../assets/bars/bar_delegation.svg';
+import delb from '../assets/bars/bar_deliberation.svg';
 import cur from '../assets/bars/bar_curation.svg';
 import init_white from '../assets/bars/bar_initialization_white.svg';
 import delg_white from '../assets/bars/bar_delegation_white.svg';
-import delb_white from '../assets/bars/bar_delegation_white.svg';
+import delb_white from '../assets/bars/bar_deliberation_white.svg';
 import cur_white from '../assets/bars/bar_curation_white.svg';
 import elec from '../assets/bars/bar_election.svg';
 
