@@ -31,7 +31,7 @@ function Callback() {
                   console.log("verified");
                   const githubData = await data.json();
                   console.log(githubData);
-                  window.location.href = 'http://localhost:3000'
+                  window.location.href = 'https://voice.radicalxchange.org'
                 }
               })
             } else {

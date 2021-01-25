@@ -28,7 +28,7 @@ function Account() {
           )}
           <div className="info">
             <h3 className="name">{user.first_name + " " + user.last_name}</h3>
-            <h3 className="email">{user.email}</h3>
+            <h3 className="email">{user.public_username}</h3>
             <h3 className="credit-balance">Credit Balance: {user.credit_balance}</h3>
           </div>
         </div>

@@ -164,6 +164,8 @@ class ValidateAuthToken(ObtainAuthToken):
         try:
             uid = force_text(urlsafe_base64_decode(request.data["uidb64"]))
             delegate = Delegate.objects.get(pk=uid)
+            print(json.dumps(request.data))
+            print(delegate)
         except(TypeError, ValueError, OverflowError, Delegate.DoesNotExist):
             delegate = None
         if delegate is not None and account_activation_token.check_token(delegate, request.data["token"]):
