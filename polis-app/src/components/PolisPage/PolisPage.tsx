@@ -65,7 +65,7 @@ function PolisPage(props:PolisProps) {
           <div
             id="polis-iframe"
             className='polis'
-            data-page_id={conversationId}
+            data-page_id={conversation.uuid}
             data-site_id={POLIS_SITE_ID}
             data-topic={conversation.title}
             data-ucv={canVote}
