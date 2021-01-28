@@ -86,7 +86,7 @@ function ValidationPage() {
                                     window.location.href =
                                       'https://github.com/login/oauth/authorize?client_id='
                                       + github_client_id
-                                      + '&redirect_uri=http://localhost:3000/oauth2/callback&state='
+                                      + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
                                       + stateUUID;
                                   } else if (oauthProvider === OauthProvider.Twitter) {
                                     WebService.getTwitterRequestToken()

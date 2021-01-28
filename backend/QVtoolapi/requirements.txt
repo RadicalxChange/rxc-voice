@@ -5,7 +5,7 @@ django-cors-headers==3.3.0
 djrill==2.1.0
 gunicorn==20.0.4
 mailchimp3==3.0.14
-oauth2==1.9.0
+oauth2==1.9.0.post1
 premailer==3.7.0
 psycopg2-binary==2.8.6
 sendgrid==6.3.1
