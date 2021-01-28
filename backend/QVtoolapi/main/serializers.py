@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 import uuid
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from .models import Election, Vote, Proposal, Delegate, Conversation, Process, Transfer
 from django.contrib.auth.models import (User, Group, Permission)
@@ -83,10 +85,11 @@ class TransferSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        # change recipient field  from email to username
+        process = validated_data.get('process')
+        if process.conversation.start_date < timezone.now():
+            raise ValidationError()
         recipient = validated_data.get('recipient')
         sender = validated_data.get('sender')
-        process = validated_data.get('process')
         recipient_object = Delegate.objects.filter(user__email=recipient).first()
         if not recipient_object:
             recipient_object = Delegate.objects.filter(public_username=recipient).first()
@@ -98,11 +101,11 @@ class TransferSerializer(serializers.ModelSerializer):
                 'user': {
                     'username': recipient,
                     'email': recipient,
-                    'password': str(uuid.uuid1()),
                 },
                 'credit_balance': validated_data.get('amount'),
                 'invited_by': sender,
                 })
+            new_delegate.user.set_unusable_password()
             rxc_voice = Group.objects.get(name="RxC Voice")
             new_delegate.user.groups.add(rxc_voice)
             recipient_object = new_delegate
@@ -114,8 +117,6 @@ class TransferSerializer(serializers.ModelSerializer):
         sender.credit_balance -= validated_data.get('amount')
         sender.save()
         process.delegates.add(recipient_object)
-        # max's function
-        # mailcredits(validated_data.get('amount'), validated_data.get('sender'), recipient_data.user.email)
         transfer = Transfer.objects.create(
             sender=sender,
             recipient=recipient,
@@ -159,6 +160,14 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         user.groups.set(validated_data.get('groups', []))
         return user
+
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.set_unusable_password()
+        return instance
 
 
 class DelegateSerializer(serializers.ModelSerializer):
