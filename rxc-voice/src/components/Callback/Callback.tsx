@@ -7,20 +7,42 @@ import "./Callback.scss";
 
 function Callback() {
     const location = useLocation();
-    const code = new URLSearchParams(location.search).get('code');
-    const state = new URLSearchParams(location.search).get('state');
+    const github_code = new URLSearchParams(location.search).get('code');
+    const github_state = new URLSearchParams(location.search).get('state');
+    const twitter_token = new URLSearchParams(location.search).get('oauth_token');
+    const twitter_verifier = new URLSearchParams(location.search).get('oauth_verifier');
 
     const alert = useAlert()
 
 
     useEffect(() => {
-      if (!code) {
-        alert.error("Access denied. This link may be broken or expired.")
-      } else {
-        if (state !== WebService.githubState) {
-          alert.error("Access denied. This link may be broken or expired.")
+      if (!github_code) {
+        if (!twitter_token) {
+          alert.error("Access denied. This link may be broken or expired.");
         } else {
-          const params: any = { code: code, state: state, }
+          if (twitter_token !== WebService.oauthState) {
+            alert.error("Access denied. This link may be broken or expired.");
+          } else {
+            const params: any = {
+              oauth_token: twitter_token,
+              oauth_verifier: twitter_verifier,
+              oauth_secret: WebService.twitterOauthSecret,
+             }
+            WebService.getTwitterAccessToken(params).subscribe(async (data) => {
+              if (data.ok) {
+                console.log("got the token");
+                const twitterToken = await data.json();
+                console.log(twitterToken);
+                window.location.href = 'http://localhost:3000';
+              }
+            });
+          }
+        }
+      } else {
+        if (github_state !== WebService.oauthState) {
+          alert.error("Access denied. This link may be broken or expired.");
+        } else {
+          const params: any = { code: github_code, state: github_state, }
           WebService.getGithubToken(params).subscribe(async (data) => {
             if (data.ok) {
               console.log("got the token");
@@ -31,7 +53,7 @@ function Callback() {
                   console.log("verified");
                   const githubData = await data.json();
                   console.log(githubData);
-                  window.location.href = 'http://localhost:3000'
+                  window.location.href = 'http://localhost:3000';
                 }
               })
             } else {

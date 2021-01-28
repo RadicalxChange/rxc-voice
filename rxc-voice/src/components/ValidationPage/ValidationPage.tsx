@@ -40,7 +40,7 @@ function ValidationPage() {
           if (data.ok) {
             const user = await data.json();
             setUserData(user);
-              console.log(user);
+            console.log(user);
           } else {
             const error = await data.json();
             console.log(error);
@@ -82,12 +82,23 @@ function ValidationPage() {
                                   // redirect to 3rd party oauth app
                                   if (oauthProvider === OauthProvider.Github) {
                                     const stateUUID = uuid();
-                                    sessionStorage.setItem("githubState", stateUUID);
+                                    sessionStorage.setItem("oauthState", stateUUID);
                                     window.location.href =
                                       'https://github.com/login/oauth/authorize?client_id='
                                       + github_client_id
                                       + '&redirect_uri=http://localhost:3000/oauth2/callback&state='
                                       + stateUUID;
+                                  } else if (oauthProvider === OauthProvider.Twitter) {
+                                    WebService.getTwitterRequestToken()
+                                      .subscribe(async (data) => {
+                                          console.log(data);
+                                          sessionStorage.setItem("oauthState", data.oauth_token);
+                                          sessionStorage.setItem("twitterOauthSecret", data.oauth_secret);
+                                          window.location.href =
+                                            'https://api.twitter.com/oauth/authenticate?oauth_token='
+                                            + data.oauth_token;
+                                        }
+                                      );
                                   }
                                 } else {
                                   console.error("Error", await data.json());

@@ -16,6 +16,7 @@ class Delegate(models.Model):
     oauth_provider = models.CharField(max_length=3, choices=OAUTH_CHOICES,
                               default=GITHUB)
     oauth_token = models.CharField(max_length=256, blank=True, null=True)
+    oauth_token_secret = models.CharField(max_length=256, blank=True, null=True)
     public_username = models.CharField(max_length=64, blank=True, null=True)
     # Represented by path
     profile_pic = models.TextField(null=True, blank=True)
