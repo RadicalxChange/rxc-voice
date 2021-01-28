@@ -4,6 +4,8 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework import generics, mixins, status
+import oauth2 as oauth
+from urllib import parse
 from django.contrib.auth.models import Permission, Group, User
 from .serializers import (DelegateSerializer,
                           PermissionSerializer,
@@ -142,7 +144,6 @@ class CustomAuthToken(ObtainAuthToken):
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
             delegate = Delegate.objects.get(user=token.user)
-            print(delegate.user.id)
             return Response({
                 'token': token.key,
                 'id': delegate.pk,
@@ -164,8 +165,6 @@ class ValidateAuthToken(ObtainAuthToken):
         try:
             uid = force_text(urlsafe_base64_decode(request.data["uidb64"]))
             delegate = Delegate.objects.get(pk=uid)
-            print(json.dumps(request.data))
-            print(delegate)
         except(TypeError, ValueError, OverflowError, Delegate.DoesNotExist):
             delegate = None
         if delegate is not None and account_activation_token.check_token(delegate, request.data["token"]):
@@ -237,9 +236,64 @@ class GetGithubUser(generics.GenericAPIView):
                 # profile pic available at github_data["avatar_url"]
                 delegate.save()
 
-        # save github handle
         cors_header = {
             'Access-Control-Allow-Origin': '*',
         }
         r.headers.update(cors_header)
         return Response(r)
+
+
+class GetTwitterToken(generics.GenericAPIView):
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request, *args, **kwargs):
+        consumer_key = settings.TWITTER_CONSUMER_KEY
+        consumer_secret = settings.TWITTER_CONSUMER_SECRET
+        request_token_url = 'https://api.twitter.com/oauth/request_token'
+
+        consumer = oauth.Consumer(consumer_key, consumer_secret)
+        client = oauth.Client(consumer)
+
+        # Step 1: Get a request token. This is a temporary token that is used for
+        # having the user authorize an access token and to sign the request to obtain
+        # said access token.
+
+        resp, content = client.request(request_token_url, "GET")
+        if resp['status'] != '200':
+            raise Exception("Invalid response %s." % resp['status'])
+
+        print(dict(parse.parse_qsl(content.decode("utf-8"))))
+        return Response(
+            dict(parse.parse_qsl(content.decode("utf-8"))),
+            status=resp['status']
+        )
+
+    def post(self, request, *args, **kwargs):
+        consumer_key = settings.TWITTER_CONSUMER_KEY
+        consumer_secret = settings.TWITTER_CONSUMER_SECRET
+        access_token_url = 'https://api.twitter.com/oauth/access_token'
+
+        token = oauth.Token(request.data["oauth_token"],
+            request.data["oauth_secret"])
+        token.set_verifier(request.data["oauth_verifier"])
+
+        consumer = oauth.Consumer(consumer_key, consumer_secret)
+        client = oauth.Client(consumer, token)
+
+        resp, content = client.request(access_token_url, "POST")
+        if resp['status'] == '200':
+            delegate = Delegate.objects.filter(user__id=request.user.id).first()
+            twitter_data = dict(parse.parse_qsl(content.decode("utf-8")))
+            if delegate:
+                delegate.oauth_provider = "twt"
+                delegate.public_username = twitter_data["screen_name"]
+                delegate.oauth_token = request.data["oauth_token"]
+                delegate.oauth_token_secret = request.data["oauth_token_secret"]
+                Transfer.objects.filter(recipient=delegate.user.email).filter(status='P').update(status='A')
+                # get profile pic
+                delegate.save()
+
+        return Response(
+            twitter_data,
+            status=resp['status']
+        )

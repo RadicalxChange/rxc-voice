@@ -9,7 +9,8 @@ import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess } from "../uti
 const ROOT_URL = "https://voiceapi.radicalxchange.org";
 
 export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null;
-export const githubState = sessionStorage.getItem("githubState");
+export const oauthState = sessionStorage.getItem("oauthState");
+export const twitterOauthSecret = sessionStorage.getItem("twitterOauthSecret");
 
 export const loginUser = (user: any): Observable<any> => {
   return defer(() => {
@@ -239,11 +240,32 @@ export const getGithubToken = (creds: any): Observable<any> => {
     });
 };
 
-export const twitterAuthorize = (): Observable<any> => {
+export const getTwitterRequestToken = (): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/authorize-twitter/`)
+      fetch(`${ROOT_URL}/twitter/token`)
         .then((res) => res.json())
     );
   });
+};
+
+export const getTwitterAccessToken = (creds: any): Observable<any> => {
+    return defer(() => {
+      const user: string | null = sessionStorage.getItem("user");
+      return from<Promise<any>>(
+        fetch(`${ROOT_URL}/twitter/token/`, {
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Accept': 'application/json',
+            Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+         },
+          method: "POST",
+          body: JSON.stringify({
+            'oauth_token': creds.oauth_token,
+            'oauth_verifier': creds.oauth_verifier,
+            'oauth_secret': creds.oauth_secret,
+            }),
+        }),
+      );
+    });
 };
