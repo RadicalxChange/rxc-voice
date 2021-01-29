@@ -30,9 +30,7 @@ function Callback() {
              }
             WebService.getTwitterAccessToken(params).subscribe(async (data) => {
               if (data.ok) {
-                console.log("got the token");
                 const twitterToken = await data.json();
-                console.log(twitterToken);
                 window.location.href = 'https://voice.radicalxchange.org';
               }
             });
@@ -45,14 +43,10 @@ function Callback() {
           const params: any = { code: github_code, state: github_state, }
           WebService.getGithubToken(params).subscribe(async (data) => {
             if (data.ok) {
-              console.log("got the token");
               const githubToken = await data.json();
-              console.log(githubToken);
               WebService.verifyGithub(githubToken).subscribe(async (data) => {
                 if (data.ok) {
-                  console.log("verified");
                   const githubData = await data.json();
-                  console.log(githubData);
                   window.location.href = 'https://voice.radicalxchange.org';
                 }
               })

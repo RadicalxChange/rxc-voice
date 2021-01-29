@@ -77,8 +77,7 @@ function ValidationPage() {
                             }, getDelegateId(user))
                               .subscribe(async (data) => {
                                 if (data.ok) {
-                                  // const user = await data.json();
-                                  // setUserData(user);
+                                  // update user data in session storage?
                                   // redirect to 3rd party oauth app
                                   if (oauthProvider === OauthProvider.Github) {
                                     const stateUUID = uuid();
@@ -91,7 +90,6 @@ function ValidationPage() {
                                   } else if (oauthProvider === OauthProvider.Twitter) {
                                     WebService.getTwitterRequestToken()
                                       .subscribe(async (data) => {
-                                          console.log(data);
                                           sessionStorage.setItem("oauthState", data.oauth_token);
                                           sessionStorage.setItem("twitterOauthSecret", data.oauth_secret);
                                           window.location.href =
