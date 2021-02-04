@@ -262,7 +262,6 @@ class GetTwitterToken(generics.GenericAPIView):
         if resp['status'] != '200':
             raise Exception("Invalid response %s." % resp['status'])
 
-        print(dict(parse.parse_qsl(content.decode("utf-8"))))
         return Response(
             dict(parse.parse_qsl(content.decode("utf-8"))),
             status=resp['status']
@@ -281,18 +280,18 @@ class GetTwitterToken(generics.GenericAPIView):
         client = oauth.Client(consumer, token)
 
         resp, content = client.request(access_token_url, "POST")
+        twitter_data = dict(parse.parse_qsl(content.decode("utf-8")))
         if resp['status'] == '200':
             delegate = Delegate.objects.filter(user__id=request.user.id).first()
-            twitter_data = dict(parse.parse_qsl(content.decode("utf-8")))
             if delegate:
                 delegate.oauth_provider = "twt"
                 delegate.public_username = twitter_data["screen_name"]
-                delegate.oauth_token = request.data["oauth_token"]
-                delegate.oauth_token_secret = request.data["oauth_token_secret"]
+                delegate.oauth_token = twitter_data["oauth_token"]
+                delegate.oauth_token_secret = twitter_data["oauth_token_secret"]
                 Transfer.objects.filter(recipient=delegate.user.email).filter(status='P').update(status='A')
                 # get profile pic
                 delegate.save()
-                
+
         return Response(
             twitter_data,
             status=resp['status']
