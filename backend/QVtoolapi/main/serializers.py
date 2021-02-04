@@ -37,7 +37,7 @@ class VoteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         election = Election.objects.get(pk=self.context.get("election_id"))
         sender = validated_data['sender']
-        assign_perm('can_view_results', sender, election)
+        assign_perm('can_view_results', sender.user, election)
 
         proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
         amount = int(validated_data['amount'])

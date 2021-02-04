@@ -78,7 +78,7 @@ class Vote(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     # When a user deletes their account, their user object is not deleted.
     # "is_active" field is set to 'False'.
-    sender = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    sender = models.ForeignKey(Delegate, null=True, on_delete=models.SET_NULL)
     proposal = models.ForeignKey(Proposal, on_delete=models.SET_NULL,
                                  null=True, blank=False)
     amount = models.DecimalField(

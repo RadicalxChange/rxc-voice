@@ -149,9 +149,15 @@ export const fetchElection = (id: string): Observable<Election> => {
 
 export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
   return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
     return from<Promise<Proposal[]>>(
-      fetch(`${ROOT_URL}/elections/${election_id}/proposals/`)
-        .then((res) => res.json())
+      fetch(`${ROOT_URL}/elections/${election_id}/proposals/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "GET",
+      }).then((res) => res.json())
         .then(mapToProposals),
     );
   });
@@ -181,9 +187,13 @@ export const fetchVotes = (election_id: number): Observable<Vote[]> => {
 
 export const postVotes = (votes: any, election_id: number): Observable<any> => {
   return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
     return from<Promise<any>>(
       fetch(`${ROOT_URL}/elections/${election_id}/votes/`, {
-        headers: { "Content-Type": "application/json; charset=utf-8" },
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
         method: "POST",
         body: JSON.stringify(votes),
       }),
@@ -196,8 +206,9 @@ export const postTransfer = (transfers: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
       fetch(`${ROOT_URL}/transfers/`, {
-        headers: { "Content-Type": "application/json; charset=utf-8",
-        Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
         },
         method: "POST",
         body: JSON.stringify(transfers),
