@@ -87,7 +87,7 @@ class TransferSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         process = validated_data.get('process')
         if process.conversation.start_date < timezone.now():
-            raise ValidationError()
+            raise ValidationError("Invalid Transfer: Delegation Stage is concluded.")
         recipient = validated_data.get('recipient')
         sender = validated_data.get('sender')
         recipient_object = Delegate.objects.filter(user__email=recipient).first()

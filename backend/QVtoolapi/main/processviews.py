@@ -6,6 +6,8 @@ from .permissions import ProcessPermission, TransferPermission
 from .models import Process, Transfer, Delegate
 from guardian.shortcuts import assign_perm
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from .services import match_transfers
 
 
 class ProcessList(mixins.CreateModelMixin,
@@ -67,6 +69,9 @@ class ProcessDetail(mixins.RetrieveModelMixin,
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
+        # eventually need a better way to do this to avoid async problems
+        if (instance.conversation.start_date < timezone.now()) and (instance.matching_pool != 0):
+            match_transfers(instance, instance.matching_pool)
         election_object = instance.election
         serializer = self.get_serializer(instance)
         response_election = {
