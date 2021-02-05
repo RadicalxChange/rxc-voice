@@ -56,6 +56,20 @@ export const modifyDelegate = (moddata: any, id: string): Observable<any> => {
   });
 };
 
+export const getDelegate = (id: string): Observable<any> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/delegates/${id}/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      })
+    );
+  });
+};
+
 export const validateToken = (creds: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(

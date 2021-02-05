@@ -25,7 +25,7 @@ function Home() {
   return (
     <div className="home">
       <div className="about">
-        <h1 className="title">RxC Voice</h1>
+        <h2 className="title">Welcome to RxC Voice</h2>
         <span>
           Welcome to RxC Voice, RadicalxChange's platform for collective
           decision making! The progress bars on the left represent where we are

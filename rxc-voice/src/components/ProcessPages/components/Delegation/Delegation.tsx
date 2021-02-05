@@ -6,9 +6,9 @@ import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../../../models/Delegate";
+import { getId } from "../../../../utils";
 
 import "./Delegation.scss";
-import { getId } from "../../../../utils";
 
 function Delegation() {
   const { processId } = useParams<ProcessPageRouteParams>();
@@ -37,13 +37,6 @@ function Delegation() {
       <div className="delg-page">
         <div className="content-header">
           <h2>Delegation</h2>
-          <div className="credit-balance">
-            {(sessionStorage.getItem("user") ? (
-                JSON.parse(sessionStorage.getItem("user")!).credit_balance
-              ) : (
-                "0"
-              )) + " credits"}
-          </div>
         </div>
         <div className="delegation-content">
           {getDelegates(selectedProcess)!.length ? (

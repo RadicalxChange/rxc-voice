@@ -9,6 +9,13 @@
     }
   }
 
+  .app-title {
+    font-family: var(--primaryFont);
+    font-size: 8vw;
+    line-height: 7vw;
+    margin-right: auto;
+  }
+
   .nav {
     display: flex;
     justify-content: space-between;
@@ -18,7 +25,12 @@
     text-transform: uppercase;
 
     .nav-link {
-      margin-bottom: 4em;
+      margin-bottom: auto;
+    }
+    .credit-balance {
+      // text-transform: none;
+      margin: 0 0 auto 0;
+      font-size: inherit;
     }
   }
 }
@@ -26,7 +38,7 @@
 @media only screen and (min-width: 768px) {
   .App-header {
     display: grid;
-    grid-template-columns: 1fr 25%;
+    grid-template-columns: 1fr 40%;
     text-align: left;
 
     .logo-container {

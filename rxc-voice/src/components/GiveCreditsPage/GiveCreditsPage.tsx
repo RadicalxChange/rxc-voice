@@ -4,21 +4,26 @@ import { WebService } from "../../services";
 import moment from "moment";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
-import { getRecipient } from "../../utils";
+import { getId, getRecipient, getTitle } from "../../utils";
 
 import "./GiveCreditsPage.scss";
+import { Link } from "react-router-dom";
+import slugify from "react-slugify";
 
 function GiveCreditsPage() {
     const { processId } = useParams<any>();
-    const { setColor, fetchProcesses } = useContext(ActionContext);
-    const { stagedTransfer } = useContext(StateContext);
+    const { setColor, selectProcess, updateCreditBalance } = useContext(ActionContext);
+    const { stagedTransfer, creditBalance, selectedProcess } = useContext(StateContext);
     const [recipientEmail, setRecipientEmail] = useState("");
     const [amount, setAmount] = useState("");
     const [showAbout, setShowAbout] = useState(false);
+    const [transferSuccess, setTransferSuccess] = useState(false);
 
     useEffect(() => {
       setColor(BgColor.White)
-      fetchProcesses();
+      if (processId && (!selectedProcess || (getId(selectedProcess) !== +processId))) {
+        selectProcess(processId);
+      }
       if (stagedTransfer) {
         if (getRecipient(stagedTransfer)) {
           setRecipientEmail(recipientEmail => getRecipient(stagedTransfer).public_username);
@@ -39,7 +44,13 @@ function GiveCreditsPage() {
           process: processId,
         }).subscribe(async (data) => {
           if (data.ok) {
-            console.log(data);
+            selectProcess(processId);
+            if (creditBalance !== null) {
+              updateCreditBalance(creditBalance! - (+amount));
+            }
+            setTransferSuccess(true);
+            setRecipientEmail("");
+            setAmount("");
           } else {
             const error = await data.json();
             console.log(error);
@@ -51,7 +62,7 @@ function GiveCreditsPage() {
     return (
         <div className="give-credits-page">
           <div className="about">
-            <h1 className="title">RxC Voice</h1>
+            <h2 className="title">Giving Credits</h2>
             <span>
               You can use the form to the left to send some of your voice
               credits to another person. If you want to send credits to someone
@@ -132,6 +143,13 @@ function GiveCreditsPage() {
               >
               submit
             </button>
+            <p className={`transfer-success ${!transferSuccess ? "hide" : ""}`}>Transfer complete!</p>
+            <Link
+            to={`/${processId}/${slugify(getTitle(selectedProcess))}/Delegation`}
+            className="back-button"
+            >
+            Back to Delegation
+            </Link>
           </div>
         </div>
     );

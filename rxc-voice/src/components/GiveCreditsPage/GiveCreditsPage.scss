@@ -7,8 +7,7 @@
     grid-column: 1 / -1;
 
     .title {
-      font-family: var(--primaryFont);
-      font-size: 5vw;
+      font-size: 2vw;
       margin: 2vh 0 2vh 0;
     }
 
@@ -88,6 +87,23 @@
   }
   .submit-button:focus {
     outline: none;
+  }
+
+  .transfer-success {
+    display: inline-block;
+  }
+  .hide {
+    display: none;
+  }
+
+  .back-button {
+    display: block;
+    text-align: left;
+    margin-top: 4rem;
+    text-decoration: underline;
+  }
+  .back-button:hover {
+    text-decoration: none;
   }
 }
 
