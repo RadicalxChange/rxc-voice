@@ -35,15 +35,14 @@ function Election() {
     }
   };
 
-  const initCredits: number = 0;
+  const { selectedProcess, creditBalance } = useContext(StateContext);
+  const { selectProcess, setColor, updateCreditBalance } = useContext(ActionContext);
   const { processId } = useParams<ProcessPageRouteParams>();
   const [election, setElection] = useState(standInElection);
-  const [creditsRemaining, setCreditsRemaining] = useState(initCredits);
+  const [creditsRemaining, setCreditsRemaining] = useState(Number(creditBalance));
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
-  const { selectedProcess } = useContext(StateContext);
-  const { selectProcess, setColor } = useContext(ActionContext);
 
   useEffect(() => {
     setColor(BgColor.White);
@@ -56,8 +55,6 @@ function Election() {
           setElection(election => thisElection!);
           if (thisElection.show_results) {
             setViewResults(true);
-          } else {
-            setCreditsRemaining(WebService.userobj.credit_balance);
           }
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
@@ -78,7 +75,7 @@ function Election() {
 
   const onChangeVoteCount = (change: any) => {
     setCreditsRemaining(creditsRemaining =>
-      Number(creditsRemaining) - Number(change.cost));
+      creditsRemaining - Number(change.cost));
     voteDispatch({ proposal: change.proposal, amount: change.amount, });
   };
 
@@ -94,6 +91,9 @@ function Election() {
     WebService.postVotes(postData, election.id).subscribe(async (data) => {
                     if (data.ok) {
                       setViewResults(true);
+                      if (creditBalance !== null) {
+                        updateCreditBalance(creditsRemaining);
+                      }
                     } else {
                       const error = await data.json();
                       Object.keys(error).forEach((key) => {
@@ -144,7 +144,7 @@ function Election() {
             <div className="available-credits-widget">
               <h3 className="available-credits-text">Available Voice Credits</h3>
               <p className="credits-remaining">
-                {creditsRemaining}/{WebService.userobj.credit_balance} voice credits remaining
+                {creditsRemaining}/{creditBalance} voice credits remaining
               </p>
             </div>
           </div>
