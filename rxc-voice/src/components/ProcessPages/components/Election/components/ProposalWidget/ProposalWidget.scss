@@ -1,33 +1,51 @@
 .proposal-widget {
   margin: 15vw 0 10vw 0;
-  display: grid;
-  grid-template-columns: 50vw 1fr;
 
   .proposal-info {
-    grid-column: 1;
-    margin: auto 0 auto 0;
+    display: block;
+    margin: 1rem 0 1rem 0;
   }
 
-  .counter-container {
-    grid-column: 2;
-    text-align: center;
+  .widget {
+    display: grid;
+    grid-template-columns: auto auto 1fr 5rem;
 
-    .arrow {
-      border: none;
-      outline: none;
-      background: inherit;
-      cursor: pointer;
+    .blocks {
+      grid-column: 1;
+      margin: auto 1vw auto 4vw;
     }
-    .arrow:active {
-      .svg {
-        .path {
-          stroke-width: 2.5;
+
+    .voice-credits {
+      grid-column: 2;
+      margin: auto 1vw auto 1vw;
+    }
+
+    .equals {
+      grid-column: 3;
+      margin: auto 8vw auto auto;
+    }
+
+    .counter-container {
+      grid-column: 4;
+      text-align: center;
+
+      .arrow {
+        border: none;
+        outline: none;
+        background: inherit;
+        cursor: pointer;
+      }
+      .arrow:active {
+        .svg {
+          .path {
+            stroke-width: 2.5;
+          }
         }
       }
-    }
 
-    .vote-counter {
-      margin: 2vw;
+      .vote-counter {
+        margin: 2vw;
+      }
     }
   }
 }
@@ -39,10 +57,14 @@
     .proposal-info {
     }
 
-    .counter-container {
+    .widget {
+      grid-template-columns: auto 1fr 8rem;
 
-      .vote-counter {
-        margin: 2vw;
+      .counter-container {
+
+        .vote-counter {
+          margin: 2vw;
+        }
       }
     }
   }

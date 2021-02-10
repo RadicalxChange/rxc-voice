@@ -1,5 +1,5 @@
 .App-header {
-  margin-bottom: 10vh;
+  margin-bottom: 8vh;
 
   .logo-container {
     width: 91vw;
@@ -11,8 +11,7 @@
 
   .app-title {
     font-family: var(--primaryFont);
-    font-size: 8vw;
-    line-height: 7vw;
+    font-size: 20vw;
     margin-right: auto;
   }
 
@@ -21,7 +20,7 @@
     justify-content: space-between;
     margin: 3em 0 0 0;
     padding: 0;
-    font-size: 3.5vw;
+    font-size: 4vw;
     text-transform: uppercase;
 
     .nav-link {
@@ -40,6 +39,7 @@
     display: grid;
     grid-template-columns: 1fr 40%;
     text-align: left;
+    margin-bottom: 10vh;
 
     .logo-container {
       width: 39.31vw;
@@ -47,6 +47,11 @@
       .App-logo {
         width: 39.31vw;
       }
+    }
+
+    .app-title {
+      font-size: 8vw;
+      line-height: 7vw;
     }
 
     .nav {

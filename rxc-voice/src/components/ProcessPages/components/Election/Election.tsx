@@ -39,10 +39,14 @@ function Election() {
   const { selectProcess, setColor, updateCreditBalance } = useContext(ActionContext);
   const { processId } = useParams<ProcessPageRouteParams>();
   const [election, setElection] = useState(standInElection);
-  const [creditsRemaining, setCreditsRemaining] = useState(Number(creditBalance));
+  const [creditsSpent, setCreditsSpent] = useState(0);
+  const creditsRemaining = creditBalance ? (creditBalance! - creditsSpent) : 0
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
+  console.log(creditBalance);
+  // console.log(creditsRemaining);
+  console.log(Number(creditBalance))
 
   useEffect(() => {
     setColor(BgColor.White);
@@ -74,8 +78,8 @@ function Election() {
  }, [processId, selectedProcess]);
 
   const onChangeVoteCount = (change: any) => {
-    setCreditsRemaining(creditsRemaining =>
-      creditsRemaining - Number(change.cost));
+    setCreditsSpent(creditsSpent =>
+      creditsSpent + Number(change.cost));
     voteDispatch({ proposal: change.proposal, amount: change.amount, });
   };
 
