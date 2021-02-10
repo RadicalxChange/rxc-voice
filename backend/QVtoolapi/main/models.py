@@ -50,6 +50,9 @@ class Election(models.Model):
         default=99, blank=True, max_digits=4, decimal_places=0)
     groups = models.ManyToManyField(Group, blank=True, default=[])
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         permissions = [
             ("can_vote", "Can vote"),
@@ -73,6 +76,9 @@ class Proposal(models.Model):
     votes_received = models.DecimalField(
         default=0, max_digits=10, decimal_places=0, editable=False)
 
+    def __str__(self):
+        return self.title
+
 
 class Vote(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
@@ -84,6 +90,11 @@ class Vote(models.Model):
     amount = models.DecimalField(
         default=0, max_digits=4, decimal_places=0)
     date = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return str(self.sender) + " " + str(self.amount) + " -> " + str(self.proposal)
+
+
 
 
 class Conversation(models.Model):
@@ -140,6 +151,9 @@ class Process(models.Model):
     status = models.CharField(max_length=14, choices=STATUS_CHOICES,
                               default=INTRODUCTION)
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         permissions = [
             ("can_view", "Can view"),
@@ -165,3 +179,6 @@ class Transfer(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
                               default=PENDING)
     process = models.ForeignKey(Process, null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return str(self.sender) + " " + str(self.amount) + " -> " + self.recipient
