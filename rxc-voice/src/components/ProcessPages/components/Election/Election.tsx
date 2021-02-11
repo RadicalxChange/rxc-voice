@@ -44,9 +44,6 @@ function Election() {
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
-  console.log(creditBalance);
-  // console.log(creditsRemaining);
-  console.log(Number(creditBalance))
 
   useEffect(() => {
     setColor(BgColor.White);
