@@ -3,32 +3,12 @@
   text-align: left;
 
   .sticky-header {
-    margin: auto;
-
-    .content-header {
-      margin-top: 20vw;
-    }
-
-    .available-tokens-widget {
-
-      .available-tokens-text {
-        width: 150px;
-        display: inline-block;
-      }
-
-      .tokens-remaining {
-        display: inline-block;
-        width: 80%;
-        text-align: right;
-      }
-    }
+    margin-top: 20vw;
   }
+
   .button-container {
     text-align: center;
 
-    .votes-cast {
-
-    }
     .submit-button {
       display: block;
       margin: 1em auto 1em auto;
@@ -49,22 +29,13 @@
     width: 60vw;
 
     .sticky-header {
-
-      .content-header {
-        margin-top: 5vw;
-      }
+      margin-top: 5vw;
     }
 
     .button-container {
       position: fixed;
       left: 70vw;
       top: 40vw;
-
-      .votes-cast {
-
-      }
-      .submit-button {
-      }
     }
   }
 }

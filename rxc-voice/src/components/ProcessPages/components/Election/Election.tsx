@@ -12,6 +12,7 @@ import { ActionContext, StateContext } from "../../../../hooks";
 import "./Election.scss";
 import { BgColor } from "../../../../models/BgColor";
 import ProposalResults from "./components/ProposalResults";
+import RemainingCredits from "./components/RemainingCredits";
 
 function Election() {
   const [votesCast, setVotesCast] = useState(0);
@@ -141,13 +142,11 @@ function Election() {
     return (
         <div className="voting-page">
           <div className="sticky-header">
-            <h2 className="content-header">Election</h2>
-            <div className="available-credits-widget">
-              <h3 className="available-credits-text">Available Voice Credits</h3>
-              <p className="credits-remaining">
-                {creditsRemaining}/{creditBalance} voice credits remaining
-              </p>
-            </div>
+            <h2>Election</h2>
+            <RemainingCredits
+              creditsRemaining={creditsRemaining}
+              creditBalance={creditBalance}
+            />
           </div>
           <hr />
           <ul>
@@ -160,7 +159,7 @@ function Election() {
             ))}
           </ul>
           <div className="button-container">
-            <label className="votes-cast">total votes cast: {votesCast}</label>
+            <label>total votes cast: {votesCast}</label>
             <button
               type="button"
               className="submit-button"
