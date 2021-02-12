@@ -32,7 +32,7 @@ urlpatterns = [
     path('processes/<int:pk>/', ProcessDetail.as_view(), name='process-detail'),
 
     # Election APIs
-    path('transfers/', TransferList.as_view(), name='transfer-list'),
+    path('processes/<int:pk>/transfers/', TransferList.as_view(), name='transfer-list'),
     # path('delegates/<int:pk>/transfers/', TransferList.as_view(),
     #      name='transfer-list'),
     path('elections/', ElectionList.as_view(), name='election-list'),

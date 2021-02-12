@@ -2,7 +2,6 @@ import { Observable, defer, from } from "rxjs";
 import { Election } from "../models/Election";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
-// import { Transfer } from "../models/Transfer";
 import { Vote } from "../models/Vote";
 import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess } from "../utils";
 
@@ -227,6 +226,20 @@ export const postTransfer = (transfers: any): Observable<any> => {
         method: "POST",
         body: JSON.stringify(transfers),
       }),
+    );
+  });
+};
+
+export const fetchTransfers = (process_id: string): Observable<any> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/processes/${process_id}/transfers`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      }).then((res) => res.json())
     );
   });
 };

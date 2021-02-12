@@ -15,7 +15,6 @@ function Deliberation() {
   const { selectedProcess } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
   const conversation = getConversation(selectedProcess);
-  console.log(conversation);
 
   useEffect(() => {
     setColor(BgColor.White);

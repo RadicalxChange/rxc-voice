@@ -105,7 +105,7 @@ class TransferPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'GET':
-            return request.user.is_authenticated and request.user.is_staff
+            return request.user.is_authenticated
         elif request.method == 'POST':
             return True
         elif request.method in ['PUT', 'PATCH']:
@@ -114,12 +114,6 @@ class TransferPermission(permissions.BasePermission):
             return request.user.is_authenticated and request.user.is_staff
         else:
             return True
-
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        return obj.sender == request.user
 
 
 class ConversationPermission(permissions.BasePermission):

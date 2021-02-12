@@ -59,7 +59,7 @@ docker exec -it QVtool_api_1 QVtoolapi/manage.py createsuperuser
 
 ## known bugs
 
-create-election page:
+qv-app/src/components/ElectionCreator:
 deleting one ballot fires onClick twice, deletes top element every time.
 same thing for deleting voter email addresses.
 

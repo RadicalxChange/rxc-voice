@@ -165,6 +165,8 @@ class Transfer(models.Model):
     sender = models.ForeignKey(
         Delegate, related_name="sender", null=True, on_delete=models.SET_NULL)
     recipient = models.CharField(max_length=64, blank=True, null=True)
+    recipient_object = models.ForeignKey(
+        Delegate, related_name="recipient_object", null=True, blank=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0)
     date = models.DateTimeField(blank=False)
@@ -182,3 +184,16 @@ class Transfer(models.Model):
 
     def __str__(self):
         return str(self.sender) + " " + str(self.amount) + " -> " + self.recipient
+
+
+class MatchPayment(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    recipient = models.ForeignKey(
+        Delegate, null=True, on_delete=models.SET_NULL)
+    amount = models.DecimalField(
+        default=0, blank=True, max_digits=6, decimal_places=0)
+    date = models.DateTimeField(blank=False)
+    process = models.ForeignKey(Process, null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return str(self.process) + " " + str(self.amount) + " -> " + str(self.recipient)

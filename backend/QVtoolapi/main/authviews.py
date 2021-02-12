@@ -233,12 +233,11 @@ class GetGithubUser(generics.GenericAPIView):
                 delegate.oauth_provider = "git"
                 delegate.public_username = github_data["login"]
                 delegate.oauth_token = request.data["access_token"]
-                pending_transfers = Transfer.objects.filter(recipient=delegate.user.email).filter(status='P')
+                # profile pic available at github_data["avatar_url"]
+                pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
                 for t in pending_transfers:
                     t.update(status='A')
-                    t.recipient = delegate.public_username
                     t.save()
-                # profile pic available at github_data["avatar_url"]
                 delegate.save()
 
         cors_header = {
@@ -293,10 +292,9 @@ class GetTwitterToken(generics.GenericAPIView):
                 delegate.public_username = twitter_data["screen_name"]
                 delegate.oauth_token = twitter_data["oauth_token"]
                 delegate.oauth_token_secret = twitter_data["oauth_token_secret"]
-                pending_transfers = Transfer.objects.filter(recipient=delegate.user.email).filter(status='P')
+                pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
                 for t in pending_transfers:
                     t.update(status='A')
-                    t.recipient = delegate.public_username
                     t.save()
                 # get profile pic
                 delegate.save()

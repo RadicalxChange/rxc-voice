@@ -15,6 +15,7 @@ import delg_white from '../assets/bars/bar_delegation_white.svg';
 import delb_white from '../assets/bars/bar_deliberation_white.svg';
 import cur_white from '../assets/bars/bar_curation_white.svg';
 import elec from '../assets/bars/bar_election.svg';
+import { Transfer } from "../models/Transfer";
 
 export const standInElection = (): Election => ({
   id: 0,
@@ -81,6 +82,23 @@ export const mapToVote = (vote: Vote): Vote => {
     proposal: vote.proposal,
     amount: vote.amount,
     date: vote.date,
+  };
+};
+
+export const mapToTransfers = (transfers: any[]): Transfer[] => {
+  return transfers.map(mapToTransfer);
+};
+
+export const mapToTransfer = (transfer: any): Transfer => {
+  console.log(transfer);
+  return {
+    id: transfer.id,
+    sender: '',
+    recipient: '',
+    amount: transfer.amount,
+    date: '',
+    process: transfer.process,
+    user_is_sender: transfer.user_is_sender,
   };
 };
 

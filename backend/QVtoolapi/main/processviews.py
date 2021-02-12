@@ -1,9 +1,10 @@
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, mixins, status
+from django.db.models import Q
 from .serializers import ProcessSerializer, TransferSerializer
 from .permissions import ProcessPermission, TransferPermission
-from .models import Process, Transfer, Delegate
+from .models import Process, Transfer, Delegate, MatchPayment
 from guardian.shortcuts import assign_perm
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -70,8 +71,15 @@ class ProcessDetail(mixins.RetrieveModelMixin,
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
         # eventually need a better way to do this to avoid async problems
-        if (instance.conversation.start_date < timezone.now()) and (instance.matching_pool != 0):
+        if (timezone.now() > instance.conversation.start_date) and (instance.matching_pool != 0):
             match_transfers(instance, instance.matching_pool)
+            if timezone.now() > instance.election.start_date:
+                instance.status = 'Election'
+            else:
+                instance.status = 'Deliberation'
+        else:
+            instance.status = 'Delegation'
+        instance.save()
         election_object = instance.election
         serializer = self.get_serializer(instance)
         response_election = {
@@ -101,10 +109,34 @@ class TransferList(mixins.CreateModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        process = self.kwargs['pk']
+        transfers = self.get_queryset().filter(Q(process__id=process), Q(recipient_object__user=request.user) | Q(sender__user=request.user))
+        print(transfers)
+        page = self.paginate_queryset(transfers)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(transfers, many=True)
+        result_transfers = []
+        for transfer in serializer.data:
+            t = {
+                'user_is_sender': (transfer["sender"]["user"]["id"] == request.user.id)
+                }
+            print(transfer["sender"]["user"]["id"] == request.user.id)
+            t.update(transfer)
+            t.pop("sender")
+            result_transfers.append(t)
+        match = MatchPayment.objects.all().filter(Q(recipient__user=request.user), Q(process__id=process))
+        result = {}
+        result["transfers"] = result_transfers
+        result["match"] = match.amount if match else 0
+        return Response(result)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(
+            data=request.data,
+            context={'request': request}
+            )
         sender_object = Delegate.objects.all().filter(pk=request.data.get('sender')).first()
         if not sender_object:
             raise ValidationError("Invalid sender: delegate not found.")
