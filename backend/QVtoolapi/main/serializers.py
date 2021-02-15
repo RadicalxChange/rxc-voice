@@ -45,7 +45,7 @@ class VoteSerializer(serializers.ModelSerializer):
         proposal.sum_contributions = proposal.sum_contributions + (amount * amount)
         proposal.num_contributors = proposal.num_contributors + 1
         proposal.save()
-        sender.credit_balance -= amount
+        sender.credit_balance -= amount * amount
         sender.save()
 
         vote = Vote.objects.create(
