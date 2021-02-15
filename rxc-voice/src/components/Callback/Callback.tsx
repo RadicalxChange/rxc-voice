@@ -32,7 +32,7 @@ function Callback() {
               if (data.ok) {
                 console.log("got the token");
                 const twitterToken = await data.json();
-                window.location.href = 'http://localhost:3000';
+                window.location.href = 'https://voice.radicalxchange.org';
               }
             });
           }
@@ -50,7 +50,7 @@ function Callback() {
                 if (data.ok) {
                   console.log("verified");
                   const githubData = await data.json();
-                  window.location.href = 'http://localhost:3000';
+                  window.location.href = 'https://voice.radicalxchange.org';
                 }
               })
             } else {
