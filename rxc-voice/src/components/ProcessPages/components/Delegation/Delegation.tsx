@@ -23,6 +23,7 @@ function Delegation() {
   const [showTransfers, setShowTransfers] = useState(false);
   const [transfers, setTransfers] = useState(new Array<Transfer>());
   const [match, setMatch] = useState(0);
+  const delegationOngoing = conversation && moment() < moment(conversation.start_date);
 
   useEffect(() => {
     setColor(BgColor.Yellow);
@@ -80,13 +81,17 @@ function Delegation() {
         )}
         <div className="delegation-content">
           <h2>Delegation</h2>
-          <p className="invite">Want to invite someone to participate in the decision that isn't already here?</p>
-          <Link
-            to={`/${processId}/give-credits`}
-            className="invite-link"
-          >
-          give them credits
-          </Link>
+          {delegationOngoing ? (
+            <><p className="invite">Want to invite someone to participate in the decision that isn't already here?</p>
+              <Link
+                to={`/${processId}/give-credits`}
+                className="invite-link"
+              >
+                give them credits
+              </Link></>
+          ) : (
+            <></>
+          )}
           {getDelegates(selectedProcess)!.length ? (
             <ul className="delegate-list">
               {getDelegates(selectedProcess)!.map((delegate: Delegate) => (
