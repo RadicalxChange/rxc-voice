@@ -236,7 +236,7 @@ class GetGithubUser(generics.GenericAPIView):
                 # profile pic available at github_data["avatar_url"]
                 pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
                 for t in pending_transfers:
-                    t.update(status='A')
+                    t.status='A'
                     t.save()
                 delegate.save()
 
@@ -294,7 +294,7 @@ class GetTwitterToken(generics.GenericAPIView):
                 delegate.oauth_token_secret = twitter_data["oauth_token_secret"]
                 pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
                 for t in pending_transfers:
-                    t.update(status='A')
+                    t.status='A'
                     t.save()
                 # get profile pic
                 delegate.save()
