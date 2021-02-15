@@ -28,7 +28,7 @@ function Header() {
   return (
     <div className="App-header">
       <a
-      href='http://localhost:3000'
+      href='https://voice.radicalxchange.org'
       className="app-title"
       >
         RxC VOICE
