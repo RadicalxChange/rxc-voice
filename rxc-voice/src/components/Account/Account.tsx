@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { ActionContext } from "../../hooks";
+import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import defaultPic from '../../assets/icons/profile_icon.svg';
 
@@ -7,11 +7,24 @@ import "./Account.scss";
 import { WebService } from "../../services";
 
 function Account() {
-  const { setColor, logoutUser } = useContext(ActionContext);
+  const { setColor, logoutUser, updateCreditBalance } = useContext(ActionContext);
+    const { creditBalance } = useContext(StateContext);
   const user = WebService.userobj;
 
   useEffect(() => {
     setColor(BgColor.Yellow);
+
+    if (creditBalance === null) {
+      const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
+      if (user) {
+        WebService.getDelegate(user.id).subscribe(async (data: any) => {
+          if (data.ok) {
+            const delegate = await data.json();
+            updateCreditBalance(delegate.credit_balance);
+          }
+        });
+      }
+    }
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -28,8 +41,8 @@ function Account() {
           )}
           <div className="info">
             <h3 className="name">{user.first_name + " " + user.last_name}</h3>
-            <h3 className="email">{user.public_username}</h3>
-            <h3 className="credit-balance">Credit Balance: {user.credit_balance}</h3>
+            <h3 className="email">{user.email}</h3>
+            <h3 className="credit-balance">Credit Balance: {creditBalance}</h3>
           </div>
         </div>
       ) : (

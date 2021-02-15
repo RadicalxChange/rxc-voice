@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import defaultPic from '../../../../../../assets/icons/profile_icon.svg';
@@ -7,6 +8,8 @@ import "./DelegateCard.scss";
 
 function DelegateCard(props: any) {
   const { stageTransfer } = useContext(ActionContext);
+  const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
+  const delegationOngoing = moment() < moment(props.process.conversation.start_date);
 
   return (
     <li className="delegate-card" key={props.delegate.id} >
@@ -20,17 +23,21 @@ function DelegateCard(props: any) {
         <h3 className="username">{props.delegate.public_username}</h3>
         <h3 className="credit-balance">Credit Balance: {props.delegate.credit_balance}</h3>
       </div>
-      <Link
-      to={`/${props.process.id}/give-credits`}
-      className="give-credits"
-      onClick={(e) => stageTransfer({
-        sender: sessionStorage.getItem("user") ? (JSON.parse(sessionStorage.getItem("user")!).id) : (null),
-        recipient: props.delegate,
-        process: props.process.id,
-      })}
-      >
-      give credits
-      </Link>
+      {(delegationOngoing && (props.delegate.public_username !== (user ? user.public_username : null))) ? (
+        <Link
+        to={`/${props.process.id}/give-credits`}
+        className="give-credits"
+        onClick={(e) => stageTransfer({
+          sender: user ? user.id : null,
+          recipient: props.delegate,
+          process: props.process.id,
+        })}
+        >
+        give credits
+        </Link>
+      ) : (
+        <></>
+      )}
     </li>
   );
 }

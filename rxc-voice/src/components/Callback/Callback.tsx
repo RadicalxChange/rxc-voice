@@ -30,8 +30,9 @@ function Callback() {
              }
             WebService.getTwitterAccessToken(params).subscribe(async (data) => {
               if (data.ok) {
+                console.log("got the token");
                 const twitterToken = await data.json();
-                window.location.href = 'https://voice.radicalxchange.org';
+                window.location.href = 'http://localhost:3000';
               }
             });
           }
@@ -43,11 +44,13 @@ function Callback() {
           const params: any = { code: github_code, state: github_state, }
           WebService.getGithubToken(params).subscribe(async (data) => {
             if (data.ok) {
+              console.log("got the token");
               const githubToken = await data.json();
               WebService.verifyGithub(githubToken).subscribe(async (data) => {
                 if (data.ok) {
+                  console.log("verified");
                   const githubData = await data.json();
-                  window.location.href = 'https://voice.radicalxchange.org';
+                  window.location.href = 'http://localhost:3000';
                 }
               })
             } else {

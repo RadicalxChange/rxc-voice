@@ -149,12 +149,13 @@ class CustomAuthToken(ObtainAuthToken):
                 'id': delegate.pk,
                 'username': token.user.username,
                 'email': token.user.email,
+                'public_username': delegate.public_username,
                 # 'phone_number': token.user.phone_number,
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
                 'profile_pic': delegate.profile_pic,
                 # 'invited_by': token.user.invited_by,
-                'credit_balance': delegate.credit_balance,
+                # 'credit_balance': delegate.credit_balance,
             })
 
 
@@ -232,8 +233,11 @@ class GetGithubUser(generics.GenericAPIView):
                 delegate.oauth_provider = "git"
                 delegate.public_username = github_data["login"]
                 delegate.oauth_token = request.data["access_token"]
-                Transfer.objects.filter(recipient=delegate.user.email).filter(status='P').update(status='A')
                 # profile pic available at github_data["avatar_url"]
+                pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
+                for t in pending_transfers:
+                    t.update(status='A')
+                    t.save()
                 delegate.save()
 
         cors_header = {
@@ -288,7 +292,10 @@ class GetTwitterToken(generics.GenericAPIView):
                 delegate.public_username = twitter_data["screen_name"]
                 delegate.oauth_token = twitter_data["oauth_token"]
                 delegate.oauth_token_secret = twitter_data["oauth_token_secret"]
-                Transfer.objects.filter(recipient=delegate.user.email).filter(status='P').update(status='A')
+                pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
+                for t in pending_transfers:
+                    t.update(status='A')
+                    t.save()
                 # get profile pic
                 delegate.save()
 

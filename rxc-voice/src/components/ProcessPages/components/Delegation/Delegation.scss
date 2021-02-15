@@ -36,16 +36,44 @@
     text-align: left;
 
     .credit-balance {
-      background: black;
-      color: var(--yellowColor);
-      padding: .5em 1em .5em 1em;
       margin: auto 0 auto auto;
-      border-radius: 50px;
+    }
+  }
+
+  .transfers {
+    margin-bottom: 8vw;
+    // border-bottom: 1px solid black;
+
+    .transfers-header {
+      margin-left: 2vw;
+      display: grid;
+      grid-template-columns: 33% 33% 33%;
+      border-bottom: 1px solid black;
+
+      .col-one {
+        grid-column: 1;
+      }
+      .col-two {
+        grid-column: 2;
+      }
+      .col-three {
+        grid-column: 3;
+      }
+    }
+    .transfer-list {
+      margin: 0 0 0 2vw;
     }
   }
 
   .delegation-content {
     text-align: left;
+
+    .invite-link {
+      text-decoration: underline;
+    }
+    .invite-link:hover {
+      text-decoration: none;
+    }
   }
 }
 

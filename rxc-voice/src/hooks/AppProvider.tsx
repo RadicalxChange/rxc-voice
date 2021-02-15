@@ -13,6 +13,7 @@ const actionInitialValue = {
   logoutUser: () => {},
   // updateUser: (id: string, updatedUser: any) => {},
   setUserData: (user: any) => {},
+  updateCreditBalance: (amount: any) => {},
   selectProcess: (selectedProcess: any) => {},
   fetchProcesses: () => {},
   stageTransfer: (transfer: any) => {},
@@ -20,6 +21,7 @@ const actionInitialValue = {
 const stateInitialValue = {
   color: yellowColor,
   user: null,
+  creditBalance: null,
   processes: [],
   activeProcesses: [],
   pastProcesses: [],
@@ -44,6 +46,11 @@ export const AppProvider = (props: any) => {
             ...prevState,
             user: action.user,
           };
+        case "UPDATE_CREDIT_BALANCE":
+          return {
+            ...prevState,
+            creditBalance: action.amount,
+          };
         case "SET_PROCESS_LIST":
           return {
             ...prevState,
@@ -67,6 +74,7 @@ export const AppProvider = (props: any) => {
       user: sessionStorage.getItem("user")
         ? JSON.parse(sessionStorage.getItem("user")!)
         : null,
+      creditBalance: null,
       processes: [],
       activeProcesses: [],
       pastProcesses: [],
@@ -94,6 +102,12 @@ export const AppProvider = (props: any) => {
         dispatch({
           type: "SET_USER",
           user: user,
+        });
+      },
+      updateCreditBalance: (amount: any) => {
+        dispatch({
+          type: "UPDATE_CREDIT_BALANCE",
+          amount: amount,
         });
       },
       logoutUser: async () => {

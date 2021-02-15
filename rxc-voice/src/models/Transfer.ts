@@ -4,5 +4,6 @@ export interface Transfer {
   recipient: string,
   date: string,
   amount: number,
-  process: string
+  process: string,
+  user_is_sender: boolean,
 }

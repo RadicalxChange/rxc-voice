@@ -1,5 +1,36 @@
 .give-credits-page {
   text-align: center;
+  display: grid;
+  grid-template-columns: 58vw 1fr;
+
+  .about {
+    grid-column: 1 / -1;
+
+    .title {
+      font-size: 2vw;
+      margin: 2vh 0 2vh 0;
+    }
+
+    .show-hide {
+      grid-row: 3;
+      font-size: 1rem;
+      font-weight: bold;
+      display: block;
+      background: none;
+      border: none;
+      outline: none;
+      margin: .5em auto;
+      cursor: pointer;
+    }
+
+    .polis-link {
+      display: block;
+      margin-top: .5em;
+    }
+    .polis-link:hover {
+      text-decoration: underline;
+    }
+  }
 
   .title {
     font-size: 1.5em;
@@ -57,11 +88,33 @@
   .submit-button:focus {
     outline: none;
   }
+
+  .transfer-success {
+    display: inline-block;
+  }
+  .hide {
+    display: none;
+  }
+
+  .back-button {
+    display: block;
+    text-align: left;
+    margin-top: 4rem;
+    text-decoration: underline;
+  }
+  .back-button:hover {
+    text-decoration: none;
+  }
 }
 
 @media only screen and (min-width: 768px) {
   .give-credits-page {
     text-align: left;
+
+    .about {
+      grid-column: 2 / -1;
+      grid-row-start: 1;
+    }
 
     .title {
       font-size: 2em;

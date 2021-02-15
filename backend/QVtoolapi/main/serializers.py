@@ -37,7 +37,7 @@ class VoteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         election = Election.objects.get(pk=self.context.get("election_id"))
         sender = validated_data['sender']
-        assign_perm('can_view_results', sender, election)
+        assign_perm('can_view_results', sender.user, election)
 
         proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
         amount = int(validated_data['amount'])
@@ -77,55 +77,6 @@ class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
         fields = '__all__'
-
-
-class TransferSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Transfer
-        fields = '__all__'
-
-    def create(self, validated_data):
-        process = validated_data.get('process')
-        if process.conversation.start_date < timezone.now():
-            raise ValidationError()
-        recipient = validated_data.get('recipient')
-        sender = validated_data.get('sender')
-        recipient_object = Delegate.objects.filter(user__email=recipient).first()
-        if not recipient_object:
-            recipient_object = Delegate.objects.filter(public_username=recipient).first()
-        is_invitation = not recipient_object
-        if is_invitation:
-            new_delegate = DelegateSerializer.create(
-                DelegateSerializer(),
-                validated_data={
-                'user': {
-                    'username': recipient,
-                    'email': recipient,
-                },
-                'credit_balance': validated_data.get('amount'),
-                'invited_by': sender,
-                })
-            new_delegate.user.set_unusable_password()
-            rxc_voice = Group.objects.get(name="RxC Voice")
-            new_delegate.user.groups.add(rxc_voice)
-            recipient_object = new_delegate
-        elif recipient_object.id == sender.id:
-            raise ValidationError()
-        else:
-            recipient_object.credit_balance += validated_data.get('amount')
-            recipient_object.save()
-        sender.credit_balance -= validated_data.get('amount')
-        sender.save()
-        process.delegates.add(recipient_object)
-        transfer = Transfer.objects.create(
-            sender=sender,
-            recipient=recipient,
-            amount=validated_data.get('amount'),
-            date=validated_data.get('date'),
-            status=('P' if is_invitation else 'A'),
-            process=process,
-            )
-        return transfer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -193,6 +144,63 @@ class DelegateSerializer(serializers.ModelSerializer):
             credit_balance=validated_data.get('credit_balance', 0),
             )
         return delegate
+
+
+class TransferSerializer(serializers.ModelSerializer):
+    sender = DelegateSerializer(required=True)
+
+    class Meta:
+        model = Transfer
+        fields = '__all__'
+        extra_kwargs = {
+            'recipient': {'write_only': True},
+            'recipient_object': {'write_only': True},
+            'date': {'write_only': True},
+            }
+
+    def create(self, validated_data):
+        process = validated_data.get('process')
+        if process.conversation.start_date < timezone.now():
+            raise ValidationError("Invalid Transfer: Delegation Stage is concluded.")
+        recipient = validated_data.get('recipient')
+        sender = validated_data.get('sender')
+        recipient_object = Delegate.objects.filter(user__email=recipient).first()
+        if not recipient_object:
+            recipient_object = Delegate.objects.filter(public_username=recipient).first()
+        is_invitation = not recipient_object
+        if is_invitation:
+            new_delegate = DelegateSerializer.create(
+                DelegateSerializer(),
+                validated_data={
+                'user': {
+                    'username': recipient,
+                    'email': recipient,
+                },
+                'credit_balance': validated_data.get('amount'),
+                'invited_by': sender,
+                })
+            new_delegate.user.set_unusable_password()
+            rxc_voice = Group.objects.get(name="RxC Voice")
+            new_delegate.user.groups.add(rxc_voice)
+            recipient_object = new_delegate
+        elif recipient_object.id == sender.id or self.context.get('request').user == recipient_object:
+            raise ValidationError("Invalid transfer.")
+        else:
+            recipient_object.credit_balance += validated_data.get('amount')
+            recipient_object.save()
+        sender.credit_balance -= validated_data.get('amount')
+        sender.save()
+        process.delegates.add(recipient_object)
+        transfer = Transfer.objects.create(
+            sender=sender,
+            recipient=recipient,
+            recipient_object=recipient_object,
+            amount=validated_data.get('amount'),
+            date=validated_data.get('date'),
+            status=('P' if is_invitation else 'A'),
+            process=process,
+            )
+        return transfer
 
 
 class PrivateUserSerializer(serializers.ModelSerializer):

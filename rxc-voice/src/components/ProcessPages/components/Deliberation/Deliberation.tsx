@@ -63,6 +63,8 @@ function Deliberation() {
                 data-xid={WebService.userobj.token}
                 data-auth_needed_to_vote='false'
                 data-auth_needed_to_write='false'
+                data-auth_opt_fb='false'
+                data-auth_opt_tw='false'
               >
               </div>
               {conversation.show_report ? (

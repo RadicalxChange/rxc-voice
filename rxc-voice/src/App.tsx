@@ -9,9 +9,9 @@ import ProcessPages from './components/ProcessPages';
 import GiveCreditsPage from './components/GiveCreditsPage';
 import ValidationPage from './components/ValidationPage';
 import About from './components/About';
+import Callback from './components/Callback';
 
 import './App.scss';
-import Callback from './components/Callback';
 
 function App() {
   const location = useLocation();
