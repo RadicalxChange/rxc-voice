@@ -126,7 +126,7 @@ export const mapToProcess = (process: Process): Process => {
     description: process.description,
     start_date: process.start_date,
     end_date: process.end_date,
-    delegates: mapToDelegates(process.delegates).filter(delegate => delegate.user.is_active === true),
+    delegates: mapToDelegates(process.delegates).filter(delegate => delegate.user.is_active),
     matching_pool: process.matching_pool,
     conversation: process.conversation,
     curation_info: process.curation_info,
