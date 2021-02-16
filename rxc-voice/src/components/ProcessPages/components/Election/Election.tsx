@@ -159,7 +159,7 @@ function Election() {
             ))}
           </ul>
           <div className="button-container">
-            <label>total votes cast: {votesCast}</label>
+            <label>Total votes cast: {votesCast}</label>
             <button
               type="button"
               className="submit-button"

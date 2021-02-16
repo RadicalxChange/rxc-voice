@@ -34,12 +34,12 @@ function Header() {
         RxC VOICE
       </a>
       <ul className="nav">
-        <Link
-        to={`/about`}
+        <a
+        href='https://radicalxchange.org'
         className="nav-link"
         >
-        About
-        </Link>
+        RadicalxChange
+        </a>
         <Link
         to={`/account`}
         className="nav-link"
