@@ -143,6 +143,7 @@ class CustomAuthToken(ObtainAuthToken):
         if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
+            # the following line currently throws an error for superusers
             delegate = Delegate.objects.get(user=token.user)
             return Response({
                 'token': token.key,
