@@ -8,9 +8,10 @@ import slugify from "react-slugify";
 
 import "./ProcessSubheader.scss";
 import { getEndDate, getId, getStatusBar, getTitle } from "../../../../utils";
+import { Status } from "../../../../models/Status";
 
 function ProcessSubheader() {
-  const { processId } = useParams<ProcessPageRouteParams>();
+  const { processId, stage } = useParams<ProcessPageRouteParams>();
   const { selectedProcess, color } = useContext(StateContext);
   const { selectProcess } = useContext(ActionContext);
 
@@ -28,31 +29,31 @@ function ProcessSubheader() {
       <div className="stages">
         <Link
         to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Introduction`}
-        className="stage"
+        className={`stage ${stage === Status.Introduction ? "selected-stage" : ""}`}
         >
         Introduction
         </Link>
         <Link
         to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Delegation`}
-        className="stage"
+        className={`stage ${stage === Status.Delegation ? "selected-stage" : ""}`}
         >
         Delegation
         </Link>
         <Link
         to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Deliberation`}
-        className="stage"
+        className={`stage ${stage === Status.Deliberation ? "selected-stage" : ""}`}
         >
         Deliberation
         </Link>
         <Link
         to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Curation`}
-        className="stage"
+        className={`stage ${stage === Status.Curation ? "selected-stage" : ""}`}
         >
         Curation
         </Link>
         <Link
         to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Election`}
-        className="stage"
+        className={`stage ${stage === Status.Election ? "selected-stage" : ""}`}
         >
         Election
         </Link>
