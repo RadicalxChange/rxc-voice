@@ -154,6 +154,7 @@ class DelegateSerializer(serializers.ModelSerializer):
 
 
 class TransferSerializer(serializers.ModelSerializer):
+    sender = DelegateSerializer(required=True)
 
     class Meta:
         model = Transfer

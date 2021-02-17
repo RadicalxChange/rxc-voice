@@ -70,8 +70,9 @@ class ProcessDetail(mixins.RetrieveModelMixin,
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
         # eventually need a better way to do this to avoid async problems
-        if (timezone.now() > instance.conversation.start_date) and (instance.matching_pool != 0):
-            match_transfers(instance, instance.matching_pool)
+        if (timezone.now() > instance.conversation.start_date):
+            if instance.matching_pool != 0:
+                match_transfers(instance, instance.matching_pool)
             if timezone.now() > instance.election.start_date:
                 instance.status = 'Election'
             else:

@@ -6,7 +6,7 @@ import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { OauthProvider } from "../../models/OauthProvider";
 import { WebService } from "../../services";
-import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, getDelegateId, getUserId, validateEmail, validatePasswordLength } from "../../utils";
+import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, getDelegateId, getUserId, validateEmail, validatePasswordLength, WEB_DOMAIN } from "../../utils";
 
 import "./ValidationPage.scss";
 
@@ -84,7 +84,7 @@ function ValidationPage() {
                                     window.location.href =
                                       'https://github.com/login/oauth/authorize?client_id='
                                       + github_client_id
-                                      + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
+                                      + '&redirect_uri=' + WEB_DOMAIN + '/oauth2/callback&state='
                                       + stateUUID;
                                   } else if (oauthProvider === OauthProvider.Twitter) {
                                     WebService.getTwitterRequestToken()
