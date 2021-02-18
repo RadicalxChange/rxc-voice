@@ -194,9 +194,6 @@ class TransferSerializer(serializers.ModelSerializer):
             recipient_object = new_delegate
         elif recipient_object.id == sender.id or self.context.get('request').user == recipient_object:
             raise ValidationError("Invalid transfer.")
-        else:
-            recipient_object.credit_balance += validated_data.get('amount')
-            recipient_object.save()
         sender.credit_balance -= validated_data.get('amount')
         sender.save()
         process.delegates.add(recipient_object)
