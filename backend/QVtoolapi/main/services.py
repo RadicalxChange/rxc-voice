@@ -59,7 +59,7 @@ def match_transfers(process, matching_pool):
     for recipient_id, raw_match in raw_matches.items():
         final_match = raw_match
         if raw_match_total > process.matching_pool:
-            final_match = (raw_match / raw_match_total) * process.matching_pool
+            final_match = (raw_match / raw_match_total) * float(process.matching_pool)
         recipient_object = Delegate.objects.get(id=recipient_id)
         recipient_object.credit_balance += int(final_match)
         recipient_object.save()

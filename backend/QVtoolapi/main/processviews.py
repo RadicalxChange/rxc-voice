@@ -125,7 +125,7 @@ class TransferList(mixins.CreateModelMixin,
             t.update(transfer)
             t.pop("sender")
             result_transfers.append(t)
-        match = MatchPayment.objects.all().filter(Q(recipient__user=request.user), Q(process__id=process))
+        match = MatchPayment.objects.all().filter(Q(recipient__user=request.user), Q(process__id=process)).first()
         result = {}
         result["transfers"] = result_transfers
         result["match"] = match.amount if match else 0
