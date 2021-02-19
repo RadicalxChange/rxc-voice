@@ -124,7 +124,7 @@ function Election() {
         </div>
       </div>
     );
-  } else if (moment() > moment(election.end_date)) {
+  } else if (viewResults) {
     return (
       <div className="voting-page">
         <div className="sticky-header">
@@ -137,17 +137,17 @@ function Election() {
         </ol>
       </div>
     );
-  } else if (viewResults) {
-    return (
-      <div className="voting-page">
-        <div className="sticky-header">
-          <h2 className="content-header">Election</h2>
-          <p className="already-voted">Thanks for voting! The results will
-            appear here when the election stage is over.
-          </p>
-        </div>
-      </div>
-    );
+  // } else if (viewResults) {
+  //   return (
+  //     <div className="voting-page">
+  //       <div className="sticky-header">
+  //         <h2 className="content-header">Election</h2>
+  //         <p className="already-voted">Thanks for voting! The results will
+  //           appear here when the election stage is over.
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
   } else {
     return (
         <div className="voting-page">
