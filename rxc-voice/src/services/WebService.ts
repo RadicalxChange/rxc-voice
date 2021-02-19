@@ -3,9 +3,10 @@ import { Election } from "../models/Election";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess } from "../utils";
+import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess, API_DOMAIN } from "../utils";
 
-const ROOT_URL = "https://voiceapi.radicalxchange.org";
+// const ROOT_URL = "https://voiceapi.radicalxchange.org";
+const ROOT_URL = API_DOMAIN;
 
 export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null;
 export const oauthState = sessionStorage.getItem("oauthState");

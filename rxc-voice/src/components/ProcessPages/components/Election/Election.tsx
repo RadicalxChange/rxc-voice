@@ -45,6 +45,7 @@ function Election() {
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setColor(BgColor.White);
@@ -68,6 +69,8 @@ function Election() {
               voteDispatch({ proposal: proposal.id, amount: 0, });
             });
           });
+
+          setLoading(false);
         }
       }
     }
@@ -93,6 +96,7 @@ function Election() {
     WebService.postVotes(postData, election.id).subscribe(async (data) => {
                     if (data.ok) {
                       setViewResults(true);
+                      selectProcess(processId);
                       if (creditBalance !== null) {
                         updateCreditBalance(creditsRemaining);
                       }
@@ -105,7 +109,13 @@ function Election() {
                   });
   };
 
-  if (moment() < moment(election.start_date)) {
+  if (loading) {
+    return (
+      <div className="voting-page">
+        <h2 className="content-header">loading...</h2>
+      </div>
+    );
+  } else if (moment() < moment(election.start_date)) {
     return (
       <div className="voting-page">
         <div className="sticky-header">
@@ -114,7 +124,7 @@ function Election() {
         </div>
       </div>
     );
-  } else if (moment() > moment(election.end_date)) {
+  } else if (viewResults) {
     return (
       <div className="voting-page">
         <div className="sticky-header">
@@ -127,17 +137,17 @@ function Election() {
         </ol>
       </div>
     );
-  } else if (viewResults === true) {
-    return (
-      <div className="voting-page">
-        <div className="sticky-header">
-          <h2 className="content-header">Election</h2>
-          <p className="already-voted">Thanks for voting! The results will
-            appear here when the election stage is over.
-          </p>
-        </div>
-      </div>
-    );
+  // } else if (viewResults) {
+  //   return (
+  //     <div className="voting-page">
+  //       <div className="sticky-header">
+  //         <h2 className="content-header">Election</h2>
+  //         <p className="already-voted">Thanks for voting! The results will
+  //           appear here when the election stage is over.
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
   } else {
     return (
         <div className="voting-page">

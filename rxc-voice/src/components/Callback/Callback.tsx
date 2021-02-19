@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useAlert } from "react-alert";
 import { useLocation } from "react-router";
 import { WebService } from "../../services";
+import { WEB_DOMAIN } from "../../utils";
 
 import "./Callback.scss";
 
@@ -32,8 +33,7 @@ function Callback() {
               if (data.ok) {
                 console.log("got the token");
                 const twitterToken = await data.json();
-		console.log(twitterToken);
-                window.location.href = 'https://voice.radicalxchange.org';
+                window.location.href = WEB_DOMAIN;
               }
             });
           }
@@ -47,12 +47,11 @@ function Callback() {
             if (data.ok) {
               console.log("got the token");
               const githubToken = await data.json();
-		console.log(githubToken);
               WebService.verifyGithub(githubToken).subscribe(async (data) => {
                 if (data.ok) {
                   console.log("verified");
                   const githubData = await data.json();
-                  window.location.href = 'https://voice.radicalxchange.org';
+                  window.location.href = WEB_DOMAIN;
                 }
               })
             } else {
@@ -67,8 +66,7 @@ function Callback() {
    }, []);
 
     return (
-        <div className="validation-page"> {// redirect to login if no user token
-        }
+        <div className="validation-page">
           <h2>verifying your account...</h2>
         </div>
     );
