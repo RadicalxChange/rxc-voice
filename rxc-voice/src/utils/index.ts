@@ -17,6 +17,9 @@ import cur_white from '../assets/bars/bar_curation_white.svg';
 import elec from '../assets/bars/bar_election.svg';
 import { Transfer } from "../models/Transfer";
 
+export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
+export const WEB_DOMAIN = "https://voice.radicalxchange.org";
+
 export const standInElection = (): Election => ({
   id: 0,
   title: 'loading election...',

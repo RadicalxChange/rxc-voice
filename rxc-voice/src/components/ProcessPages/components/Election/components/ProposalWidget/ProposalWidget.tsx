@@ -18,7 +18,7 @@ function ProposalWidget(props: any) {
     } else {
       const newCost: number = newAmount * newAmount;
       if (newCost - cost > props.creditsRemaining) {
-        alert.error("not enough tokens.")
+        alert.error("you don't have enough voice credits")
       } else {
         props.onChange({ proposal: props.proposal.id,
                          amount: change,

@@ -37,6 +37,8 @@ class VoteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         election = Election.objects.get(pk=self.context.get("election_id"))
         sender = Delegate.objects.get(pk=validated_data['sender'].id)
+        # if sender.user.has_perm('can_view_results', election):
+        #     raise ValidationError("Invalid Vote: user already voted.")
         assign_perm('can_view_results', sender.user, election)
 
         proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
@@ -154,6 +156,7 @@ class DelegateSerializer(serializers.ModelSerializer):
 
 
 class TransferSerializer(serializers.ModelSerializer):
+    sender = DelegateSerializer(required=True)
 
     class Meta:
         model = Transfer
@@ -191,9 +194,6 @@ class TransferSerializer(serializers.ModelSerializer):
             recipient_object = new_delegate
         elif recipient_object.id == sender.id or self.context.get('request').user == recipient_object:
             raise ValidationError("Invalid transfer.")
-        else:
-            recipient_object.credit_balance += validated_data.get('amount')
-            recipient_object.save()
         sender.credit_balance -= validated_data.get('amount')
         sender.save()
         process.delegates.add(recipient_object)

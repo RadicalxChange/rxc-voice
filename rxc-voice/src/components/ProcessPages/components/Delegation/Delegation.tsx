@@ -18,7 +18,7 @@ import "./Delegation.scss";
 function Delegation() {
   const { processId } = useParams<ProcessPageRouteParams>();
   const { selectedProcess } = useContext(StateContext);
-  const { selectProcess, setColor } = useContext(ActionContext);
+  const { selectProcess, stageTransfer, setColor } = useContext(ActionContext);
   const conversation = getConversation(selectedProcess);
   const [showTransfers, setShowTransfers] = useState(false);
   const [transfers, setTransfers] = useState(new Array<Transfer>());
@@ -86,6 +86,7 @@ function Delegation() {
               <Link
                 to={`/${processId}/give-credits`}
                 className="invite-link"
+                onClick={(e) => stageTransfer(null)}
               >
                 give them credits
               </Link></>
