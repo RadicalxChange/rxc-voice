@@ -32,6 +32,7 @@ function Callback() {
               if (data.ok) {
                 console.log("got the token");
                 const twitterToken = await data.json();
+		console.log(twitterToken);
                 window.location.href = 'https://voice.radicalxchange.org';
               }
             });
@@ -46,6 +47,7 @@ function Callback() {
             if (data.ok) {
               console.log("got the token");
               const githubToken = await data.json();
+		console.log(githubToken);
               WebService.verifyGithub(githubToken).subscribe(async (data) => {
                 if (data.ok) {
                   console.log("verified");
