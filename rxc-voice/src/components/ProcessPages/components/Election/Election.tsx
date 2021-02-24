@@ -8,11 +8,11 @@ import { WebService } from "../../../../services";
 import { Vote } from "../../../../models/Vote";
 import ProposalWidget from "./components/ProposalWidget";
 import { ActionContext, StateContext } from "../../../../hooks";
-
-import "./Election.scss";
 import { BgColor } from "../../../../models/BgColor";
 import ProposalResults from "./components/ProposalResults";
 import RemainingCredits from "./components/RemainingCredits";
+
+import "./Election.scss";
 
 function Election() {
   const [votesCast, setVotesCast] = useState(0);
@@ -46,6 +46,8 @@ function Election() {
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [highestProposal, setHighestProposal] = useState(0);
+  const [lowestProposal, setLowestProposal] = useState(0);
 
   useEffect(() => {
     setColor(BgColor.White);
@@ -61,12 +63,20 @@ function Election() {
           }
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
-            data.sort((a: Proposal, b: Proposal) => {
-              return Number(b.votes_received) - Number(a.votes_received);
-            })
+            if (viewResults) {
+              data.sort((a: Proposal, b: Proposal) => {
+                return Number(b.votes_received) - Number(a.votes_received);
+              });
+            }
             setProposals(proposals => data);
             data.forEach(proposal => {
               voteDispatch({ proposal: proposal.id, amount: 0, });
+              if (proposal.votes_received > highestProposal) {
+                setHighestProposal(proposal.votes_received);
+              }
+              if (proposal.votes_received < lowestProposal) {
+                setLowestProposal(proposal.votes_received);
+              }
             });
           });
 
@@ -126,15 +136,11 @@ function Election() {
     );
   } else if (viewResults) {
     return (
-      <div className="voting-page">
+      <div className="results-page">
         <div className="sticky-header">
           <h2 className="content-header">Election Results</h2>
         </div>
-        <ol>
-          {proposals.map((proposal: Proposal, i) => (
-            <ProposalResults key={i} proposal={proposal} />
-          ))}
-        </ol>
+        <ProposalResults proposals={proposals} highestProposal={highestProposal} lowestProposal={lowestProposal} />
       </div>
     );
   // } else if (viewResults) {

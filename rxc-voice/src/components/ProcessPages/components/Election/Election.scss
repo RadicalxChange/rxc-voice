@@ -1,5 +1,4 @@
 .voting-page {
-  background: var(--whiteColor);
   text-align: left;
 
   .sticky-header {
@@ -23,6 +22,15 @@
   }
 }
 
+.results-page {
+  text-align: left;
+
+  .sticky-header {
+    margin-top: 20vw;
+  }
+
+}
+
 @media only screen and (min-width: 768px) {
   .voting-page {
     text-align: left;
@@ -37,5 +45,13 @@
       left: 70vw;
       top: 40vw;
     }
+  }
+
+  .results-page {
+
+    .sticky-header {
+      margin-top: 5vw;
+    }
+
   }
 }
