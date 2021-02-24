@@ -1,4 +1,4 @@
 QVtoolapi/__pycache__
 main/__pycache__
-main/migrations
+main/migrations/*
 static/
