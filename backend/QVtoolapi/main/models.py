@@ -153,6 +153,7 @@ class Process(models.Model):
         return self.title
 
     class Meta:
+        verbose_name_plural = "processes"
         permissions = [
             ("can_view", "Can view"),
         ]

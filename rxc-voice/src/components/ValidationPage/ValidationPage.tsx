@@ -6,7 +6,7 @@ import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { OauthProvider } from "../../models/OauthProvider";
 import { WebService } from "../../services";
-import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, getDelegateId, getUserId, validateEmail, validatePasswordLength } from "../../utils";
+import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, getDelegateId, getUserId, validateEmail, validatePasswordLength, WEB_DOMAIN } from "../../utils";
 
 import "./ValidationPage.scss";
 

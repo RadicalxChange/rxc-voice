@@ -22,47 +22,50 @@ def send_mail(_to_mail, subject, body):
 def match_transfers(process, matching_pool):
     transfers = Transfer.objects.all().filter(process=process)
 
-    # {recipient: {sender: amount}} => each recipient has a dict where the keys
+    # {recipient_id: {sender_id: amount}} => each recipient has a dict where the keys
     # are senders and the values are amounts
     distinct_contributions = {}
 
-    # {recipient: amount} => the total amount contributed to each recipient
+    # {recipient_id: amount} => the total amount contributed to each recipient
     pledged_totals = {}
 
-    # {recipient: amount} => the sum of the roots of all distinct contributions to each recipient
+    # {recipient_id: amount} => the sum of the roots of all distinct contributions to each recipient
     sum_of_roots = {}
     for transfer in transfers:
         if transfer.status == 'P':
             transfer.status = 'C'
             transfer.sender.credit_balance += transfer.amount
         elif transfer.status == 'A':
-            if transfer.recipient_object in distinct_contributions and transfer.recipient_object in pledged_totals and transfer.recipient_object in sum_of_roots:
-                if transfer.sender in distinct_contributions[transfer.recipient_object]:
-                    sum_of_roots[transfer.recipient_object] -= math.sqrt(distinct_contributions[transfer.recipient_object][transfer.sender])
-                    distinct_contributions[transfer.recipient_object][transfer.sender] += transfer.amount
+            transfer.recipient_object.credit_balance += transfer.amount
+            transfer.recipient_object.save()
+            if transfer.recipient_object.id in distinct_contributions and transfer.recipient_object.id in pledged_totals and transfer.recipient_object.id in sum_of_roots:
+                if transfer.sender.id in distinct_contributions[transfer.recipient_object.id]:
+                    sum_of_roots[transfer.recipient_object.id] -= math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
+                    distinct_contributions[transfer.recipient_object.id][transfer.sender.id] += transfer.amount
                 else:
-                    distinct_contributions[transfer.recipient_object][transfer.sender] = transfer.amount
-                pledged_totals[transfer.recipient_object] += transfer.amount
-                sum_of_roots[transfer.recipient_object] += math.sqrt(distinct_contributions[transfer.recipient_object][transfer.sender])
+                    distinct_contributions[transfer.recipient_object.id][transfer.sender.id] = transfer.amount
+                pledged_totals[transfer.recipient_object.id] += transfer.amount
+                sum_of_roots[transfer.recipient_object.id] += math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
             else:
-                distinct_contributions[transfer.recipient_object] = {transfer.sender: transfer.amount}
-                pledged_totals[transfer.recipient_object] = transfer.amount
-                sum_of_roots[transfer.recipient_object] = math.sqrt(transfer.amount)
+                distinct_contributions[transfer.recipient_object.id] = {transfer.sender.id: transfer.amount}
+                pledged_totals[transfer.recipient_object.id] = transfer.amount
+                sum_of_roots[transfer.recipient_object.id] = math.sqrt(transfer.amount)
     raw_matches = {}
     raw_match_total = 0
-    for recipient, sum in sum_of_roots.items():
-        raw_match = (sum * sum) - float(pledged_totals[recipient])
-        raw_matches[recipient] = raw_match
+    for recipient_id, sum in sum_of_roots.items():
+        raw_match = (sum * sum) - float(pledged_totals[recipient_id])
+        raw_matches[recipient_id] = raw_match
         raw_match_total += raw_match
-    for recipient, raw_match in raw_matches.items():
+    for recipient_id, raw_match in raw_matches.items():
         final_match = raw_match
         if raw_match_total > process.matching_pool:
-            final_match = (raw_match / raw_match_total) * process.matching_pool
-        recipient.credit_balance += int(final_match)
-        recipient.save()
+            final_match = (raw_match / raw_match_total) * float(process.matching_pool)
+        recipient_object = Delegate.objects.get(id=recipient_id)
+        recipient_object.credit_balance += int(final_match)
+        recipient_object.save()
         # create a record of this match payment.
         match_payment = MatchPayment(
-            recipient=recipient,
+            recipient=recipient_object,
             amount=int(final_match),
             date=Now(),
             process=process,

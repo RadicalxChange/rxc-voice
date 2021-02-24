@@ -29,8 +29,6 @@ class DelegateAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        if not change:
-            send_register_mail(self, instance=obj, created=True)
 
 
 admin.site.register(Election, ElectionAdmin)
