@@ -1,4 +1,9 @@
-.status-bar-container {
+.process-subheader {
+
+  .title {
+    font-size: 8vw;
+  }
+
   .stages {
     width: 90vw;
     display: flex;
@@ -7,7 +12,7 @@
     font-size: 3vw;
 
     .stage {
-      // width: 18vw;
+      width: 18vw;
       margin-block-start: 1em;
       margin-block-end: 1em;
     }
@@ -20,30 +25,43 @@
   }
 
   .status-bar {
-    width: 82vw;
-    height: 8vw;
+    width: 76vw;
   }
+
+  .time-remaining {
+    text-align: center;
+  }
+
+  .content-header {
+    margin-top: 20vw;
+  }
+
 }
 
 @media only screen and (min-width: 768px) {
-  .status-bar-container {
+  .process-subheader {
+    text-align: left;
+    width: 60vw;
+
+    .title {
+      font-size: 1.5em;
+    }
 
     .stages {
-      width: 52.3vw;
+      width: 60vw;
       display: flex;
       justify-content: space-between;
       text-align: center;
-      font-size: 1.6vw;
+      font-size: 1.5vw;
 
       .stage {
-        width: 10vw;
+        width: 12vw;
       }
     }
 
     .status-bar {
-      margin: 0 3.7vw 0 3.7vw;
-      width: 46vw;
-      height: 4vw;
+      width: 50vw;
+      margin-left: 5vw;
     }
 
     .time-remaining {

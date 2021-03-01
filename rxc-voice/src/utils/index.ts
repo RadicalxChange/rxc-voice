@@ -6,12 +6,19 @@ import { Delegate } from "../models/Delegate"
 import { Permission } from "../models/Permission";
 import { Process } from "../models/Process";
 import { Status } from "../models/Status";
+import intro from '../assets/bars/bar_introduction.svg';
+import delg from '../assets/bars/bar_delegation.svg';
+import delb from '../assets/bars/bar_deliberation.svg';
+import cur from '../assets/bars/bar_curation.svg';
+import intro_white from '../assets/bars/bar_introduction_white.svg';
+import delg_white from '../assets/bars/bar_delegation_white.svg';
+import delb_white from '../assets/bars/bar_deliberation_white.svg';
+import cur_white from '../assets/bars/bar_curation_white.svg';
+import elec from '../assets/bars/bar_election.svg';
 import { Transfer } from "../models/Transfer";
 
-// export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
-// export const WEB_DOMAIN = "https://voice.radicalxchange.org";
-export const API_DOMAIN = "http://localhost:8000";
-export const WEB_DOMAIN = "http://localhost:3000";
+export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
+export const WEB_DOMAIN = "https://voice.radicalxchange.org";
 
 export const standInElection = (): Election => ({
   id: 0,
@@ -45,7 +52,7 @@ export const standInProcess = {
   curation_info: '',
   top_posts: new Array<string>(),
   election: {},
-  status: Status.Delegation,
+  status: Status.Introduction,
 }
 
 export const defaultPermission = (): Permission => (Permission.None);
@@ -86,6 +93,7 @@ export const mapToTransfers = (transfers: any[]): Transfer[] => {
 };
 
 export const mapToTransfer = (transfer: any): Transfer => {
+  console.log(transfer);
   return {
     id: transfer.id,
     sender: '',
@@ -229,26 +237,60 @@ export const getStatus = (process: Process | null) => {
   }
 };
 
-export const getDescription = (process: Process | null) => {
-  if (process) {
-    return process.description;
-  } else {
-    return undefined;
-  }
-};
-
-export const getCurationInfo = (process: Process | null) => {
-  if (process) {
-    return process.curation_info;
-  } else {
-    return undefined;
-  }
-};
-
 export const getRecipient = (transferData: any) => {
   if (transferData) {
     return transferData.recipient;
   } else {
     return null;
+  }
+};
+
+export const getStatusBar = (process: Process | null, color: string) => {
+  if (process) {
+    if (color === "var(--whiteColor)") {
+      switch (process.status) {
+        case Status.Introduction: {
+          return intro_white;
+        }
+        case Status.Delegation: {
+          return delg_white;
+        }
+        case Status.Deliberation: {
+          return delb_white;
+        }
+        case Status.Curation: {
+          return cur_white;
+        }
+        case Status.Election: {
+          return elec;
+        }
+        case undefined: {
+          return undefined;
+        }
+      }
+    } else {
+      switch (process.status) {
+        case Status.Introduction: {
+          return intro;
+        }
+        case Status.Delegation: {
+          return delg;
+        }
+        case Status.Deliberation: {
+          return delb;
+        }
+        case Status.Curation: {
+          return cur;
+        }
+        case Status.Election: {
+          return elec;
+        }
+        case undefined: {
+          return undefined;
+        }
+      }
+    }
+  } else {
+    return undefined;
   }
 };

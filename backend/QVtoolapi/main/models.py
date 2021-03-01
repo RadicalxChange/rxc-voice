@@ -132,16 +132,22 @@ class Process(models.Model):
         models.CharField(max_length=140), blank=True, null=True)
     election = models.OneToOneField(
         Election, null=True, on_delete=models.SET_NULL)
+    INTRODUCTION = 'Introduction'
     DELEGATION = 'Delegation'
     DELIBERATION = 'Deliberation'
+    CURATION = 'Curation'
     ELECTION = 'Election'
+    RESULT = 'Result'
     STATUS_CHOICES = (
+        (INTRODUCTION, 'Introduction'),
         (DELEGATION, 'Delegation'),
         (DELIBERATION, 'Deliberation'),
+        (CURATION, 'Curation'),
         (ELECTION, 'Election'),
+        (RESULT, 'Result'),
     )
     status = models.CharField(max_length=14, choices=STATUS_CHOICES,
-                              default=DELEGATION)
+                              default=INTRODUCTION)
 
     def __str__(self):
         return self.title
