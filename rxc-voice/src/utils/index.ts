@@ -8,10 +8,10 @@ import { Process } from "../models/Process";
 import { Status } from "../models/Status";
 import { Transfer } from "../models/Transfer";
 
-// export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
-// export const WEB_DOMAIN = "https://voice.radicalxchange.org";
-export const API_DOMAIN = "http://localhost:8000";
-export const WEB_DOMAIN = "http://localhost:3000";
+export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
+export const WEB_DOMAIN = "https://voice.radicalxchange.org";
+// export const API_DOMAIN = "http://localhost:8000";
+// export const WEB_DOMAIN = "http://localhost:3000";
 
 export const standInElection = (): Election => ({
   id: 0,
