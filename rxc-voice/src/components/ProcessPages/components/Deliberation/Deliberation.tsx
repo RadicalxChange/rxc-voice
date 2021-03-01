@@ -5,7 +5,7 @@ import { ActionContext, StateContext } from "../../../../hooks";
 import { BgColor } from "../../../../models/BgColor";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import { WebService } from "../../../../services";
-import { getConversation, getId } from "../../../../utils";
+import { getConversation, getCurationInfo, getId } from "../../../../utils";
 
 import "./Deliberation.scss";
 
@@ -48,6 +48,7 @@ function Deliberation() {
   return (
     <div className="polis-page">
       <h2 className="content-header">Deliberation</h2>
+      <p>{getCurationInfo(selectedProcess)}</p>
       {(conversation && WebService.userobj) ? (
           (moment(conversation.end_date) > moment()) ? (
             <div className="body">
