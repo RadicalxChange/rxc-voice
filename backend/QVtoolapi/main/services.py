@@ -10,7 +10,7 @@ from .models import Transfer, Delegate, MatchPayment
 
 sendgrid_key = os.getenv('SENDGRID_API_KEY', 'NO API FOUND')
 sg = sendgrid.SendGridAPIClient(sendgrid_key)
-from_email = Email("acrandaccio@gmail.com", 'Alex via Sendgrid')
+from_email = Email("voice@radicalxchange.org", 'RxC Voice')
 
 def send_mail(_to_mail, subject, body):
     to_email = To(_to_mail)
