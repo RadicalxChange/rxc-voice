@@ -3,16 +3,16 @@ import { useParams } from "react-router-dom";
 import moment from 'moment';
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import { Proposal } from "../../../../models/Proposal";
-import { getElection, getId, standInElection } from "../../../../utils";
+import { getElection, getId, standInElection, standInResultData } from "../../../../utils";
 import { WebService } from "../../../../services";
 import { Vote } from "../../../../models/Vote";
 import ProposalWidget from "./components/ProposalWidget";
 import { ActionContext, StateContext } from "../../../../hooks";
-
-import "./Election.scss";
 import { BgColor } from "../../../../models/BgColor";
 import ProposalResults from "./components/ProposalResults";
 import RemainingCredits from "./components/RemainingCredits";
+
+import "./Election.scss";
 
 function Election() {
   const [votesCast, setVotesCast] = useState(0);
@@ -45,6 +45,7 @@ function Election() {
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
+  const [resultData, setResultData] = useState(standInResultData);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,15 +62,23 @@ function Election() {
           }
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
-            data.sort((a: Proposal, b: Proposal) => {
-              return Number(b.votes_received) - Number(a.votes_received);
-            })
             setProposals(proposals => data);
+            let highestProposal = 0;
+            let lowestProposal = 0;
             data.forEach(proposal => {
+              if (proposal.votes_received > highestProposal) {
+                highestProposal = proposal.votes_received;
+              } else if (proposal.votes_received < lowestProposal) {
+                lowestProposal = proposal.votes_received;
+              }
               voteDispatch({ proposal: proposal.id, amount: 0, });
             });
+            setResultData({
+              proposals: data,
+              highestProposal: highestProposal,
+              lowestProposal: lowestProposal,
+            })
           });
-
           setLoading(false);
         }
       }
@@ -126,15 +135,11 @@ function Election() {
     );
   } else if (viewResults) {
     return (
-      <div className="voting-page">
+      <div className="results-page">
         <div className="sticky-header">
           <h2 className="content-header">Election Results</h2>
         </div>
-        <ol>
-          {proposals.map((proposal: Proposal, i) => (
-            <ProposalResults key={i} proposal={proposal} />
-          ))}
-        </ol>
+        <ProposalResults resultData={resultData} />
       </div>
     );
   // } else if (viewResults) {

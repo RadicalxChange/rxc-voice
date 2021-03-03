@@ -1,31 +1,9 @@
-.proposal-results {
-  margin: 15vw 0 10vw 0;
-  display: grid;
-  grid-template-columns: 4vw 50vw 1fr;
-
-  .proposal-info {
-    grid-column: 2;
-    margin: auto 0 auto 0;
-  }
-
-  .counter-container {
-    grid-column: 3;
-    text-align: center;
-  }
-}
-
-.proposal-results::before {
-  grid-row: 1;
+#responsive-graph {
+      width: 95%;
 }
 
 @media only screen and (min-width: 768px) {
-  .proposal-results {
-    margin: 3vw 0 3vw 0;
-
-    .proposal-info {
-    }
-
-    .counter-container {
-    }
+#responsive-graph {
+        width: 700px;
   }
 }

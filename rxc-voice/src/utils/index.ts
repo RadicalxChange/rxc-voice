@@ -7,6 +7,7 @@ import { Permission } from "../models/Permission";
 import { Process } from "../models/Process";
 import { Status } from "../models/Status";
 import { Transfer } from "../models/Transfer";
+import { ResultData } from "../models/ResultData";
 
 export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
 export const WEB_DOMAIN = "https://voice.radicalxchange.org";
@@ -25,6 +26,12 @@ export const standInElection = (): Election => ({
   num_tokens: 0,
   proposals: new Array<Proposal>(),
   show_results: false,
+});
+
+export const standInResultData = (): ResultData => ({
+  proposals: new Array<Proposal>(),
+  highestProposal: 0,
+  lowestProposal: 0,
 });
 
 export const standInVoter = (): Voter => ({
