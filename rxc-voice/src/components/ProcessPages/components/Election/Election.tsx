@@ -45,8 +45,8 @@ function Election() {
   const [proposals, setProposals] = useState(new Array<Proposal>());
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [resultData, setResultData] = useState(standInResultData);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setColor(BgColor.White);
