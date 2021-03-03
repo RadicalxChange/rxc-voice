@@ -63,13 +63,14 @@ function Election() {
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
             setProposals(proposals => data);
-            let highestProposal = 0;
-            let lowestProposal = 0;
+            var highestProposal = 0;
+            var lowestProposal = 0;
             data.forEach(proposal => {
-              if (proposal.votes_received > highestProposal) {
-                highestProposal = proposal.votes_received;
-              } else if (proposal.votes_received < lowestProposal) {
-                lowestProposal = proposal.votes_received;
+              let votesReceived = Number(proposal.votes_received);
+              if (votesReceived > highestProposal) {
+                highestProposal = votesReceived;
+              } else if (votesReceived < lowestProposal) {
+                lowestProposal = votesReceived;
               }
               voteDispatch({ proposal: proposal.id, amount: 0, });
             });
