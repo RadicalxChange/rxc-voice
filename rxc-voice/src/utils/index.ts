@@ -9,10 +9,10 @@ import { Status } from "../models/Status";
 import { Transfer } from "../models/Transfer";
 import { ResultData } from "../models/ResultData";
 
-export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
-export const WEB_DOMAIN = "https://voice.radicalxchange.org";
-// export const API_DOMAIN = "http://localhost:8000";
-// export const WEB_DOMAIN = "http://localhost:3000";
+// export const API_DOMAIN = "https://voiceapi.radicalxchange.org";
+// export const WEB_DOMAIN = "https://voice.radicalxchange.org";
+export const API_DOMAIN = "http://localhost:8000";
+export const WEB_DOMAIN = "http://localhost:3000";
 
 export const standInElection = (): Election => ({
   id: 0,
@@ -67,9 +67,6 @@ export const mapToProposal = (proposal: Proposal): Proposal => {
     title: proposal.title,
     description: proposal.description,
     link: proposal.link,
-    sum_contributions: proposal.sum_contributions,
-    num_contributors: proposal.num_contributors,
-    current_match: proposal.current_match,
     votes_received: proposal.votes_received,
   };
 };

@@ -62,6 +62,7 @@ function Election() {
           }
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
+            console.log(data);
             setProposals(proposals => data);
             var highestProposal = 0;
             var lowestProposal = 0;

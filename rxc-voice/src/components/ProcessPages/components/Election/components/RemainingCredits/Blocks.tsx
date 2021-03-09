@@ -25,7 +25,7 @@ function Blocks(props: any) {
             height={`${blockHeight - strokeWidth}vw`}
             fill={`${fill}`}
             stroke="black"
-            stroke-width={`${strokeWidth}vw`}
+            strokeWidth={`${strokeWidth}vw`}
           />
         );
         counter++;

@@ -27,7 +27,7 @@ class Delegate(models.Model):
     invited_by = models.ForeignKey(
         'self', blank=True, null=True, on_delete=models.SET_NULL)
     credit_balance = models.DecimalField(
-        default=0, blank=True, max_digits=6, decimal_places=0) # must be staff to change from default
+        default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
 
     def __str__(self):
         return self.user.email
@@ -40,8 +40,6 @@ class Election(models.Model):
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
     negative_votes = models.BooleanField(default=True)
-    matching_pool = models.DecimalField(
-        default=0, max_digits=10, decimal_places=0, blank=True)
     # What icon should be used to represent voice credits. Represented by path.
     vote_token = models.TextField(
         blank=True, default='../../../frontend/public/black-square.png')
@@ -67,11 +65,7 @@ class Proposal(models.Model):
     link = models.CharField(max_length=512, blank=True)
     election = models.ForeignKey(Election, on_delete=models.CASCADE,
                                  null=True, blank=False)
-    sum_contributions = models.DecimalField(
-        default=0, max_digits=10, decimal_places=0, editable=False)
-    current_match = models.DecimalField(
-        default=0, max_digits=10, decimal_places=0, editable=False)
-    num_contributors = models.DecimalField(
+    credits_received = models.DecimalField(
         default=0, max_digits=10, decimal_places=0, editable=False)
     votes_received = models.DecimalField(
         default=0, max_digits=10, decimal_places=0, editable=False)

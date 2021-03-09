@@ -23,7 +23,7 @@ class ElectionList(mixins.CreateModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get_queryset(self):
-        return Conversation.objects.filter(groups__name="RxC QV")
+        return Election.objects.filter(groups__name="RxC QV")
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -157,7 +157,16 @@ class ProposalList(mixins.CreateModelMixin,
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(election_proposals, many=True)
-        return Response(serializer.data)
+        election_object = Election.objects.get(id=election_id)
+        if request.user.has_perm('can_view_results', election_object):
+            return Response(serializer.data)
+        else:
+            result_proposals = []
+            for proposal in serializer.data:
+                p = proposal
+                p.pop("votes_received")
+                result_proposals.append(p)
+            return Response(result_proposals)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
