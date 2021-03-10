@@ -6,7 +6,7 @@ import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../../../models/Delegate";
-import { getConversation, getId, mapToTransfers } from "../../../../utils";
+import { getConversation, getId, getMatchingPool, mapToTransfers } from "../../../../utils";
 import moment from "moment";
 import { WebService } from "../../../../services";
 import { Transfer } from "../../../../models/Transfer";
@@ -82,14 +82,23 @@ function Delegation() {
         <div className="delegation-content">
           <h2>Delegation</h2>
           {delegationOngoing ? (
-            <><p className="invite">Want to invite someone to participate in the decision that isn't already here?</p>
+            <p className="about">If you choose to give some of your credits
+              to other delegates, your transfer will be matched using
+              Quadratic Funding. The size of the matching pool for this
+              Delegation is{" "}
+              <strong>{getMatchingPool(selectedProcess)} voice credits.</strong>
+              <br/><br/>
+              Want to invite someone to participate in the decision that
+              isn't already here?
+              <br/><br/>
               <Link
                 to={`/${processId}/give-credits`}
                 className="invite-link"
                 onClick={(e) => stageTransfer(null)}
               >
                 give them credits
-              </Link></>
+              </Link>
+            </p>
           ) : (
             <></>
           )}

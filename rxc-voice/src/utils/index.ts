@@ -249,6 +249,14 @@ export const getCurationInfo = (process: Process | null) => {
   }
 };
 
+export const getMatchingPool = (process: Process | null) => {
+  if (process) {
+    return process.matching_pool;
+  } else {
+    return undefined;
+  }
+};
+
 export const getRecipient = (transferData: any) => {
   if (transferData) {
     return transferData.recipient;
