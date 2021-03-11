@@ -230,6 +230,22 @@ export const postTransfer = (transfer: any): Observable<any> => {
   });
 };
 
+export const estimateMatch = (transfer: any): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/estimate-match/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify(transfer),
+      })
+    );
+  });
+};
+
 export const fetchTransfers = (process_id: string): Observable<any> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");
