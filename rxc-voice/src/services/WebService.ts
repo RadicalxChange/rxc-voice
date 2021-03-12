@@ -3,10 +3,9 @@ import { Election } from "../models/Election";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess, API_DOMAIN } from "../utils";
+import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess, Domain } from "../utils";
 
-// const ROOT_URL = "https://voiceapi.radicalxchange.org";
-const ROOT_URL = API_DOMAIN;
+const ROOT_URL = Domain.API;
 
 export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null;
 export const oauthState = sessionStorage.getItem("oauthState");
@@ -227,6 +226,22 @@ export const postTransfer = (transfer: any): Observable<any> => {
         method: "POST",
         body: JSON.stringify(transfer),
       }),
+    );
+  });
+};
+
+export const estimateMatch = (transfer: any): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/estimate-match/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify(transfer),
+      })
     );
   });
 };

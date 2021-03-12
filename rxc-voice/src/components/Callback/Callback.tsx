@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAlert } from "react-alert";
 import { useLocation } from "react-router";
 import { WebService } from "../../services";
-import { WEB_DOMAIN } from "../../utils";
+import { Domain } from "../../utils";
 
 import "./Callback.scss";
 
@@ -33,7 +33,7 @@ function Callback() {
               if (data.ok) {
                 console.log("got the token");
                 const twitterToken = await data.json();
-                window.location.href = WEB_DOMAIN;
+                window.location.href = Domain.WEB;
               }
             });
           }
@@ -51,7 +51,7 @@ function Callback() {
                 if (data.ok) {
                   console.log("verified");
                   const githubData = await data.json();
-                  window.location.href = WEB_DOMAIN;
+                  window.location.href = Domain.WEB;
                 }
               })
             } else {

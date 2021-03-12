@@ -16,6 +16,7 @@ function GiveCreditsPage() {
     const { stagedTransfer, creditBalance, selectedProcess } = useContext(StateContext);
     const [recipientEmail, setRecipientEmail] = useState("");
     const [amount, setAmount] = useState("");
+    const [estMatch, setEstMatch] = useState(0);
     const [showAbout, setShowAbout] = useState(false);
     const [transferSuccess, setTransferSuccess] = useState(false);
 
@@ -54,6 +55,24 @@ function GiveCreditsPage() {
           } else {
             const error = await data.json();
             console.log(error);
+          }
+        });
+      }
+    };
+
+    const onChangeAmount = (new_amt) => {
+      setAmount(new_amt);
+      if (new_amt !== "") {
+        WebService.estimateMatch({
+          sender: WebService.userobj.id,
+          recipient: recipientEmail,
+          amount: new_amt,
+          date: moment().toISOString(),
+          process: processId,
+        }).subscribe(async (data) => {
+          if (data.ok) {
+            const msg = await data.json();
+            setEstMatch(msg.estimated_match);
           }
         });
       }
@@ -125,8 +144,12 @@ function GiveCreditsPage() {
               placeholder="0"
               className="amount-field"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => onChangeAmount(e.target.value)}
             />
+
+            <p className="match-estimate">
+              Estimated Match: <strong>+ {estMatch} voice credits</strong>
+            </p>
 
             <input
               type="email"

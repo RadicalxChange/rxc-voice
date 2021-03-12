@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ActionContext, StateContext } from "../../hooks";
 import { WebService } from "../../services";
-import { WEB_DOMAIN } from "../../utils";
+import { Domain } from "../../utils";
 
 import "./Header.scss";
 
@@ -29,7 +29,7 @@ function Header() {
   return (
     <div className="App-header">
       <a
-      href={WEB_DOMAIN}
+      href={Domain.WEB}
       className="app-title"
       >
         RxC VOICE

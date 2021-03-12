@@ -7,6 +7,7 @@
 
 # testing
 /coverage
+src/utils/urls.ts
 
 # production
 /build

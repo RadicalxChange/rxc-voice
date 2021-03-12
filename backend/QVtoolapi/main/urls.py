@@ -7,7 +7,7 @@ from .authviews import (DelegateList, DelegateDetail, UserDetail,
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
                             VoteList)
 from .conversationviews import (ConversationList, ConversationDetail)
-from .processviews import (ProcessList, ProcessDetail, TransferList)
+from .processviews import (ProcessList, ProcessDetail, TransferList, EstimateMatch)
 
 urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
@@ -30,9 +30,10 @@ urlpatterns = [
     # Process APIs
     path('processes/', ProcessList.as_view(), name='process-list'),
     path('processes/<int:pk>/', ProcessDetail.as_view(), name='process-detail'),
+    path('processes/<int:pk>/transfers/', TransferList.as_view(), name='transfer-list'),
+    path('estimate-match/', EstimateMatch.as_view(), name='estimate-match'),
 
     # Election APIs
-    path('processes/<int:pk>/transfers/', TransferList.as_view(), name='transfer-list'),
     path('elections/', ElectionList.as_view(), name='election-list'),
     path('elections/<int:pk>/', ElectionDetail.as_view(),
          name='election-detail'),
