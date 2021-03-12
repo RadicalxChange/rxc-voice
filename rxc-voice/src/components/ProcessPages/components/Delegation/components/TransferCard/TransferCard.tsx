@@ -9,16 +9,9 @@ function TransferCard(props: any) {
     <li className="transfer-card" key={props.transfer.id} >
       <h3 className="sender">
         {props.transfer.user_is_sender ? (
-          user.first_name + " " + user.last_name
+          "Sent"
         ) : (
-          "Anonymous"
-        )}
-      </h3>
-      <h3 className="recipient">
-        {!props.transfer.user_is_sender ? (
-          user.first_name + " " + user.last_name
-        ) : (
-          "Anonymous"
+          "Received"
         )}
       </h3>
       <h3 className="amount">{props.transfer.user_is_sender ? "- " : "+ "}{props.transfer.amount} voice credits</h3>

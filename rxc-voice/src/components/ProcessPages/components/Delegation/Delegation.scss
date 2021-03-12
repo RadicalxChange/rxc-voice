@@ -13,33 +13,35 @@
 
   .transfers {
     margin-bottom: 8vw;
-    // border-bottom: 1px solid black;
+    // text-align: left;
 
     .transfers-header {
       margin-left: 2vw;
       display: grid;
-      grid-template-columns: 33% 33% 33%;
+      grid-template-columns: 50% 50%;
       border-bottom: 1px solid black;
-
-      .col-one {
-        grid-column: 1;
-      }
-      .col-two {
-        grid-column: 2;
-      }
-      .col-three {
-        grid-column: 3;
-      }
     }
     .transfer-list {
       margin: 0 0 0 2vw;
     }
+    .type {
+      grid-column: 1;
+    }
+    .amount {
+      grid-column: 2;
+    }
+    .total {
+      font-weight: bold;
+    }
+    .transfers-subtotals {
+      margin-left: 2vw;
+      display: grid;
+      grid-template-columns: 50% 50%;
+      border-top: 1px solid black;
+    }
   }
 
   .delegation-content {
-    text-align: left;
-    // display: grid;
-    // grid-template-columns: 58vw 1fr;
 
     .invite-link {
       text-decoration: underline;
@@ -62,12 +64,9 @@
     .delegation-content {
 
       .delegate-list {
-        // grid-column-start: 1;
         margin-right: 5vw;
       }
       .about {
-        // grid-column: 2 / -1;
-        // grid-row-start: 2;
         margin: 0 6vw 0 6vw;
         position: fixed;
         left: 58vw;

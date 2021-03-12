@@ -1,14 +1,11 @@
 .transfer-card {
   display: grid;
-  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: 50% 50%;
 
   .sender {
     grid-column: 1;
   }
-  .recipient {
-    grid-column: 2;
-  }
   .amount {
-    grid-column: 3;
+    grid-column: 2;
   }
 }

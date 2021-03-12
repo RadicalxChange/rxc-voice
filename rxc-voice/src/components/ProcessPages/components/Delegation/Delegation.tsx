@@ -22,6 +22,7 @@ function Delegation() {
   const conversation = getConversation(selectedProcess);
   const [showTransfers, setShowTransfers] = useState(false);
   const [transfers, setTransfers] = useState(new Array<Transfer>());
+  const [subtotal, setSubtotal] = useState(0);
   const [match, setMatch] = useState(0);
   const delegationOngoing = conversation && moment() < moment(conversation.start_date);
 
@@ -34,8 +35,7 @@ function Delegation() {
     if (conversation && (moment() > moment(conversation.start_date))) {
       setShowTransfers(true);
       WebService.fetchTransfers(processId).subscribe((data: any) => {
-        setTransfers(mapToTransfers(data.transfers));
-        setMatch(data.match);
+        processTransferData(data);
       });
     }
 
@@ -50,6 +50,26 @@ function Delegation() {
     }
   };
 
+  const processTransferData = (data: any) => {
+    const transferData = mapToTransfers(data.transfers);
+    const matchData = data.match;
+    setTransfers(transferData);
+    setMatch(matchData);
+    setSubtotal(calcSubtotal(transferData));
+  };
+
+  const calcSubtotal = (transferData: Transfer[]) => {
+    var subtotal = 0;
+    transferData.forEach((transfer: Transfer) => {
+      if (transfer.user_is_sender) {
+        subtotal -= Number(transfer.amount)
+      } else {
+        subtotal += Number(transfer.amount)
+      }
+    });
+    return subtotal;
+  };
+
   return (
     selectedProcess ? (
       <div className="delg-page">
@@ -59,9 +79,8 @@ function Delegation() {
           <div className="transfers">
             <h2>Your transfers</h2>
             <div className="transfers-header">
-              <h3 className="col-one">Sender</h3>
-              <h3 className="col-two">Recipient</h3>
-              <h3 className="col-three">Amount</h3>
+              <h3 className="type">Type</h3>
+              <h3 className="amount">Amount</h3>
             </div>
             {transfers.length ? (
               <>
@@ -70,7 +89,20 @@ function Delegation() {
                     <TransferCard transfer={transfer} key={transfer.id}></TransferCard>
                   ))}
                 </ul>
-                <h3>You received {match} voice credits from the matching fund.</h3>
+                <div className="transfers-subtotals">
+                  <div className="type">
+                    <h3>Subtotal</h3>
+                    <h3>Matching Funds Received</h3>
+                  </div>
+                  <div className="amount">
+                    <h3>{(subtotal < 0) ? "- " : "+ "}{Math.abs(subtotal)} voice credits</h3>
+                    <h3>{(match < 0) ? "- " : "+ "}{Math.abs(match)} voice credits</h3>
+                  </div>
+                </div>
+                <div className="transfers-subtotals">
+                  <h3 className="total">Total Change</h3>
+                  <h3 className="total">{(subtotal + match < 0) ? "- " : "+ "}{Math.abs(subtotal + match)} voice credits</h3>
+                </div>
               </>
             ) : (
               <h3>You did not send or receive any transfers.</h3>
