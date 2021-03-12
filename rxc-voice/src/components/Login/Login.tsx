@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
@@ -8,6 +9,9 @@ import { useAlert } from 'react-alert'
 import "./Login.scss";
 
 function Login() {
+  const location = useLocation();
+  const linkUid = new URLSearchParams(location.search).get('uidb64');
+  const linkToken = new URLSearchParams(location.search).get('token');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setColor, setUserData } = useContext(ActionContext);
@@ -24,8 +28,14 @@ function Login() {
     e.preventDefault()
     if (email && password) {
       WebService.loginUser({
-        username: email,
-        password: password,
+        user: {
+          username: email,
+          password: password,
+        },
+        creds: {
+          uidb64: linkUid,
+          token: linkToken,
+        },
       }).subscribe(async (data) => {
         if (data.ok) {
           const user = await data.json();

@@ -18,11 +18,25 @@ function App() {
   const linkToken = new URLSearchParams(location.search).get('token');
   const { user, color } = useContext(StateContext);
 
-  if (linkToken) {
-    return <ValidationPage />
-  }
   if (!user) {
-    return <Login />
+    if (linkToken) {
+      return (
+        <div className="App" style={{ background: color }} >
+          <Route
+            path="/"
+            exact
+            render={() => <Login />}
+          />
+          <Route
+            path="/verify"
+            exact
+            render={() => <ValidationPage />}
+          />
+        </div>
+      );
+    } else {
+      return <Login />
+    }
   }
   return (
     <div className="App" style={{ background: color }} >

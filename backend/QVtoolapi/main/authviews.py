@@ -138,13 +138,28 @@ class CustomAuthToken(ObtainAuthToken):
     # serializer_class = CustomAuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
+        serializer = self.serializer_class(data=request.data['user'],
                                            context={'request': request})
         if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
             # the following line currently throws an error for superusers
             delegate = Delegate.objects.get(user=token.user)
+            # claim transfers if necessary
+            if request.data['creds']['uidb64'] and request.data['creds']["token"]:
+                print("claiming credits...")
+                try:
+                    uid = force_text(urlsafe_base64_decode(request.data['creds']['uidb64']))
+                    standin_delegate = Delegate.objects.get(pk=uid)
+                except(TypeError, ValueError, OverflowError, Delegate.DoesNotExist):
+                    standin_delegate = None
+                if standin_delegate is not None and account_activation_token.check_token(standin_delegate, request.data['creds']["token"]):
+                    transfers = Transfer.objects.filter(recipient_object=standin_delegate)
+                    for transfer in transfers:
+                        transfer.recipient = delegate.public_username
+                        transfer.recipient_object = delegate
+                        transfer.save()
+                    standin_delegate.user.delete()
             return Response({
                 'token': token.key,
                 'id': delegate.pk,

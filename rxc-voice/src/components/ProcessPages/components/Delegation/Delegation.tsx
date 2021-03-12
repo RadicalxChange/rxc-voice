@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { ActionContext, StateContext } from "../../../../hooks";
 import { BgColor } from "../../../../models/BgColor";
-import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../../../models/Delegate";

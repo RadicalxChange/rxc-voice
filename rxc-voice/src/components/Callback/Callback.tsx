@@ -33,6 +33,7 @@ function Callback() {
               if (data.ok) {
                 console.log("got the token");
                 const twitterToken = await data.json();
+                // TODO: error check
                 window.location.href = Domain.WEB;
               }
             });
@@ -51,6 +52,7 @@ function Callback() {
                 if (data.ok) {
                   console.log("verified");
                   const githubData = await data.json();
+                  // TODO: error check
                   window.location.href = Domain.WEB;
                 }
               })

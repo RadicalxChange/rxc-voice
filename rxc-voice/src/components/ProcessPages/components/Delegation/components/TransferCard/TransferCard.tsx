@@ -3,7 +3,6 @@ import React from "react";
 import "./TransferCard.scss";
 
 function TransferCard(props: any) {
-  const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
 
   return (
     <li className="transfer-card" key={props.transfer.id} >

@@ -11,13 +11,13 @@ export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorag
 export const oauthState = sessionStorage.getItem("oauthState");
 export const twitterOauthSecret = sessionStorage.getItem("twitterOauthSecret");
 
-export const loginUser = (user: any): Observable<any> => {
+export const loginUser = (data: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
       fetch(`${ROOT_URL}/api-token-auth/`, {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         method: "POST",
-        body: JSON.stringify(user),
+        body: JSON.stringify(data),
       }),
     );
   });

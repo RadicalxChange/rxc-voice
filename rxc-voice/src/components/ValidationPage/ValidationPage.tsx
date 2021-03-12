@@ -19,7 +19,6 @@ function ValidationPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passReEntry, setPassReEntry] = useState("");
-    // const [username, setUsername] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     // const [profilePic, setProfilePic] = useState("");
@@ -40,7 +39,6 @@ function ValidationPage() {
           if (data.ok) {
             const user = await data.json();
             setUserData(user);
-            console.log(user);
           } else {
             const error = await data.json();
             console.log(error);
