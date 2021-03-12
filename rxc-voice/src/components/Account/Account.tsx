@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import defaultPic from '../../assets/icons/profile_icon.svg';
@@ -8,14 +8,15 @@ import { WebService } from "../../services";
 
 function Account() {
   const { setColor, logoutUser, updateCreditBalance } = useContext(ActionContext);
-    const { creditBalance } = useContext(StateContext);
-  const user = WebService.userobj;
+  const { creditBalance } = useContext(StateContext);
+  const [user, setUser] = useState(WebService.userobj);
 
   useEffect(() => {
     setColor(BgColor.Yellow);
 
+    const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
+    setUser(user);
     if (creditBalance === null) {
-      const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
       if (user) {
         WebService.getDelegate(user.id).subscribe(async (data: any) => {
           if (data.ok) {
