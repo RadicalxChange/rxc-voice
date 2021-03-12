@@ -194,7 +194,7 @@ class TransferSerializer(serializers.ModelSerializer):
             rxc_voice = Group.objects.get(name="RxC Voice")
             new_delegate.user.groups.add(rxc_voice)
             recipient_object = new_delegate
-        elif recipient_object.id == sender.id or self.context.get('request').user == recipient_object:
+        elif recipient_object.id == sender.id or self.context.get('request').user.id == recipient_object.id:
             raise ValidationError("Invalid transfer.")
         sender.credit_balance -= validated_data.get('amount')
         sender.save()
