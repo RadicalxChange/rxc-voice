@@ -199,6 +199,14 @@ export const getId = (process: Process | null) => {
   }
 };
 
+export const getDelegates = (process: Process | null) => {
+  if (process) {
+    return process.delegates;
+  } else {
+    return undefined;
+  }
+};
+
 export const getConversation = (process: Process | null) => {
   if (process) {
     return process.conversation;

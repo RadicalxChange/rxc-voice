@@ -6,7 +6,7 @@ import { Process } from "../../../../models/Process";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../../../models/Delegate";
-import { getConversation, getId, getMatchingPool, mapToTransfers } from "../../../../utils";
+import { getConversation, getDelegates, getId, getMatchingPool, mapToTransfers } from "../../../../utils";
 import moment from "moment";
 import { WebService } from "../../../../services";
 import { Transfer } from "../../../../models/Transfer";
@@ -42,12 +42,8 @@ function Delegation() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processId, selectedProcess]);
 
-  const getDelegates = (process: Process | null) => {
-    if (process) {
-      return process.delegates;
-    } else {
-      return undefined;
-    }
+  const isVerified = (delegate: Delegate, index, array) => {
+    return delegate.public_username !== null;
   };
 
   const processTransferData = (data: any) => {
@@ -134,11 +130,18 @@ function Delegation() {
           ) : (
             <></>
           )}
-          {getDelegates(selectedProcess)!.length ? (
+          {getDelegates(selectedProcess)!.filter(isVerified).length ? (
             <ul className="delegate-list">
-              {getDelegates(selectedProcess)!.map((delegate: Delegate) => (
-                <DelegateCard delegate={delegate} process={selectedProcess} key={delegate.id}></DelegateCard>
-              ))}
+              {getDelegates(selectedProcess)!
+                .filter(isVerified)
+                .map((delegate: Delegate) => (
+                  <DelegateCard
+                    delegate={delegate}
+                    process={selectedProcess}
+                    key={delegate.id}
+                  >
+                  </DelegateCard>
+                ))}
             </ul>
           ) : (
             <h3>No delegates found.</h3>
