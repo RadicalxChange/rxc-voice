@@ -16,12 +16,11 @@ from .permissions import DelegatePermission, GroupPermission
 from .models import Delegate, Transfer
 import requests
 from django.conf import settings
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
 import json
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from .utils import account_activation_token
+from .utils import get_mail_body, account_activation_token
+from .services import send_mail
 
 
 class DelegateList(mixins.CreateModelMixin,
@@ -178,6 +177,50 @@ class CustomAuthToken(ObtainAuthToken):
                 # 'invited_by': token.user.invited_by,
                 # 'credit_balance': delegate.credit_balance,
             })
+
+
+class ForgotPassword(generics.GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            delegate = Delegate.objects.get(user__email=request.data['email'])
+        except(TypeError, ValueError, OverflowError, Delegate.DoesNotExist):
+            delegate = None
+        if delegate is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            uid = urlsafe_base64_encode(force_bytes(delegate.pk))
+            token = account_activation_token.make_token(delegate)
+            params = {
+                'delegate_email': delegate.user.email,
+                'uid': uid,
+                'token': token,
+                'delegate': delegate,
+            }
+            subject = "Reset Password"
+
+            try:
+                mail_body = get_mail_body('reset_password', params)
+                send_mail(delegate.user.email, subject, mail_body)
+            except Exception as e:
+                print(e)
+            return Response(status=status.HTTP_200_OK)
+
+
+class ResetPassword(generics.GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        try:
+            uid = force_text(urlsafe_base64_decode(request.data['uidb64']))
+            delegate = Delegate.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, Delegate.DoesNotExist):
+            delegate = None
+        if delegate is not None and account_activation_token.check_token(delegate, request.data["token"]):
+            delegate.user.set_password(request.data['password'])
+            delegate.user.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ValidateAuthToken(ObtainAuthToken):

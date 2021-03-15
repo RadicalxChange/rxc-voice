@@ -10,6 +10,8 @@ import GiveCreditsPage from './components/GiveCreditsPage';
 import ValidationPage from './components/ValidationPage';
 import About from './components/About';
 import Callback from './components/Callback';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword/ResetPassword';
 
 import './App.scss';
 
@@ -18,25 +20,42 @@ function App() {
   const linkToken = new URLSearchParams(location.search).get('token');
   const { user, color } = useContext(StateContext);
 
+  if (linkToken) {
+    return (
+      <div className="App" style={{ background: color }} >
+        <Route
+          path="/"
+          exact
+          render={() => <Login />}
+        />
+        <Route
+          path="/verify"
+          exact
+          render={() => <ValidationPage />}
+        />
+        <Route
+          path="/password-reset"
+          exact
+          render={() => <ResetPassword />}
+        />
+      </div>
+    );
+  }
   if (!user) {
-    if (linkToken) {
-      return (
-        <div className="App" style={{ background: color }} >
-          <Route
-            path="/"
-            exact
-            render={() => <Login />}
-          />
-          <Route
-            path="/verify"
-            exact
-            render={() => <ValidationPage />}
-          />
-        </div>
-      );
-    } else {
-      return <Login />
-    }
+    return (
+      <div className="App" style={{ background: color }} >
+        <Route
+          path="/"
+          exact
+          render={() => <Login />}
+        />
+        <Route
+          path="/forgot-password"
+          exact
+          render={() => <ForgotPassword />}
+        />
+      </div>
+    );
   }
   return (
     <div className="App" style={{ background: color }} >

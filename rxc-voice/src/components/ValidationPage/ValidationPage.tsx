@@ -22,7 +22,7 @@ function ValidationPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     // const [profilePic, setProfilePic] = useState("");
-    const [oauthProvider, setOauthProvider] = useState(OauthProvider.Github)
+    const [oauthProvider, setOauthProvider] = useState(OauthProvider.Github);
     const { setUserData, setColor } = useContext(ActionContext);
     const { user } = useContext(StateContext);
 

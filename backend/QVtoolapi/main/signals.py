@@ -1,11 +1,10 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 
 from .utils import get_mail_body, account_activation_token
 from .services import send_mail
-from django.contrib.auth.models import User
 from .models import Delegate
 
 

@@ -4,7 +4,7 @@ import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
 import { useAlert } from 'react-alert'
-// import logo from '../../assets/logo.svg';
+import { Link } from "react-router-dom";
 
 import "./Login.scss";
 
@@ -74,6 +74,12 @@ function Login() {
         >
         sign in
       </button>
+      <Link
+        to={`/forgot-password`}
+        className="forgot-password"
+      >
+        Forgot password?
+      </Link>
     </form>
   );
 }

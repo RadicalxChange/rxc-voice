@@ -31,7 +31,7 @@
   .login-button {
     display: block;
     text-align: center;
-    margin: 10vmin auto;
+    margin: 10vmin auto 5vmin auto;
     padding: 1vmin 4vmin;
     background: var(--blackColor);
     color: white;
@@ -44,6 +44,13 @@
   .login-button:hover {
     background: var(--whiteColor);
     color: black;
+  }
+  .forgot-password {
+    text-decoration: underline;
+    font-size: .8rem;
+  }
+  .forgot-password:hover {
+    text-decoration: none;
   }
 
 }

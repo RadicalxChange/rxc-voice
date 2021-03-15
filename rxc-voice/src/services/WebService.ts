@@ -23,6 +23,30 @@ export const loginUser = (data: any): Observable<any> => {
   });
 };
 
+export const forgotPassword = (data: any): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/forgot-password/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    );
+  });
+};
+
+export const resetPassword = (data: any): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/reset-password/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    );
+  });
+};
+
 export const modifyUser = (moddata: any, id: string): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {

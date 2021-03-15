@@ -3,11 +3,13 @@ from django.urls import path, re_path
 from .rootview import RootView
 from .authviews import (DelegateList, DelegateDetail, UserDetail,
                         GetGithubToken, CustomAuthToken, PermissionList,
-                        GroupList, GetGithubUser, ValidateAuthToken, GetTwitterToken)
+                        GroupList, GetGithubUser, ValidateAuthToken,
+                        GetTwitterToken, ForgotPassword, ResetPassword)
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
                             VoteList)
 from .conversationviews import (ConversationList, ConversationDetail)
-from .processviews import (ProcessList, ProcessDetail, TransferList, EstimateMatch)
+from .processviews import (ProcessList, ProcessDetail, TransferList,
+                           EstimateMatch)
 
 urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
@@ -23,6 +25,8 @@ urlpatterns = [
     path('github/token/', GetGithubToken.as_view()),
     path('github/verify/', GetGithubUser.as_view()),
     path('twitter/token/', GetTwitterToken.as_view()),
+    path('forgot-password/', ForgotPassword.as_view()),
+    path('reset-password/', ResetPassword.as_view()),
     re_path(r'^api-token-auth/', CustomAuthToken.as_view()),
     re_path(r'^activate/',
             ValidateAuthToken.as_view(), name='activate'),
