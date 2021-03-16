@@ -84,7 +84,7 @@ function Home(props:any) {
           {activeList.length ? (
             <ul>
               {activeList.map((conversation: Conversation) => (
-                <ConvoCard conversation={conversation} key={conversation.id} />
+                <ConvoCard conversation={conversation} key={conversation.id} active={true} />
               ))}
             </ul>
           ) : (
@@ -94,7 +94,7 @@ function Home(props:any) {
           {pastList.length ? (
             <ul>
               {pastList.map((conversation: Conversation) => (
-                <ConvoCard conversation={conversation} key={conversation.id} />
+                <ConvoCard conversation={conversation} key={conversation.id} active={false} />
               ))}
             </ul>
           ) : (
