@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useAlert } from "react-alert";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { WebService } from "../../services";
 import { Domain } from "../../utils";
@@ -12,53 +11,52 @@ function Callback() {
     const github_state = new URLSearchParams(location.search).get('state');
     const twitter_token = new URLSearchParams(location.search).get('oauth_token');
     const twitter_verifier = new URLSearchParams(location.search).get('oauth_verifier');
-
-    const alert = useAlert()
+    const error_msg = new URLSearchParams(location.search).get('error');
+    const error_description = new URLSearchParams(location.search).get('error_description');
+    const [accessDenied, setAccessDenied] = useState(false);
 
 
     useEffect(() => {
       if (!github_code) {
         if (!twitter_token) {
-          alert.error("Access denied. This link may be broken or expired.");
-        } else {
-          if (twitter_token !== WebService.oauthState) {
-            alert.error("Access denied. This link may be broken or expired.");
+          console.error("Access Denied: user did not grant RxC Voice permission to access their Twitter account.");
+          setAccessDenied(true);
+        } else if (twitter_token !== WebService.oauthState) {
+          if (error_msg && error_description) {
+            console.error(error_msg + ": " + error_description);
           } else {
-            const params: any = {
-              oauth_token: twitter_token,
-              oauth_verifier: twitter_verifier,
-              oauth_secret: WebService.twitterOauthSecret,
-             }
-            WebService.getTwitterAccessToken(params).subscribe(async (data) => {
-              if (data.ok) {
-                console.log("got the token");
-                const twitterToken = await data.json();
-                // TODO: error check
-                window.location.href = Domain.WEB;
-              }
-            });
+            console.error("Access Denied: Twitter token is invalid.");
           }
+          setAccessDenied(true);
+        } else {
+          const params: any = {
+            oauth_token: twitter_token,
+            oauth_verifier: twitter_verifier,
+            oauth_secret: WebService.twitterOauthSecret,
+           }
+          WebService.getTwitterAccessToken(params).subscribe(async (data) => {
+            if (data.ok) {
+              console.log("got the token");
+              window.location.href = Domain.WEB;
+            } else {
+              setAccessDenied(true);
+            }
+          });
         }
       } else {
         if (github_state !== WebService.oauthState) {
-          alert.error("Access denied. This link may be broken or expired.");
+          console.error("Access Denied: Github token is invalid.");
+          setAccessDenied(true);
         } else {
           const params: any = { code: github_code, state: github_state, }
-          WebService.getGithubToken(params).subscribe(async (data) => {
+          WebService.verifyGithub(params).subscribe(async (data) => {
             if (data.ok) {
               console.log("got the token");
-              const githubToken = await data.json();
-              WebService.verifyGithub(githubToken).subscribe(async (data) => {
-                if (data.ok) {
-                  console.log("verified");
-                  const githubData = await data.json();
-                  // TODO: error check
-                  window.location.href = Domain.WEB;
-                }
-              })
+              window.location.href = Domain.WEB;
             } else {
               const error = await data.json();
-              console.log(error);
+              console.error(error);
+              setAccessDenied(true);
             }
           });
         }
@@ -69,7 +67,14 @@ function Callback() {
 
     return (
         <div className="validation-page">
-          <h2>verifying your account...</h2>
+          {accessDenied ? (
+            <>
+            <h2>Access Denied.</h2>
+            <p>Either you denied RxC Voice access to your Github or Twitter account, or this link may be broken or expired.</p>
+            </>
+          ) : (
+            <h2>verifying your account...</h2>
+          )}
         </div>
     );
 }

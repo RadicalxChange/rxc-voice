@@ -253,7 +253,7 @@ class ValidateAuthToken(ObtainAuthToken):
             return HttpResponse('Activation link is invalid!')
 
 
-class GetGithubToken(generics.GenericAPIView):
+class GetGithubUser(generics.GenericAPIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
@@ -266,49 +266,54 @@ class GetGithubToken(generics.GenericAPIView):
             "client_secret": settings.GITHUB_CLIENT_SECRET,
             "code": request.data["code"]
         }
-        r = requests.post(
+        # request an access token from Github Oauth2 application
+        token_msg = requests.post(
             'https://github.com/login/oauth/access_token',
             headers=headers,
             data=json.dumps(data)
         )
-        # save token
-        cors_header = {
-            'Access-Control-Allow-Origin': '*',
-        }
-        r.headers.update(cors_header)
-        return Response(r.json())
-
-
-class GetGithubUser(generics.GenericAPIView):
-    authentication_classes = [TokenAuthentication]
-
-    def post(self, request, *args, **kwargs):
-        headers = {
-            'Authorization': 'token ' + request.data["access_token"]
-        }
-        r = requests.get(
-            'https://api.github.com/user',
-            headers=headers
-        )
-        delegate = Delegate.objects.filter(user__id=request.user.id).first()
-        if delegate:
-            github_data = r.json()
-            if github_data["login"]:
-                delegate.oauth_provider = "git"
-                delegate.public_username = github_data["login"]
-                delegate.oauth_token = request.data["access_token"]
-                # profile pic available at github_data["avatar_url"]
-                pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
-                for t in pending_transfers:
-                    t.status='A'
-                    t.save()
-                delegate.save()
-
-        cors_header = {
-            'Access-Control-Allow-Origin': '*',
-        }
-        r.headers.update(cors_header)
-        return Response(r)
+        token_data = token_msg.json()
+        # use the access token to obtain user data
+        if 'access_token' in token_data:
+            headers = {
+                'Authorization': 'token ' + token_data['access_token']
+            }
+            data_msg = requests.get(
+                'https://api.github.com/user',
+                headers=headers
+            )
+            github_data = data_msg.json()
+            # update the delegate with data from their github profile
+            if 'login' in github_data:
+                try:
+                    delegate = Delegate.objects.filter(user__id=request.user.id).first()
+                except(Delegate.DoesNotExist):
+                    delegate = None
+                if delegate:
+                    delegate.oauth_provider = "git"
+                    delegate.public_username = github_data["login"]
+                    delegate.oauth_token = token_data['access_token']
+                    # profile pic available at github_data['avatar_url']
+                    pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
+                    for t in pending_transfers:
+                        t.status='A'
+                        t.save()
+                    delegate.save()
+                    cors_header = {
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                    data_msg.headers.update(cors_header)
+                    return Response(data_msg, status=status.HTTP_200_OK)
+                else:
+                    error = {
+                        'error': 'permission_denied',
+                        'error_description': 'The activation token is invalid or expired'
+                    }
+                    return Response(error, status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                return Response(github_data, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(token_data, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class GetTwitterToken(generics.GenericAPIView):

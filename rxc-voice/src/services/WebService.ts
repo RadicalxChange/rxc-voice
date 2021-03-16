@@ -284,29 +284,15 @@ export const fetchTransfers = (process_id: string): Observable<any> => {
   });
 };
 
-export const verifyGithub = (token: any): Observable<any> => {
-  return defer(() => {
-    const user: string | null = sessionStorage.getItem("user");
-    return from<Promise<any>>(
-      fetch(`${ROOT_URL}/github/verify/`, {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
-        },
-        method: "POST",
-        body: JSON.stringify(token),
-      }),
-    );
-  });
-};
-
-export const getGithubToken = (creds: any): Observable<any> => {
+export const verifyGithub = (creds: any): Observable<any> => {
     return defer(() => {
+      const user: string | null = sessionStorage.getItem("user");
       return from<Promise<any>>(
-        fetch(`${ROOT_URL}/github/token/`, {
+        fetch(`${ROOT_URL}/github/verify/`, {
           headers: {
             'Content-Type': 'application/json; charset=utf-8',
             'Accept': 'application/json',
+            Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
          },
           method: "POST",
           body: JSON.stringify({
