@@ -6,7 +6,8 @@ import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { OauthProvider } from "../../models/OauthProvider";
 import { WebService } from "../../services";
-import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, getDelegateId, getUserId, validateEmail, validatePasswordLength } from "../../utils";
+import { getDelegateId, getUserId, validateEmail } from "../../utils";
+// import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, validatePasswordLength } from "../../utils";
 
 import "./ValidationPage.scss";
 
@@ -55,11 +56,11 @@ function ValidationPage() {
       if (formIsComplete()) {
         if (validateEmail(email)) {
           if (password === passReEntry) {
-            if (validatePasswordLength(password)) {
-              if (containsSpecialCharacters(password)) {
-                if (containsUpperCase(password)) {
-                  if (containsLowerCase(password)) {
-                    if (containsNumber(password)) {
+            // if (validatePasswordLength(password)) {
+            //   if (containsSpecialCharacters(password)) {
+            //     if (containsUpperCase(password)) {
+            //       if (containsLowerCase(password)) {
+            //         if (containsNumber(password)) {
                       const updatedUser = {
                         username: email,
                         email: email,
@@ -103,21 +104,21 @@ function ValidationPage() {
                             console.error("Error", await data.json());
                           }
                         });
-                    } else {
-                      alert.error("Password must contain at least one number")
-                    }
-                  } else {
-                    alert.error("Password must contain at least one lower case character")
-                  }
-                } else {
-                  alert.error("Password must contain at least one upper case character")
-                }
-              } else {
-                alert.error("Password must contain at least 1 special character")
-              }
-            } else {
-              alert.error("Password length must be at least 8 characters")
-            }
+            //         } else {
+            //           alert.error("Password must contain at least one number")
+            //         }
+            //       } else {
+            //         alert.error("Password must contain at least one lower case character")
+            //       }
+            //     } else {
+            //       alert.error("Password must contain at least one upper case character")
+            //     }
+            //   } else {
+            //     alert.error("Password must contain at least 1 special character")
+            //   }
+            // } else {
+            //   alert.error("Password length must be at least 8 characters")
+            // }
           } else {
             alert.error("Re-entered password does not match")
           }
