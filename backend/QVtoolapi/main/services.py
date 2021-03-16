@@ -110,7 +110,6 @@ def estimate_match(new_transfer):
     # calculate change the new transfer would cause
     sender = new_transfer['sender']
     recipient_object = Delegate.objects.filter(user__email=new_transfer['recipient']).first()
-    print(new_transfer['amount'])
     if not recipient_object:
         recipient_object = Delegate.objects.filter(public_username=new_transfer['recipient']).first()
     adjusted_pledged_total = 0
@@ -123,9 +122,7 @@ def estimate_match(new_transfer):
             else:
                 distinct_contributions[recipient_object.id][sender.id] = new_transfer['amount']
             adjusted_pledged_total = pledged_totals[recipient_object.id] + new_transfer['amount']
-            print(adjusted_pledged_total)
             adjusted_sum_roots = sum_of_roots[recipient_object.id] + math.sqrt(distinct_contributions[recipient_object.id][sender.id])
-            print(adjusted_sum_roots)
     else:
         adjusted_pledged_total = new_transfer['amount']
         adjusted_sum_roots = math.sqrt(new_transfer['amount'])
@@ -144,9 +141,8 @@ def estimate_match(new_transfer):
         curr_match = (curr_match / raw_match_total) * float(process.matching_pool)
     # calculate the new match for given recipient
     adjusted_match = (adjusted_sum_roots * adjusted_sum_roots) - float(adjusted_pledged_total)
-    print(adjusted_match)
     if raw_match_total > process.matching_pool:
         adjusted_match = (adjusted_match / raw_match_total) * float(process.matching_pool)
     # return the difference caused by hypothetical transfer
-    print(str(int(adjusted_match)) + " - " + str(int(curr_match)) + " = " + str(int(adjusted_match) - int(curr_match)))
+    # print(str(int(adjusted_match)) + " - " + str(int(curr_match)) + " = " + str(int(adjusted_match) - int(curr_match)))
     return int(adjusted_match) - int(curr_match)
