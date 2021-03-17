@@ -27,6 +27,7 @@ const stateInitialValue = {
   pastProcesses: [],
   selectedProcess: null,
   stagedTransfer: null,
+  loading: false,
 };
 export const ActionContext = createContext(actionInitialValue);
 export const StateContext = createContext(stateInitialValue);
@@ -68,6 +69,11 @@ export const AppProvider = (props: any) => {
             ...prevState,
             stagedTransfer: action.transfer,
           };
+        case "SET_LOADING":
+          return {
+            ...prevState,
+            loading: action.loading,
+          };
       }
     }, {
       color: yellowColor,
@@ -80,6 +86,7 @@ export const AppProvider = (props: any) => {
       pastProcesses: [],
       selectedProcess: null,
       stagedTransfer: null,
+      loading: false,
     }
   );
 
@@ -155,8 +162,11 @@ export const AppProvider = (props: any) => {
         });
       },
       selectProcess: (selectedProcessId: any) => {
-        WebService.fetchSingleProcess(selectedProcessId).subscribe((data: any) => {
-          dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: data });
+        dispatch({ type: "SET_LOADING", loading: true });
+        WebService.fetchSingleProcess(selectedProcessId).subscribe(async (data: any) => {
+          const process = await data;
+          dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: process });
+          dispatch({ type: "SET_LOADING", loading: false });
         });
       },
       stageTransfer: (transfer: any) => {
@@ -165,8 +175,8 @@ export const AppProvider = (props: any) => {
           transfer: transfer,
         });
       },
-
     }),
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

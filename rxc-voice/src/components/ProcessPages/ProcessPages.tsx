@@ -14,7 +14,7 @@ import "./ProcessPages.scss";
 
 function ProcessPages() {
   const { processId, stage } = useParams<ProcessPageRouteParams>();
-  const { selectedProcess } = useContext(StateContext);
+  const { selectedProcess, loading } = useContext(StateContext);
   const { selectProcess } = useContext(ActionContext);
 
   useEffect(() => {
@@ -50,25 +50,31 @@ function ProcessPages() {
     }
   }
 
-  return (
-    <>
-      <div className="process-subheader">
-        <h1 className="title">{getTitle(selectedProcess)}</h1>
-        {selectedProcess ? (
-          <StatusBar process={selectedProcess} stage={stage}/>
-        ) : (
-          <></>
-        )}
-        <div className="time-remaining">
-          <p>
-            Closes {moment(getEndDate(selectedProcess), "YYYYMMDD").fromNow()}
-          </p>
+  if (loading) {
+    return (
+      <h2>Loading...</h2>
+    );
+  } else {
+    return (
+      <>
+        <div className="process-subheader">
+          <h1 className="title">{getTitle(selectedProcess)}</h1>
+          {selectedProcess ? (
+            <StatusBar process={selectedProcess} stage={stage}/>
+          ) : (
+            <></>
+          )}
+          <div className="time-remaining">
+            <p>
+              Closes {moment(getEndDate(selectedProcess), "YYYYMMDD").fromNow()}
+            </p>
+          </div>
+          <p>{getDescription(selectedProcess)}</p>
         </div>
-        <p>{getDescription(selectedProcess)}</p>
-      </div>
-      {renderContent()}
-    </>
-  );
+        {renderContent()}
+      </>
+    );
+  }
 }
 
 export default ProcessPages;
