@@ -167,6 +167,7 @@ class CustomAuthToken(ObtainAuthToken):
             return Response({
                 'token': token.key,
                 'id': delegate.pk,
+                'is_verified': delegate.is_verified,
                 'username': token.user.username,
                 'email': token.user.email,
                 'public_username': delegate.public_username,
@@ -239,6 +240,7 @@ class ValidateAuthToken(ObtainAuthToken):
             return Response({
                 'token': token.key,
                 'id': delegate.pk,
+                'is_verified': delegate.is_verified,
                 'user_id': delegate.user.id,
                 'username': token.user.username,
                 'email': token.user.email,
@@ -294,6 +296,7 @@ class GetGithubUser(generics.GenericAPIView):
                     delegate.public_username = github_data["login"]
                     delegate.oauth_token = token_data['access_token']
                     # profile pic available at github_data['avatar_url']
+                    delegate.is_verified = True
                     pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
                     for t in pending_transfers:
                         t.status='A'
@@ -361,6 +364,7 @@ class GetTwitterToken(generics.GenericAPIView):
                 delegate.public_username = twitter_data["screen_name"]
                 delegate.oauth_token = twitter_data["oauth_token"]
                 delegate.oauth_token_secret = twitter_data["oauth_token_secret"]
+                delegate.is_verified = True
                 pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
                 for t in pending_transfers:
                     t.status='A'

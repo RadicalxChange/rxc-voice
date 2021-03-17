@@ -3,6 +3,17 @@ import premailer
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
+from main.models import Delegate
+
+def delegate_is_verified(user_id):
+    try:
+        delegate = Delegate.objects.filter(user__id=user_id).first()
+    except(Delegate.DoesNotExist):
+        delegate = None
+    if delegate is not None:
+        return delegate.is_verified
+    else:
+        return False
 
 def premailer_transform(html):
     p = premailer.Premailer(html)

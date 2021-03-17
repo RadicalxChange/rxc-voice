@@ -12,6 +12,7 @@ import About from './components/About';
 import Callback from './components/Callback';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword/ResetPassword';
+import { userIsVerified } from './utils';
 
 import './App.scss';
 
@@ -40,8 +41,7 @@ function App() {
         />
       </div>
     );
-  }
-  if (!user) {
+  } else if (!userIsVerified(user)) {
     return (
       <div className="App" style={{ background: color }} >
         <Route
@@ -53,6 +53,10 @@ function App() {
           path="/forgot-password"
           exact
           render={() => <ForgotPassword />}
+        />
+        <Route
+          path="/oauth2/callback"
+          render={() => <Callback></Callback>}
         />
       </div>
     );

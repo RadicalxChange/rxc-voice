@@ -62,17 +62,18 @@ def match_transfers(process):
         final_match = raw_match
         if raw_match_total > process.matching_pool:
             final_match = (raw_match / raw_match_total) * float(process.matching_pool)
-        recipient_object = Delegate.objects.get(id=recipient_id)
-        recipient_object.credit_balance += int(final_match)
-        recipient_object.save()
-        # create a record of this match payment.
-        match_payment = MatchPayment(
-            recipient=recipient_object,
-            amount=int(final_match),
-            date=Now(),
-            process=process,
-            )
-        match_payment.save()
+        if int(final_match) != 0:
+            recipient_object = Delegate.objects.get(id=recipient_id)
+            recipient_object.credit_balance += int(final_match)
+            recipient_object.save()
+            # create a record of this match payment.
+            match_payment = MatchPayment(
+                recipient=recipient_object,
+                amount=int(final_match),
+                date=Now(),
+                process=process,
+                )
+            match_payment.save()
     process.matching_pool = 0
     process.save()
 
@@ -133,15 +134,14 @@ def estimate_match(new_transfer):
         raw_match = (sum * sum) - float(pledged_totals[recipient_id])
         raw_matches[recipient_id] = raw_match
         raw_match_total += raw_match
+    # calculate the new match for given recipient
+    adjusted_match = (adjusted_sum_roots * adjusted_sum_roots) - float(adjusted_pledged_total)
     # calculate the current match for given recipient
     curr_match = 0
     if recipient_object and raw_matches[recipient_object.id]:
         curr_match = raw_matches[recipient_object.id]
     if raw_match_total > process.matching_pool:
         curr_match = (curr_match / raw_match_total) * float(process.matching_pool)
-    # calculate the new match for given recipient
-    adjusted_match = (adjusted_sum_roots * adjusted_sum_roots) - float(adjusted_pledged_total)
-    if raw_match_total > process.matching_pool:
         adjusted_match = (adjusted_match / raw_match_total) * float(process.matching_pool)
     # return the difference caused by hypothetical transfer
     # print(str(int(adjusted_match)) + " - " + str(int(curr_match)) + " = " + str(int(adjusted_match) - int(curr_match)))

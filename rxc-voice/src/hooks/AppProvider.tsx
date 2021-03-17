@@ -137,13 +137,15 @@ export const AppProvider = (props: any) => {
         WebService.fetchProcesses().subscribe((data: any) => {
           var activeList: Process[] = new Array<Process>();
           var pastList: Process[] = new Array<Process>();
-          data.forEach((process: Process) => {
-            if (moment(process.end_date) > moment()) {
-              activeList.push(process);
-            } else {
-              pastList.push(process);
-            }
-          });
+          if (data.length) {
+            data.forEach((process: Process) => {
+              if (moment(process.end_date) > moment()) {
+                activeList.push(process);
+              } else {
+                pastList.push(process);
+              }
+            });
+          }
           dispatch({
             type: "SET_PROCESS_LIST",
             processes: data,

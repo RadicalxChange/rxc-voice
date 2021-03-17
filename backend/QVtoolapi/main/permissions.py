@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from .utils import delegate_is_verified
 
 
 class DelegatePermission(permissions.BasePermission):
@@ -7,12 +8,8 @@ class DelegatePermission(permissions.BasePermission):
         if request.method == 'GET':
             return request.user.is_authenticated
         elif request.method == 'POST':
-                if request.data.get('credit_balance', 0) != 0:
-                    return request.user.is_staff
-                return True
+            return request.user.is_staff
         elif request.method in ['PUT', 'PATCH']:
-            if request.data.get('credit_balance', 0) != 0:
-                return request.user.is_authenticated and request.user.is_staff
             return request.user.is_authenticated
         elif request.method in ['DELETE']:
             return request.user.is_authenticated and request.user.is_staff
@@ -27,7 +24,7 @@ class GroupPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'GET':
-            return request.user.is_authenticated
+            return request.user.is_authenticated and delegate_is_verified(request.user.id)
         elif request.method == 'POST':
             return request.user.is_authenticated and request.user.is_staff
         elif request.method in ['PUT', 'PATCH']:
@@ -42,7 +39,7 @@ class ProcessPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'GET':
-            return request.user.is_authenticated
+            return request.user.is_authenticated and delegate_is_verified(request.user.id)
         elif request.method == 'POST':
             return request.user.is_authenticated and request.user.is_staff
         elif request.method in ['PUT', 'PATCH']:
@@ -57,7 +54,7 @@ class ElectionPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'GET':
-            return request.user.is_authenticated
+            return request.user.is_authenticated and delegate_is_verified(request.user.id)
         elif request.method == 'POST':
             return True
         elif request.method in ['PUT', 'PATCH']:
@@ -75,7 +72,7 @@ class ProposalPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'GET':
-            return request.user.is_authenticated
+            return request.user.is_authenticated and delegate_is_verified(request.user.id)
         elif request.method == 'POST':
             return True
         elif request.method in ['PUT', 'PATCH']:
@@ -92,7 +89,7 @@ class VotePermission(permissions.BasePermission):
         if request.method == 'GET':
             return request.user.is_authenticated and request.user.is_staff
         elif request.method == 'POST':
-            return request.user.is_authenticated
+            return request.user.is_authenticated and delegate_is_verified(request.user.id)
         elif request.method in ['PUT', 'PATCH']:
             return request.user.is_authenticated and request.user.is_staff
         elif request.method in ['DELETE']:
@@ -105,9 +102,9 @@ class TransferPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'GET':
-            return request.user.is_authenticated
+            return request.user.is_authenticated and delegate_is_verified(request.user.id)
         elif request.method == 'POST':
-            return True
+            return request.user.is_authenticated and delegate_is_verified(request.user.id)
         elif request.method in ['PUT', 'PATCH']:
             return request.user.is_authenticated and request.user.is_staff
         elif request.method in ['DELETE']:

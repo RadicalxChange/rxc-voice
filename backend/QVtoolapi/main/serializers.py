@@ -86,6 +86,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+        read_only_fields = ('is_active', 'is_staff')
         extra_kwargs = {
             'password': {'write_only': True},
             'username': {'required': False},
@@ -134,6 +135,7 @@ class DelegateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Delegate
         fields = '__all__'
+        read_only_fields = ('is_verified', 'credit_balance', 'user', 'public_username', 'oauth_token', 'oauth_token_secret', 'invited_by')
 
     def create(self, validated_data, set_unusable_password):
         user_data = validated_data.get('user')
@@ -187,7 +189,7 @@ class TransferSerializer(serializers.ModelSerializer):
                     'username': recipient,
                     'email': recipient,
                 },
-                'credit_balance': validated_data.get('amount'),
+                'credit_balance': 0,
                 'invited_by': sender,
                 },
                 set_unusable_password=True)

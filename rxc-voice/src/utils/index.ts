@@ -106,6 +106,7 @@ export const mapToDelegates = (delegates: Delegate[]): Delegate[] => {
 export const mapToDelegate = (delegate: Delegate): Delegate => {
   return {
     id: delegate.id,
+    is_verified: delegate.is_verified,
     user: delegate.user,
     public_username: delegate.public_username,
     credit_balance: delegate.credit_balance
@@ -113,7 +114,11 @@ export const mapToDelegate = (delegate: Delegate): Delegate => {
 };
 
 export const mapToProcesses = (processes: Process[]): Process[] => {
-  return processes.map(mapToProcess);
+  if (processes.length) {
+    return processes.map(mapToProcess);
+  } else {
+    return processes;
+  }
 };
 
 export const mapToProcess = (process: Process): Process => {
@@ -180,6 +185,23 @@ export const getUserId = (user: any) => {
     return user.user_id;
   } else {
     return undefined;
+  }
+};
+
+export const userIsVerified = (user: any) => {
+  if (user) {
+    return user.is_verified;
+  } else {
+    return false;
+  }
+};
+
+export const verifyUser = (user: any) => {
+  if (user) {
+    user.is_verified = true;
+    return user;
+  } else {
+    return null;
   }
 };
 

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router";
+import { ActionContext, StateContext } from "../../hooks";
 import { WebService } from "../../services";
-import { Domain } from "../../utils";
+import { Domain, verifyUser } from "../../utils";
 
 import "./Callback.scss";
 
@@ -13,6 +14,8 @@ function Callback() {
     const twitter_verifier = new URLSearchParams(location.search).get('oauth_verifier');
     const error_msg = new URLSearchParams(location.search).get('error');
     const error_description = new URLSearchParams(location.search).get('error_description');
+    const { user } = useContext(StateContext);
+    const { setUserData } = useContext(ActionContext);
     const [accessDenied, setAccessDenied] = useState(false);
 
 
@@ -37,6 +40,7 @@ function Callback() {
           WebService.getTwitterAccessToken(params).subscribe(async (data) => {
             if (data.ok) {
               console.log("got the token");
+              setUserData(verifyUser(user));
               window.location.href = Domain.WEB;
             } else {
               setAccessDenied(true);
@@ -52,6 +56,7 @@ function Callback() {
           WebService.verifyGithub(params).subscribe(async (data) => {
             if (data.ok) {
               console.log("got the token");
+              setUserData(verifyUser(user));
               window.location.href = Domain.WEB;
             } else {
               const error = await data.json();
