@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
-import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, validatePasswordLength } from "../../utils";
+// import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, validatePasswordLength } from "../../utils";
 
 import "./ResetPassword.scss";
 
@@ -30,11 +30,11 @@ function ResetPassword() {
     e.preventDefault()
     if (password && passReEntry) {
       if (password === passReEntry) {
-        if (validatePasswordLength(password)) {
-          if (containsSpecialCharacters(password)) {
-            if (containsUpperCase(password)) {
-              if (containsLowerCase(password)) {
-                if (containsNumber(password)) {
+        // if (validatePasswordLength(password)) {
+        //   if (containsSpecialCharacters(password)) {
+        //     if (containsUpperCase(password)) {
+        //       if (containsLowerCase(password)) {
+        //         if (containsNumber(password)) {
                   WebService.resetPassword({
                     uidb64: linkUid,
                     token: linkToken,
@@ -44,24 +44,24 @@ function ResetPassword() {
                       setSubmitted(true);
                       setColor(BgColor.Yellow);
                     } else {
-                      alert.error("Could not reset password.");
+                      alert.error("Could not reset password. This link may be expired.");
                     }
                   });
-                } else {
-                  alert.error("Password must contain at least one number")
-                }
-              } else {
-                alert.error("Password must contain at least one lower case character")
-              }
-            } else {
-              alert.error("Password must contain at least one upper case character")
-            }
-          } else {
-            alert.error("Password must contain at least 1 special character")
-          }
-        } else {
-          alert.error("Password length must be at least 8 characters")
-        }
+        //         } else {
+        //           alert.error("Password must contain at least one number")
+        //         }
+        //       } else {
+        //         alert.error("Password must contain at least one lower case character")
+        //       }
+        //     } else {
+        //       alert.error("Password must contain at least one upper case character")
+        //     }
+        //   } else {
+        //     alert.error("Password must contain at least 1 special character")
+        //   }
+        // } else {
+        //   alert.error("Password length must be at least 8 characters")
+        // }
       } else {
         alert.error("Re-entered password does not match");
       }
