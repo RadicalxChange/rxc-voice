@@ -16,6 +16,8 @@ function ValidationPage() {
     const location = useLocation();
     const linkUid = new URLSearchParams(location.search).get('uidb64');
     const linkToken = new URLSearchParams(location.search).get('token');
+    const { setUserData, setColor } = useContext(ActionContext);
+    const { user } = useContext(StateContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -24,8 +26,7 @@ function ValidationPage() {
     const [lastName, setLastName] = useState("");
     // const [profilePic, setProfilePic] = useState("");
     const [oauthProvider, setOauthProvider] = useState(OauthProvider.Github);
-    const { setUserData, setColor } = useContext(ActionContext);
-    const { user } = useContext(StateContext);
+    const [loading, setLoading] = useState(true);
 
     const alert = useAlert()
 
@@ -40,10 +41,12 @@ function ValidationPage() {
           if (data.ok) {
             const user = await data.json();
             setUserData(user);
+            setLoading(false);
           } else {
             const error = await data.json();
             console.log(error);
             alert.error(error.non_field_errors[0]);
+            setLoading(false);
           }
         });
       }
@@ -137,85 +140,89 @@ function ValidationPage() {
       return false;
     };
 
-  if (!user) {
+  if (loading) {
+    return (
+      <h2>loading...</h2>
+    );
+  } else if (!user) {
     return (
       <h2>Sorry! This activation link is invalid or expired.</h2>
     );
-  }
-  return (
-    <form className="create-account" onSubmit={modify}>
-      <label className="app-title">RxC Voice</label>
-      <p>Create your account to participate in the democratic process!</p>
+  } else {
+    return (
+      <form className="create-account" onSubmit={modify}>
+        <label className="app-title">RxC Voice</label>
+        <p>Create your account to participate in the democratic process!</p>
 
-      <input
-        type="text"
-        placeholder="First Name"
-        className="login-input"
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="First Name"
+          className="login-input"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
 
-      <input
-        type="text"
-        placeholder="Last Name"
-        className="login-input"
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Email"
-        className="login-input"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="Last Name"
+          className="login-input"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Email"
+          className="login-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <input
-        type="password"
-        placeholder="Password"
-        className="login-input"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input
+          type="password"
+          placeholder="Password"
+          className="login-input"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <input
-        type="password"
-        placeholder="Re-Enter Password"
-        className="login-input"
-        value={passReEntry}
-        onChange={(e) => setPassReEntry(e.target.value)}
-      />
+        <input
+          type="password"
+          placeholder="Re-Enter Password"
+          className="login-input"
+          value={passReEntry}
+          onChange={(e) => setPassReEntry(e.target.value)}
+        />
 
-      <select
-        className="oauth-provider"
-        id="select-oauth-provider"
-        onChange={(e) => setOauthProvider(oauthProvider => {
-          switch (e.target.value) {
-            case OauthProvider.Github: {
-              return OauthProvider.Github;
+        <select
+          className="oauth-provider"
+          id="select-oauth-provider"
+          onChange={(e) => setOauthProvider(oauthProvider => {
+            switch (e.target.value) {
+              case OauthProvider.Github: {
+                return OauthProvider.Github;
+              }
+              case OauthProvider.Twitter: {
+                return OauthProvider.Twitter;
+              }
+              default: {
+                return OauthProvider.Github;
+              }
             }
-            case OauthProvider.Twitter: {
-              return OauthProvider.Twitter;
-            }
-            default: {
-              return OauthProvider.Github;
-            }
-          }
-        })}
-      >
-        <option value={OauthProvider.Github}>Verify with Github</option>
-        <option value={OauthProvider.Twitter}>Verify with Twitter</option>
-      </select>
-
-      <button
-        type="submit"
-        className="create-account-button"
+          })}
         >
-        create account
-      </button>
-    </form>
-  );
+          <option value={OauthProvider.Github}>Verify with Github</option>
+          <option value={OauthProvider.Twitter}>Verify with Twitter</option>
+        </select>
 
+        <button
+          type="submit"
+          className="create-account-button"
+          >
+          create account
+        </button>
+      </form>
+    );
+  }
 }
 
 export default ValidationPage;
