@@ -39,7 +39,7 @@ services:
     volumes:
     - ./rxc-voice/src:/rxc-voice/src
     ports:
-      - "3000:3000"
+      - "4000:4000"
     depends_on:
       - api
     stdin_open: true
