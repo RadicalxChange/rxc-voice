@@ -5,6 +5,7 @@ import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
 import { useAlert } from 'react-alert'
 import { Link } from "react-router-dom";
+import { userIsVerified } from "../../utils";
 
 import "./Login.scss";
 
@@ -14,6 +15,7 @@ function Login() {
   const linkToken = new URLSearchParams(location.search).get('token');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [unverifiedLogin, setUnverifiedLogin] = useState(false);
   const { setColor, setUserData } = useContext(ActionContext);
 
   const alert = useAlert()
@@ -40,6 +42,9 @@ function Login() {
         if (data.ok) {
           const user = await data.json();
           setUserData(user);
+          if (!userIsVerified(user)) {
+            setUnverifiedLogin(true);
+          }
         } else {
           const error = await data.json();
           console.log(error);
@@ -49,6 +54,15 @@ function Login() {
     }
   };
 
+  if (unverifiedLogin) {
+    return (
+      <div className="login">
+        <h2>Unverified account</h2>
+        <p>Sorry, but you can't access the site until you verify your account.</p>
+        <p>You can do that by clicking the link in your invitation email, creating an account, and logging into a valid Github or Twitter account to verify.</p>
+      </div>
+    );
+  }
   return (
     <form className="login" onSubmit={login}>
       <label className="app-title">RxC Voice</label>
