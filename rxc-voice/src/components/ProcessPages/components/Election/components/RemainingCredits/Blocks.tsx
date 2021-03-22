@@ -1,31 +1,29 @@
 import React from "react";
 
 function Blocks(props: any) {
-  const strokeWidth = (window.innerWidth > 768) ? .15 : .5;
-  const blockHeight = ((window.innerWidth > 768) ? 1 : 2.5) + strokeWidth;
+  const blockHeight = (window.innerWidth > 768) ? 1 : 2.5;
   const gutterHeight = (window.innerWidth > 768) ? .4 : 1.5;
   const stackHeightBlocks = 5
   const stackHeightPixels = stackHeightBlocks * (blockHeight + gutterHeight)
-  const numStacks = Math.ceil(props.creditBalance / 5)
-  // start a new row of stacks every 100 blocks
-  const maxWidth = 4 * stackHeightPixels + 3 * gutterHeight;
+  const numRows = Math.ceil(props.creditBalance / 10)
+  // start a new row every 10 blocks
+  const maxWidth = 2 * stackHeightPixels + gutterHeight;
+  const maxHeight = numRows * (blockHeight + gutterHeight) + Math.floor(props.creditBalance / 50) * gutterHeight;
 
   const renderBlocks = () => {
     let blocks: JSX.Element[] = [];
     let counter = 0;
-    for (let x = 0; x < numStacks; x++) {
-      for (let y = 0; y < stackHeightBlocks && counter < props.creditBalance; y++) {
+    for (let y = 0; y < numRows; y++) {
+      for (let x = 0; x < 10 && counter < props.creditBalance; x++) {
         const fill = (counter < props.creditsRemaining) ? "black" : "none"
         blocks.push(
           <rect
             key={`${counter}`}
-            x={`${(strokeWidth + (blockHeight + gutterHeight) * x + Math.floor(x / 5) * gutterHeight) % (maxWidth + gutterHeight)}vw`}
-            y={`${strokeWidth + (blockHeight + gutterHeight) * y + Math.floor(counter / 100) * (stackHeightPixels + gutterHeight)}vw`}
-            width={`${blockHeight - strokeWidth}vw`}
-            height={`${blockHeight - strokeWidth}vw`}
+            x={`${(blockHeight + gutterHeight) * x + Math.floor(x / 5) * gutterHeight}vw`}
+            y={`${maxHeight - ((blockHeight + gutterHeight) * y + Math.floor(counter / 50) * gutterHeight + gutterHeight + blockHeight)}vw`}
+            width={`${blockHeight}vw`}
+            height={`${blockHeight}vw`}
             fill={`${fill}`}
-            stroke="black"
-            strokeWidth={`${strokeWidth}vw`}
           />
         );
         counter++;
@@ -39,8 +37,8 @@ function Blocks(props: any) {
   return (
     <svg
       className="blocks"
-      width={`${Math.min(maxWidth, numStacks * (blockHeight) + (numStacks - 1) * gutterHeight + 2*strokeWidth + Math.floor(numStacks / 5) * gutterHeight)}vw`}
-      height={`${Math.ceil(props.creditBalance / 75) * (stackHeightPixels + gutterHeight)}vw`}
+      width={`${maxWidth}vw`}
+      height={`${maxHeight}vw`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

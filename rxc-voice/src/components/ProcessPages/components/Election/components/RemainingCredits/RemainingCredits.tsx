@@ -7,12 +7,12 @@ function RemainingCredits(props: any) {
 
   return (
     <div className="container">
-      <h3 className="header">Available Voice Credits</h3>
+      <h3>Available Voice Credits</h3>
       <Blocks
         creditsRemaining={props.creditsRemaining}
         creditBalance={props.creditBalance}
       />
-      <p className="credits-remaining">
+      <p>
         {props.creditsRemaining}/{props.creditBalance} voice credits remaining
       </p>
     </div>
