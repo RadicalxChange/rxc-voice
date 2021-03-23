@@ -160,10 +160,6 @@ function Election() {
         <div className="voting-page">
           <div className="sticky-header">
             <h2>Election</h2>
-            <RemainingCredits
-              creditsRemaining={creditsRemaining}
-              creditBalance={creditBalance}
-            />
           </div>
           <hr />
           <ul>
@@ -176,6 +172,10 @@ function Election() {
             ))}
           </ul>
           <div className="button-container">
+            <RemainingCredits
+              creditsRemaining={creditsRemaining}
+              creditBalance={creditBalance}
+            />
             <label>Total votes cast: {votesCast}</label>
             <button
               type="button"
