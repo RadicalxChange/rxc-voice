@@ -1,35 +1,9 @@
 .container {
-
-  .header {
-    grid-column: 1;
-  }
-
-  .blocks {
-    grid-column: 2;
-    margin: auto 2vw auto 2vw;
-  }
-
-  .tokens-remaining {
-    display: block;
-  }
 }
 
 @media only screen and (min-width: 768px) {
   .container {
-    display: grid;
-    grid-template-columns: auto auto 10rem;
-
-    .header {
-      grid-column: 1;
-    }
-
-    .blocks {
-      grid-column: 2;
-      margin: auto 2vw auto 2vw;
-    }
-
-    .tokens-remaining {
-      grid-column: 3;
-    }
+    border-bottom: 1px solid black;
+    margin-bottom: 1rem;
   }
 }
