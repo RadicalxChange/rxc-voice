@@ -138,7 +138,7 @@ def estimate_match(new_transfer):
     adjusted_match = (adjusted_sum_roots * adjusted_sum_roots) - float(adjusted_pledged_total)
     # calculate the current match for given recipient
     curr_match = 0
-    if recipient_object and raw_matches[recipient_object.id]:
+    if recipient_object and recipient_object.id in raw_matches:
         curr_match = raw_matches[recipient_object.id]
     if raw_match_total > process.matching_pool:
         curr_match = (curr_match / raw_match_total) * float(process.matching_pool)
