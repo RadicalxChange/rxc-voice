@@ -1,12 +1,26 @@
 .voting-page {
   text-align: left;
+  display: grid;
+  grid-template-columns: 15vw 1fr 20vw;
+  column-gap: 4vw;
+  margin-top: 20vw;
 
-  .sticky-header {
-    margin-top: 20vw;
+  .nav {
+    grid-column: 1;
+  }
+
+  .body {
+    grid-column: 2;
+
+    .proposal-list {
+      padding: 2vw 1vw 0 0;
+    }
   }
 
   .button-container {
     text-align: center;
+    grid-column: 3;
+    padding: 0 2vw;
 
     .submit-button {
       display: block;
@@ -34,24 +48,23 @@
 @media only screen and (min-width: 768px) {
   .voting-page {
     text-align: left;
-    width: 60vw;
+    margin-top: 5vw;
 
-    .sticky-header {
-      margin-top: 5vw;
+    .body {
+
+      .proposal-list {
+
+      }
     }
 
     .button-container {
       position: fixed;
-      left: 70vw;
+      right: 2vw;
       bottom: 5vh;
     }
   }
 
   .results-page {
-
-    .sticky-header {
-      margin-top: 5vw;
-    }
 
   }
 }

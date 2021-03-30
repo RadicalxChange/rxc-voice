@@ -1,8 +1,8 @@
 import moment from "moment";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import defaultPic from '../../../../../../assets/icons/profile_icon.svg';
-import { ActionContext } from "../../../../../../hooks";
+import defaultPic from '../../../../assets/icons/profile_icon.svg';
+import { ActionContext } from "../../../../hooks";
 
 import "./DelegateCard.scss";
 

@@ -1,8 +1,9 @@
 import React from "react";
 
 function Blocks(props: any) {
-  const blockHeight = (window.innerWidth > 768) ? 1 : 2.5;
-  const gutterHeight = (window.innerWidth > 768) ? .4 : 1.5;
+  // const blockHeight = (window.innerWidth > 768) ? .6 : 2.5;
+    const blockHeight = (window.innerWidth > 768) ? .6 : 2.5;
+  const gutterHeight = (window.innerWidth > 768) ? .3 : 1.5;
   const stackHeightBlocks = 5
   const stackHeightPixels = stackHeightBlocks * (blockHeight + gutterHeight)
   const numRows = Math.ceil(props.creditBalance / 10)

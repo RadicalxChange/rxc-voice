@@ -1,0 +1,92 @@
+.delg-page {
+  display: grid;
+  grid-template-columns: 15vw 1fr 20vw;
+  column-gap: 4vw;
+  margin-top: 20vw;
+
+  .nav {
+    grid-column: 1;
+  }
+
+  .body {
+    grid-column: 2;
+
+    .content-header {
+      margin-top: 20vw;
+      display: grid;
+      grid-template-columns: auto auto;
+      text-align: left;
+
+      .credit-balance {
+        margin: auto 0 auto auto;
+      }
+    }
+
+    .transfers {
+      margin: 8vw 0;
+      // text-align: left;
+
+      .transfers-header {
+        margin-left: 2vw;
+        display: grid;
+        grid-template-columns: 50% 50%;
+        border-bottom: 1px solid black;
+      }
+      .transfer-list {
+        margin: 0 0 0 2vw;
+      }
+      .type {
+        grid-column: 1;
+      }
+      .amount {
+        grid-column: 2;
+      }
+      .total {
+        font-weight: bold;
+      }
+      .transfers-subtotals {
+        margin-left: 2vw;
+        display: grid;
+        grid-template-columns: 50% 50%;
+        border-top: 1px solid black;
+      }
+    }
+
+    .delegation-content {
+
+      .invite-link {
+        text-decoration: underline;
+      }
+      .invite-link:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .delg-page {
+    text-align: left;
+    margin-top: 5vw;
+
+    .body {
+
+      .content-header {
+        margin-top: 5vw;
+      }
+
+      .delegation-content {
+
+        .delegate-list {
+          margin-right: 5vw;
+        }
+        .about {
+          margin: 0 6vw 0 6vw;
+          position: fixed;
+          left: 58vw;
+          top: 20vw;
+        }
+      }
+    }
+  }
+}

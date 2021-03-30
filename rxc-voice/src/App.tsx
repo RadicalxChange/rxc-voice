@@ -5,11 +5,13 @@ import Home from "./components/Home";
 import Header from './components/Header';
 import Login from './components/Login';
 import Account from './components/Account';
-import ProcessPages from './components/ProcessPages';
 import GiveCreditsPage from './components/GiveCreditsPage';
 import ValidationPage from './components/ValidationPage';
 import About from './components/About';
 import Callback from './components/Callback';
+import Delegation from './components/Delegation';
+import Deliberation from './components/Deliberation';
+import Election from './components/Election';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword/ResetPassword';
 import { userIsVerified } from './utils';
@@ -73,9 +75,21 @@ function App() {
       />
 
       <Route
-        path="/:processId/:processSlug/:stage"
+        path="/:processId/:processSlug/Delegation"
         exact
-        render={() => <ProcessPages></ProcessPages>}
+        render={() => <Delegation></Delegation>}
+      />
+
+      <Route
+        path="/:processId/:processSlug/Deliberation"
+        exact
+        render={() => <Deliberation></Deliberation>}
+      />
+
+      <Route
+        path="/:processId/:processSlug/Election"
+        exact
+        render={() => <Election></Election>}
       />
 
       <Route

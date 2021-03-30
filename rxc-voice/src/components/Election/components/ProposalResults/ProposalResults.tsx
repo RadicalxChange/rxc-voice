@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Proposal } from '../../../../../../models/Proposal';
+import { Proposal } from '../../../../models/Proposal';
 
 import "./ProposalResults.scss";
 
