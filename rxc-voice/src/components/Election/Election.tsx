@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useReducer, useContext } from "react";
 import { useParams } from "react-router-dom";
 import moment from 'moment';
-import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
-import { Proposal } from "../../../../models/Proposal";
-import { getElection, getId, standInElection, standInResultData } from "../../../../utils";
-import { WebService } from "../../../../services";
-import { Vote } from "../../../../models/Vote";
+import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
+import { Proposal } from "../../models/Proposal";
+import { getElection, getId, getTitle, standInElection, standInResultData } from "../../utils";
+import { WebService } from "../../services";
+import { Vote } from "../../models/Vote";
 import ProposalWidget from "./components/ProposalWidget";
-import { ActionContext, StateContext } from "../../../../hooks";
-import { BgColor } from "../../../../models/BgColor";
+import { ActionContext, StateContext } from "../../hooks";
+import { BgColor } from "../../models/BgColor";
 import ProposalResults from "./components/ProposalResults";
 import RemainingCredits from "./components/RemainingCredits";
 
 import "./Election.scss";
+import ProcessMenu from "../ProcessMenu/ProcessMenu";
 
 function Election() {
   const [votesCast, setVotesCast] = useState(0);
@@ -122,15 +123,16 @@ function Election() {
 
   if (loading) {
     return (
-      <div className="voting-page">
-        <h2 className="content-header">loading...</h2>
-      </div>
+      <h2>loading...</h2>
     );
   } else if (moment() < moment(election.start_date)) {
     return (
       <div className="voting-page">
-        <div className="sticky-header">
-          <h2 className="content-header">Election</h2>
+        <div className="nav">
+          <ProcessMenu />
+        </div>
+        <div className="body">
+          <h2>{getTitle(selectedProcess)}</h2>
           <p>This election begins {moment(election.start_date, "YYYYMMDD").fromNow()}</p>
         </div>
       </div>
@@ -138,10 +140,13 @@ function Election() {
   } else if (viewResults) {
     return (
       <div className="results-page">
-        <div className="sticky-header">
-          <h2 className="content-header">Election Results</h2>
+        <div className="nav">
+          <ProcessMenu />
         </div>
-        <ProposalResults resultData={resultData} />
+        <div className="body">
+          <h2>{getTitle(selectedProcess)}</h2>
+          <ProposalResults resultData={resultData} />
+        </div>
       </div>
     );
   // } else if (viewResults) {
@@ -158,19 +163,23 @@ function Election() {
   } else {
     return (
         <div className="voting-page">
-          <div className="sticky-header">
-            <h2>Election</h2>
+          <div className="nav">
+            <ProcessMenu />
           </div>
-          <hr />
-          <ul>
-            {proposals.map((proposal: Proposal, i) => (
-              <ProposalWidget key={i}
-                              creditsRemaining={creditsRemaining}
-                              proposal={proposal}
-                              negativeVotes={election.negative_votes}
-                              onChange={onChangeVoteCount} />
-            ))}
-          </ul>
+          <div className="body">
+            <h2>{getTitle(selectedProcess)}</h2>
+            <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
+            <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot accurately represents the delegation’s submissions. If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
+            <ul className="proposal-list">
+              {proposals.map((proposal: Proposal, i) => (
+                <ProposalWidget key={i}
+                                creditsRemaining={creditsRemaining}
+                                proposal={proposal}
+                                negativeVotes={election.negative_votes}
+                                onChange={onChangeVoteCount} />
+              ))}
+            </ul>
+          </div>
           <div className="button-container">
             <RemainingCredits
               creditsRemaining={creditsRemaining}

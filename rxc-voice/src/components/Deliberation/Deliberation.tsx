@@ -1,11 +1,12 @@
 import moment from "moment";
 import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router";
-import { ActionContext, StateContext } from "../../../../hooks";
-import { BgColor } from "../../../../models/BgColor";
-import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
-import { WebService } from "../../../../services";
-import { getConversation, getCurationInfo, getId } from "../../../../utils";
+import { ActionContext, StateContext } from "../../hooks";
+import { BgColor } from "../../models/BgColor";
+import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
+import { WebService } from "../../services";
+import { getConversation, getId, getTitle } from "../../utils";
+import ProcessMenu from "../ProcessMenu";
 
 import "./Deliberation.scss";
 
@@ -47,11 +48,16 @@ function Deliberation() {
 
   return (
     <div className="polis-page">
-      <h2 className="content-header">Deliberation</h2>
-      <p>{getCurationInfo(selectedProcess)}</p>
+      <div className="nav">
+        <ProcessMenu />
+      </div>
+      <div className="body">
+      <h2 className="content-header">{getTitle(selectedProcess)}</h2>
+      <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
+      <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>
       {(conversation && WebService.userobj) ? (
           (moment(conversation.end_date) > moment()) ? (
-            <div className="body">
+            <>
               <div
                 id="polis-iframe"
                 className='polis'
@@ -78,7 +84,7 @@ function Deliberation() {
               ) : (
                 <h3>No report to show at this time.</h3>
               )}
-            </div>
+              </>
           ) : (
             <div className="body">
               <iframe
@@ -94,6 +100,7 @@ function Deliberation() {
           <h3>Conversation not found. Head back to home to find what you're looking for.</h3>
         </div>
       )}
+      </div>
     </div>
   );
 }

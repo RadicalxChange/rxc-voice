@@ -1,10 +1,10 @@
 .delegate-card {
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
+  grid-template-columns: auto 1fr auto;
   margin-bottom: 1.5em;
 
   .profile-pic {
+    grid-column: 1;
     width: 15vw;
     margin: 1em;
   }
@@ -32,25 +32,37 @@
     }
   }
 
-  .give-credits {
-    grid-column: 2;
-    text-align: left;
-    background: black;
-    color: var(--yellowColor);
-    padding: .5em 1em .5em 1em;
-    border: 1px solid black;
-    border-radius: 50px;
-    text-decoration: none !important;
+
+    .give-credits {
+      display: inline-block;
+      text-align: left;
+      background: black;
+      color: white;
+      padding: .5em 1em .5em 1em;
+      border: 1px solid black;
+      border-radius: 50px;
+      text-decoration: none !important;
+    }
+    .give-credits:hover {
+      background: white;
+      color: black;
+    }
+    .give-credits:focus {
+      outline: none;
+    }
+  
+
+  .match-estimate {
+    grid-column: 3;
   }
-  .give-credits:hover {
-    background: var(--yellowColor);
-    color: black;
+  .closed {
+    display: none;
   }
 }
 
 @media only screen and (min-width: 768px) {
   .delegate-card {
-    grid-template-columns: auto 1fr 20%;
+    grid-template-columns: auto 1fr 11rem;
 
     .profile-pic {
       width: 8vw;
