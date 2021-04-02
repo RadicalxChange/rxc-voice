@@ -1,36 +1,18 @@
 .home {
+  padding: 0 4vw;
   text-align: center;
-  display: grid;
-  grid-template-columns: 58vw 1fr;
+  max-width: 600px;
+  margin: 0 auto;
 
-  .about {
-    grid-column: 1 / -1;
 
-    .title {
-      font-family: var(--secondaryFont);
-      font-size: 2vw;
-      margin: 2vh 0 2vh 0;
-    }
+  .title {
+    font-family: var(--secondaryFont);
+    margin: 2vh 0 2vh 0;
+  }
 
-    .show-hide {
-      grid-row: 3;
-      font-size: 1rem;
-      font-weight: bold;
-      display: block;
-      background: none;
-      border: none;
-      outline: none;
-      margin: .5em auto;
-      cursor: pointer;
-    }
+  .content {
 
-    .polis-link {
-      display: block;
-      margin-top: .5em;
-    }
-    .polis-link:hover {
-      text-decoration: underline;
-    }
+    grid-column: 2;
   }
 
   .process-list {
@@ -41,7 +23,6 @@
 
 @media only screen and (min-width: 768px) {
   .home {
-    text-align: left;
 
     .about {
       grid-column: 2 / -1;
