@@ -1,6 +1,6 @@
-import moment from "moment";
 import React from "react";
-import defaultPic from '../../../../assets/icons/profile_icon.svg';
+import moment from "moment";
+import ProfileIcon from "../ProfileIcon";
 
 import "./DelegateCard.scss";
 
@@ -13,7 +13,7 @@ function DelegateCard(props: any) {
       {props.delegate.profile_pic ? (
         <img src={props.delegate.profile_pic} className="profile-pic" alt="profile-pic" />
       ) : (
-        <img src={defaultPic} className="profile-pic" alt="profile-pic" />
+        <ProfileIcon />
       )}
       <div className="info">
         <h3 className="name">{props.delegate.user.first_name + " " + props.delegate.user.last_name}</h3>

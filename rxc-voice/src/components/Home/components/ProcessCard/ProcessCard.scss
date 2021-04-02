@@ -2,6 +2,11 @@
   margin-bottom: 3em;
   display: table;
   text-align: center;
+  width: inherit;
+  height: auto;
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 1em;
 
   .title {
     font-size: 1.3em;
@@ -30,6 +35,7 @@
 
   .time-remaining {
     text-align: center;
+    margin: 2em 0 0 0;
   }
 }
 
