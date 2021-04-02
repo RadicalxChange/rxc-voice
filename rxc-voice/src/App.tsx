@@ -5,7 +5,6 @@ import Home from "./components/Home";
 import Header from './components/Header';
 import Login from './components/Login';
 import Account from './components/Account';
-import GiveCreditsPage from './components/GiveCreditsPage';
 import ValidationPage from './components/ValidationPage';
 import About from './components/About';
 import Callback from './components/Callback';
@@ -90,12 +89,6 @@ function App() {
         path="/:processId/:processSlug/Election"
         exact
         render={() => <Election></Election>}
-      />
-
-      <Route
-        path="/:processId/give-credits"
-        exact
-        render={() => <GiveCreditsPage></GiveCreditsPage>}
       />
 
       <Route

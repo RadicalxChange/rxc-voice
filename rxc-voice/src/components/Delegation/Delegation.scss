@@ -1,6 +1,6 @@
 .delg-page {
   display: grid;
-  grid-template-columns: 15vw 1fr 20vw;
+  grid-template-columns: 15vw 1fr 5vw;
   column-gap: 4vw;
   margin-top: 20vw;
 
@@ -10,6 +10,7 @@
 
   .body {
     grid-column: 2;
+    grid-row: 1;
 
     .content-header {
       margin-top: 20vw;
@@ -24,7 +25,6 @@
 
     .transfers {
       margin: 8vw 0;
-      // text-align: left;
 
       .transfers-header {
         margin-left: 2vw;
@@ -53,6 +53,23 @@
     }
 
     .delegation-content {
+
+      .submit-button {
+        font-size: 1rem;
+        display: block;
+        margin: 2rem 0;
+        background: black;
+        color: var(--whiteColor);
+        border: 1px solid black;
+        border-radius: 20px;
+        padding: .5em 1em .5em 1em;
+        outline: none;
+        cursor: pointer;
+      }
+      .submit-button:hover {
+        background: var(--whiteColor);
+        color: black;
+      }
 
       .invite-link {
         text-decoration: underline;

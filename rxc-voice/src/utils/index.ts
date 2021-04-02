@@ -292,3 +292,11 @@ export const getRecipient = (transferData: any) => {
     return null;
   }
 };
+
+export const getAmount = (transferData: any) => {
+  if (transferData) {
+    return transferData.amount;
+  } else {
+    return null;
+  }
+};

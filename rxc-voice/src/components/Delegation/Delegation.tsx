@@ -5,38 +5,40 @@ import { BgColor } from "../../models/BgColor";
 import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../models/Delegate";
-import { getConversation, getDelegates, getId, getMatchingPool, getTitle, mapToTransfers } from "../../utils";
+import { getAmount, getConversation, getDelegates, getId, getMatchingPool, getRecipient, getTitle, mapToTransfers } from "../../utils";
 import moment from "moment";
 import { WebService } from "../../services";
 import { Transfer } from "../../models/Transfer";
 import TransferCard from "./components/TransferCard";
-import { Link } from "react-router-dom";
+import ProcessMenu from "../ProcessMenu";
+import TransferModal from "./components/TransferModal";
 
 import "./Delegation.scss";
-import ProcessMenu from "../ProcessMenu";
 
 function Delegation() {
   const { processId } = useParams<ProcessPageRouteParams>();
-  const { selectedProcess } = useContext(StateContext);
-  const { selectProcess, stageTransfer, setColor } = useContext(ActionContext);
+  const { selectedProcess, creditBalance } = useContext(StateContext);
+  const { selectProcess, updateCreditBalance, setColor } = useContext(ActionContext);
   const conversation = getConversation(selectedProcess);
-  const [showTransfers, setShowTransfers] = useState(false);
   const [transfers, setTransfers] = useState(new Array<Transfer>());
   const [subtotal, setSubtotal] = useState(0);
   const [match, setMatch] = useState(0);
   const delegationOngoing = conversation && moment() < moment(conversation.start_date);
+  const [stagedTransfer, setStagedTransfer] = useState("");
+  const [inviteModal, setInviteModal] = useState(false);
 
   useEffect(() => {
-    setColor(BgColor.Yellow);
+    setColor(BgColor.White);
     if (processId && (!selectedProcess || (getId(selectedProcess) !== +processId))) {
       selectProcess(processId);
     }
 
-    if (conversation && (moment() > moment(conversation.start_date))) {
-      setShowTransfers(true);
-      WebService.fetchTransfers(processId).subscribe((data: any) => {
+    if (delegationOngoing) {
+        WebService.fetchTransfers(processId).subscribe((data: any) => {
         processTransferData(data);
       });
+    } else {
+      setColor(BgColor.Yellow);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,6 +54,37 @@ function Delegation() {
     setTransfers(transferData);
     setMatch(matchData);
     setSubtotal(calcSubtotal(transferData));
+  };
+
+  const submitTransfer = () => {
+    if (stagedTransfer) {
+      if (getRecipient(stagedTransfer) && getAmount(stagedTransfer)) {
+        WebService.postTransfer({
+          sender: WebService.userobj.id,
+          recipient: getRecipient(stagedTransfer),
+          amount: getAmount(stagedTransfer),
+          date: moment().toISOString(),
+          process: processId,
+        }).subscribe(async (data) => {
+          if (data.ok) {
+            selectProcess(processId);
+            if (creditBalance !== null) {
+              updateCreditBalance(creditBalance! - (+getAmount(stagedTransfer)));
+            }
+            setStagedTransfer("");
+            setInviteModal(false);
+          } else {
+            const error = await data.json();
+            console.log(error);
+          }
+        });
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setStagedTransfer("");
+    setInviteModal(false);
   };
 
   const calcSubtotal = (transferData: Transfer[]) => {
@@ -72,12 +105,27 @@ function Delegation() {
         <div className="nav">
           <ProcessMenu />
         </div>
+        <TransferModal
+          invite={inviteModal}
+          recipient={stagedTransfer}
+          submitTransfer={submitTransfer}
+          closeModal={closeModal}
+        />
         <div className="body">
           <div className="delegation-content">
             <h2>{getTitle(selectedProcess)}</h2>
             <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some of their voice credits. Voice credits are used for voting in the election later on. Is there anyone you don’t see in the list below that you think should have a say? Send them some of your voice credits to invite them.</p>
             <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election. At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! If you want to save all of your credits for your own use in the election, that’s fine too.</p>
-            {showTransfers ? (
+            {delegationOngoing ? (
+              <><h3 className="matching-pool">Matching Fund: {getMatchingPool(selectedProcess)} voice credits.</h3>
+                <button
+                  type="button"
+                  className="submit-button"
+                  onClick={() => setInviteModal(true)}
+                >
+                  + Invite someone else
+                </button></>
+            ) : (
               <div className="transfers">
                 <h2>Your transfers</h2>
                 <div className="transfers-header">
@@ -110,43 +158,21 @@ function Delegation() {
                   <h3>You did not send or receive any transfers.</h3>
                 )}
               </div>
-            ) : (
-              <></>
-            )}
-            {delegationOngoing ? (
-              <p className="about">If you choose to give some of your credits
-                to other delegates, your transfer will be matched using
-                Quadratic Funding. The size of the matching pool for this
-                Delegation is{" "}
-                <strong>{getMatchingPool(selectedProcess)} voice credits.</strong>
-                <br/><br/>
-                Want to invite someone to participate in the decision that
-                isn't already here?
-                <br/><br/>
-                <Link
-                  to={`/${processId}/give-credits`}
-                  className="invite-link"
-                  onClick={(e) => stageTransfer(null)}
-                >
-                  give them credits
-                </Link>
-              </p>
-            ) : (
-              <></>
             )}
             {getDelegates(selectedProcess)!.filter(isVerified).length ? (
-              <ul className="delegate-list">
-                {getDelegates(selectedProcess)!
-                  .filter(isVerified)
-                  .map((delegate: Delegate) => (
-                    <DelegateCard
-                      delegate={delegate}
-                      process={selectedProcess}
-                      key={delegate.id}
-                    >
-                    </DelegateCard>
-                  ))}
-              </ul>
+              <><ul className="delegate-list">
+                  {getDelegates(selectedProcess)!
+                    .filter(isVerified)
+                    .map((delegate: Delegate) => (
+                      <DelegateCard
+                        key={delegate.id}
+                        delegate={delegate}
+                        process={selectedProcess}
+                        stageTransfer={setStagedTransfer}
+                      >
+                      </DelegateCard>
+                    ))}
+                  </ul></>
             ) : (
               <h3>No delegates found.</h3>
             )}

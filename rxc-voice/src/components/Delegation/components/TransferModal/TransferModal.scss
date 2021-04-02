@@ -1,0 +1,132 @@
+.transfer-modal {
+  display: block;
+  padding: 1rem;
+  text-align: center;
+  min-width: 400px;
+  max-width: 100%;
+  // min-height: 400px;
+  max-height: 80%;
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  overflow-y: auto;
+  background: var(--whiteColor);
+  box-shadow: 0px 4px 34px rgba(0, 0, 0, 0.25);
+
+  .give-credits-page {
+    text-align: center;
+
+    .title {
+      font-size: 2em;
+    }
+
+    .transfer-field-container {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      border: 1px solid black;
+      border-radius: 0;
+      width: 39vw;
+      height: 10vh;
+      font-size: 1em;
+      text-align: right;
+      margin: 0 auto 2rem auto;
+
+      .field-label {
+        margin: .25rem;
+      }
+
+      .transfer-field {
+        text-align: right;
+        border: none;
+        font-size: 1rem;
+      }
+      .transfer-field:focus {
+        outline: none;
+      }
+
+      .recipient {
+        margin: auto 0;
+      }
+    }
+
+    .button-container {
+      width: 100%;
+      text-align: right;
+      margin-top: 2rem;
+
+      .cancel-button {
+        background: inherit;
+        border: none;
+        cursor: pointer;
+      }
+    }
+
+    .transfer-success {
+      display: inline-block;
+    }
+    .hide {
+      display: none;
+    }
+
+    .back-button {
+      display: block;
+      text-align: left;
+      margin-top: 4rem;
+      text-decoration: underline;
+    }
+    .back-button:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.submit-button {
+  display: inline-block;
+  background: black;
+  color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: .5em 1em .5em 1em;
+  cursor: pointer;
+}
+.submit-button:focus {
+  outline: none;
+}
+.submit-button:hover {
+  background: white;
+  color: black;
+}
+
+.closed {
+  display: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  background-color: rgb(28, 28, 28);
+  will-change: opacity;
+  opacity: 0.55;
+  transition: opacity 0.25s ease 0s;
+}
+
+// hide arrows in number fields
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
