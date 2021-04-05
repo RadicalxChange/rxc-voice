@@ -8,11 +8,11 @@
 
   .widget {
     display: grid;
-    grid-template-columns: auto auto 1fr 5rem;
+    grid-template-columns: 1fr 4rem 1rem 3rem;
 
     .blocks {
       grid-column: 1;
-      margin: auto 1vw auto 4vw;
+      margin: auto 2vw;
     }
 
     .voice-credits {
@@ -58,7 +58,15 @@
     }
 
     .widget {
-      grid-template-columns: auto 1fr 8rem;
+      grid-template-columns: 1fr auto 2rem 5rem;
+
+      .voice-credits {
+        margin: 3rem auto auto auto;
+      }
+
+      .equals {
+        margin: 3rem auto auto auto;
+      }
 
       .counter-container {
 

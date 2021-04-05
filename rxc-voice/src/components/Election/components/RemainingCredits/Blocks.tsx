@@ -1,15 +1,19 @@
 import React from "react";
 
 function Blocks(props: any) {
-  // const blockHeight = (window.innerWidth > 768) ? .6 : 2.5;
-    const blockHeight = (window.innerWidth > 768) ? .6 : 2.5;
-  const gutterHeight = (window.innerWidth > 768) ? .3 : 1.5;
+  const blockHeight = (window.innerWidth > 768) ? .6 : 1.2;
+  const gutterHeight = (window.innerWidth > 768) ? .3 : .7;
   const stackHeightBlocks = 5
   const stackHeightPixels = stackHeightBlocks * (blockHeight + gutterHeight)
   const numRows = Math.ceil(props.creditBalance / 10)
   // start a new row every 10 blocks
-  const maxWidth = 2 * stackHeightPixels + gutterHeight;
-  const maxHeight = numRows * (blockHeight + gutterHeight) + Math.floor(props.creditBalance / 50) * gutterHeight;
+  var maxHeight = 2 * stackHeightPixels + gutterHeight;
+  var maxWidth = numRows * (blockHeight + gutterHeight) + Math.floor(props.creditBalance / 50) * gutterHeight;
+  if (window.innerWidth > 768) {
+    const temp = maxHeight;
+    maxHeight = maxWidth;
+    maxWidth = temp;
+  }
 
   const renderBlocks = () => {
     let blocks: JSX.Element[] = [];
@@ -33,7 +37,29 @@ function Blocks(props: any) {
     return blocks;
   };
 
-  const blocks = renderBlocks();
+  const renderBlocksMobile = () => {
+    let blocks: JSX.Element[] = [];
+    let counter = 0;
+    for (let x = 0; x < numRows; x++) {
+      for (let y = 0; y < 10 && counter < props.creditBalance; y++) {
+        const fill = (counter < props.creditsRemaining) ? "black" : "none"
+        blocks.push(
+          <rect
+            key={`${counter}`}
+            x={`${(blockHeight + gutterHeight) * x + Math.floor(counter / 50) * gutterHeight + gutterHeight}vw`}
+            y={`${(blockHeight + gutterHeight) * y + Math.floor(y / 5) * gutterHeight + gutterHeight / 2}vw`}
+            width={`${blockHeight}vw`}
+            height={`${blockHeight}vw`}
+            fill={`${fill}`}
+          />
+        );
+        counter++;
+      }
+    }
+    return blocks;
+  };
+
+  const blocks = (window.innerWidth > 768) ? renderBlocks() : renderBlocksMobile();
 
   return (
     <svg

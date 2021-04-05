@@ -1,9 +1,7 @@
 .voting-page {
   text-align: left;
-  display: grid;
-  grid-template-columns: 15vw 1fr 20vw;
-  column-gap: 4vw;
-  margin-top: 20vw;
+  margin-top: 5vw;
+  font-size: .8rem;
 
   .nav {
     grid-column: 1;
@@ -19,8 +17,17 @@
 
   .button-container {
     text-align: center;
-    grid-column: 3;
-    padding: 0 2vw;
+    padding: 1vw 2vw;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    left: 0;
+    background: white;
+    font-size: .8rem;
+
+    .votes-cast {
+      display: none;
+    }
 
     .submit-button {
       display: block;
@@ -38,6 +45,8 @@
 
 .results-page {
   text-align: left;
+  margin-top: 5vw;
+  font-size: .8rem;
 
   .sticky-header {
     margin-top: 20vw;
@@ -48,7 +57,10 @@
 @media only screen and (min-width: 768px) {
   .voting-page {
     text-align: left;
-    margin-top: 5vw;
+    display: grid;
+    grid-template-columns: 15vw 1fr 20vw;
+    column-gap: 4vw;
+    font-size: 1rem;
 
     .body {
 
@@ -59,12 +71,23 @@
 
     .button-container {
       position: fixed;
+      left: auto;
+      top: auto;
+      padding: 0 2vw;
+      background: none;
+      grid-column: 3;
       right: 2vw;
       bottom: 5vh;
+
+      .votes-cast {
+        display: block;
+      }
     }
   }
 
   .results-page {
-
+    display: grid;
+    grid-template-columns: 15vw 1fr 5vw;
+    column-gap: 4vw;
   }
 }

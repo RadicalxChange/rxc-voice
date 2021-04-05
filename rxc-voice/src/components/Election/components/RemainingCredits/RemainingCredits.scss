@@ -1,10 +1,17 @@
 .container {
+
+  .blocks {
+  }
 }
 
 @media only screen and (min-width: 768px) {
   .container {
+    position: relative;
     border-bottom: 1px solid black;
     margin-bottom: 1rem;
     width: 17vw;
+
+      .blocks {
+      }
   }
 }

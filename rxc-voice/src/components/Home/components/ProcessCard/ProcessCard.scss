@@ -1,7 +1,7 @@
 .process-card {
+  text-align: left;
   margin-bottom: 3em;
   display: table;
-  text-align: center;
   width: 100%;
   height: auto;
   border: 1px solid;
@@ -12,60 +12,20 @@
     font-size: 1.3em;
   }
 
-  .stages {
-    width: 90vw;
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    font-size: 3vw;
-
-    .stage {
-      width: 18vw;
-      margin-block-start: 1em;
-      margin-block-end: 1em;
-    }
-    .stage:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .status-bar {
-    width: 76vw;
-  }
-
   .time-remaining {
-    text-align: center;
+    text-align: right;
     margin: 2em 0 0 0;
   }
 }
 
 @media only screen and (min-width: 768px) {
   .process-card {
-    text-align: left;
 
     .title {
       font-size: 1.5em;
     }
 
-    .stages {
-      width: 53vw;
-      display: flex;
-      justify-content: space-between;
-      text-align: center;
-      font-size: 1.3vw;
-
-      .stage {
-        width: 12vw;
-      }
-    }
-
-    .status-bar {
-      width: 45vw;
-      margin-left: 4vw;
-    }
-
     .time-remaining {
-      text-align: right;
       margin-right: 2vw;
     }
   }

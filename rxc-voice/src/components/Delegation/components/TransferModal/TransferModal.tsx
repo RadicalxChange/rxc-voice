@@ -87,27 +87,27 @@ function TransferModal(props: any) {
             <div className="give-credits-page">
               <h1 className="title">give credits</h1>
               <div className="transfer-field-container">
-                <label className="field-label">Amount</label>
+                <div className="field-label">Amount</div>
                 <input
                   type="number"
                   placeholder="0"
-                  className="transfer-field"
+                  className="amount-input"
                   value={amount}
                   onChange={(e) => onChangeAmount(e.target.value)}
                 />
               </div>
               {props.recipient ? (
                 <div className="transfer-field-container">
-                  <label className="field-label">Send to</label>
+                  <div className="field-label">Send to</div>
                   <p className="recipient">{props.recipient}</p>
                 </div>
               ) : (
                 <div className="transfer-field-container">
-                  <label className="field-label">Send to</label>
+                  <div className="field-label">Send to</div>
                   <input
                     type="email"
                     placeholder="example@mail.com"
-                    className="transfer-field"
+                    className="email-input"
                     value={recipientEmail}
                     onChange={(e) => setRecipientEmail(e.target.value)}
                   />

@@ -23,7 +23,7 @@ function ProcessMenu() {
   }, [processId, selectedProcess]);
 
   return (
-    <div>
+    <div className="menu">
       <Link
       to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Delegation`}
       className="nav-stage"

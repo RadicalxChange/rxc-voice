@@ -160,7 +160,9 @@ function Delegation() {
               </div>
             )}
             {getDelegates(selectedProcess)!.filter(isVerified).length ? (
-              <><ul className="delegate-list">
+              <>
+                <h2>Delegates</h2>
+                <ul className="delegate-list">
                   {getDelegates(selectedProcess)!
                     .filter(isVerified)
                     .map((delegate: Delegate) => (
@@ -172,7 +174,8 @@ function Delegation() {
                       >
                       </DelegateCard>
                     ))}
-                  </ul></>
+                  </ul>
+                </>
             ) : (
               <h3>No delegates found.</h3>
             )}

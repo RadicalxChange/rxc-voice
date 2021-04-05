@@ -1,8 +1,7 @@
 .delg-page {
-  display: grid;
-  grid-template-columns: 15vw 1fr 5vw;
-  column-gap: 4vw;
-  margin-top: 20vw;
+  text-align: left;
+  margin-top: 5vw;
+  font-size: .8rem;
 
   .nav {
     grid-column: 1;
@@ -24,7 +23,7 @@
     }
 
     .transfers {
-      margin: 8vw 0;
+      margin: 15vw 0;
 
       .transfers-header {
         margin-left: 2vw;
@@ -83,13 +82,19 @@
 
 @media only screen and (min-width: 768px) {
   .delg-page {
-    text-align: left;
+    display: grid;
+    grid-template-columns: 15vw 1fr 5vw;
+    column-gap: 4vw;
     margin-top: 5vw;
 
     .body {
 
       .content-header {
         margin-top: 5vw;
+      }
+
+      .transfers {
+        margin: 8vw 0;
       }
 
       .delegation-content {

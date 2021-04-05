@@ -1,9 +1,36 @@
-.nav-stage {
-  display: block;
-  grid-column: 1;
-  margin-top: 1rem;
-  line-height: normal;
+.menu {
+  background: black;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: .7rem;
+
+  .nav-stage {
+    display: block;
+    margin: 1rem 10px;
+    line-height: normal;
+    color: white;
+  }
+  .nav-stage:hover {
+    text-decoration: underline;
+  }
 }
-.nav-stage:hover {
-  text-decoration: underline;
+
+@media only screen and (min-width: 768px) {
+  .menu {
+    background: inherit;
+    display: block;
+    position: relative;
+    font-size: 1rem;
+
+    .nav-stage {
+      color: black;
+    }
+    .nav-stage:hover {
+    }
+  }
 }

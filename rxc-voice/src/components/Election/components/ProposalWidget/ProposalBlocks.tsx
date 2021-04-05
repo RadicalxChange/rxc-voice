@@ -1,8 +1,8 @@
 import React from "react";
 
 function ProposalBlocks(props: any) {
-  const blockHeightPixels = (window.innerWidth > 768) ? 12 : 6;
-  const gutterHeightPixels = (window.innerWidth > 768) ? 4 : 4;
+  const blockHeightPixels = (window.innerWidth > 768) ? .7 : 1.2;
+  const gutterHeightPixels = (window.innerWidth > 768) ? .5 : .9;
   const totalHeightBlocks = Math.sqrt(props.cost)
   const totalHeightPixels = (props.cost !== 0) ? (
     totalHeightBlocks * blockHeightPixels + (totalHeightBlocks - 1) * gutterHeightPixels
@@ -16,7 +16,15 @@ function ProposalBlocks(props: any) {
     for (let y = 0; y < totalHeightBlocks; y++) {
       for (let x = 0; x < totalHeightBlocks; x++) {
         blocks.push(
-          <rect key={`${counter}`} x={`${(blockHeightPixels + gutterHeightPixels) * x}`} y={`${(blockHeightPixels + gutterHeightPixels) * y}`} width={`${blockHeightPixels}`} height={`${blockHeightPixels}`} fill="black" stroke="black" />
+          <rect
+            key={`${counter}`}
+            x={`${(blockHeightPixels + gutterHeightPixels) * x}vw`}
+            y={`${(blockHeightPixels + gutterHeightPixels) * y}vw`}
+            width={`${blockHeightPixels}vw`}
+            height={`${blockHeightPixels}vw`}
+            fill="black"
+            stroke="black"
+          />
         );
         counter++;
       }
@@ -27,7 +35,13 @@ function ProposalBlocks(props: any) {
   const blocks = renderBlocks();
 
   return (
-    <svg className="blocks" width={`${totalHeightPixels}`} height={`${totalHeightPixels}`} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      className="blocks"
+      width={`${totalHeightPixels}vw`}
+      height={`${totalHeightPixels}vw`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       {blocks}
     </svg>
   );

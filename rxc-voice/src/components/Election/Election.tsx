@@ -11,9 +11,9 @@ import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import ProposalResults from "./components/ProposalResults";
 import RemainingCredits from "./components/RemainingCredits";
+import ProcessMenu from "../ProcessMenu/ProcessMenu";
 
 import "./Election.scss";
-import ProcessMenu from "../ProcessMenu/ProcessMenu";
 
 function Election() {
   const [votesCast, setVotesCast] = useState(0);
@@ -60,6 +60,7 @@ function Election() {
           setElection(election => thisElection!);
           if (thisElection.show_results) {
             setViewResults(true);
+            console.log('hi')
           }
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
@@ -128,43 +129,51 @@ function Election() {
   } else if (moment() < moment(election.start_date)) {
     return (
       <div className="voting-page">
-        <div className="nav">
           <ProcessMenu />
-        </div>
         <div className="body">
           <h2>{getTitle(selectedProcess)}</h2>
           <p>This election begins {moment(election.start_date, "YYYYMMDD").fromNow()}</p>
         </div>
       </div>
     );
-  } else if (viewResults) {
+  } else if (moment() > moment(election.end_date)) {
     return (
       <div className="results-page">
-        <div className="nav">
           <ProcessMenu />
-        </div>
         <div className="body">
           <h2>{getTitle(selectedProcess)}</h2>
           <ProposalResults resultData={resultData} />
         </div>
       </div>
     );
-  // } else if (viewResults) {
-  //   return (
-  //     <div className="voting-page">
-  //       <div className="sticky-header">
-  //         <h2 className="content-header">Election</h2>
-  //         <p className="already-voted">Thanks for voting! The results will
-  //           appear here when the election stage is over.
-  //         </p>
-  //       </div>
-  //     </div>
-  //   );
+  } else if (viewResults) {
+    return (
+      <div className="voting-page">
+        <div className="sticky-header">
+          <h2 className="content-header">Election</h2>
+          <p className="already-voted">Thanks for voting! The results will
+            appear here when the election stage is over.
+          </p>
+        </div>
+      </div>
+    );
   } else {
     return (
         <div className="voting-page">
-          <div className="nav">
             <ProcessMenu />
+          <div className="button-container">
+            <RemainingCredits
+              creditsRemaining={creditsRemaining}
+              creditBalance={creditBalance}
+            />
+            <label className="votes-cast">Total votes cast: {votesCast}</label>
+            <button
+              type="button"
+              className="submit-button"
+              onClick={() => submitVotes()}
+              >
+              submit votes
+            </button>
           </div>
           <div className="body">
             <h2>{getTitle(selectedProcess)}</h2>
@@ -179,20 +188,6 @@ function Election() {
                                 onChange={onChangeVoteCount} />
               ))}
             </ul>
-          </div>
-          <div className="button-container">
-            <RemainingCredits
-              creditsRemaining={creditsRemaining}
-              creditBalance={creditBalance}
-            />
-            <label>Total votes cast: {votesCast}</label>
-            <button
-              type="button"
-              className="submit-button"
-              onClick={() => submitVotes()}
-              >
-              submit votes
-            </button>
           </div>
         </div>
     );

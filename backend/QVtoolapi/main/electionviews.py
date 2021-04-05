@@ -2,6 +2,7 @@ from guardian.shortcuts import assign_perm
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import generics, mixins, status
+from django.utils import timezone
 from .permissions import (ElectionPermission,
                           VotePermission,
                           ProposalPermission
@@ -72,10 +73,10 @@ class ElectionDetail(mixins.RetrieveModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        election_object = self.get_object()
-        serializer = self.get_serializer(election_object)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
         result = {
-            'show_results': request.user.has_perm('can_view_results', election_object)
+            'show_results': request.user.has_perm('can_view_results', instance) or timezone.now() > instance.end_date
             }
         result.update(serializer.data)
         return Response(result)
@@ -158,7 +159,7 @@ class ProposalList(mixins.CreateModelMixin,
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(election_proposals, many=True)
         election_object = Election.objects.get(id=election_id)
-        if request.user.has_perm('can_view_results', election_object):
+        if request.user.has_perm('can_view_results', election_object) or timezone.now() > election_object.end_date:
             return Response(serializer.data)
         else:
             result_proposals = []
