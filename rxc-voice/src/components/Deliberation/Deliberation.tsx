@@ -52,6 +52,7 @@ function Deliberation() {
         <ProcessMenu />
       </div>
       <div className="body">
+      <h1>Deliberation</h1>
       <h2 className="content-header">{getTitle(selectedProcess)}</h2>
       <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
       <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>

@@ -129,8 +129,9 @@ function Election() {
   } else if (moment() < moment(election.start_date)) {
     return (
       <div className="voting-page">
-          <ProcessMenu />
+        <ProcessMenu />
         <div className="body">
+          <h1>Election</h1>
           <h2>{getTitle(selectedProcess)}</h2>
           <p>This election begins {moment(election.start_date, "YYYYMMDD").fromNow()}</p>
         </div>
@@ -139,8 +140,9 @@ function Election() {
   } else if (moment() > moment(election.end_date)) {
     return (
       <div className="results-page">
-          <ProcessMenu />
+        <ProcessMenu />
         <div className="body">
+          <h1>Election Results</h1>
           <h2>{getTitle(selectedProcess)}</h2>
           <ProposalResults resultData={resultData} />
         </div>
@@ -149,9 +151,11 @@ function Election() {
   } else if (viewResults) {
     return (
       <div className="voting-page">
-        <div className="sticky-header">
-          <h2 className="content-header">Election</h2>
-          <p className="already-voted">Thanks for voting! The results will
+        <ProcessMenu />
+        <div className="body">
+          <h1>Election</h1>
+          <h2>{getTitle(selectedProcess)}</h2>
+          <p>Thanks for voting! The results will
             appear here when the election stage is over.
           </p>
         </div>
@@ -160,7 +164,7 @@ function Election() {
   } else {
     return (
         <div className="voting-page">
-            <ProcessMenu />
+          <ProcessMenu />
           <div className="button-container">
             <RemainingCredits
               creditsRemaining={creditsRemaining}
@@ -176,6 +180,7 @@ function Election() {
             </button>
           </div>
           <div className="body">
+            <h1>Election</h1>
             <h2>{getTitle(selectedProcess)}</h2>
             <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
             <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot accurately represents the delegation’s submissions. If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>

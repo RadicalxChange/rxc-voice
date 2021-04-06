@@ -113,6 +113,7 @@ function Delegation() {
         />
         <div className="body">
           <div className="delegation-content">
+            <h1>Delegation</h1>
             <h2>{getTitle(selectedProcess)}</h2>
             <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some of their voice credits. Voice credits are used for voting in the election later on. Is there anyone you don’t see in the list below that you think should have a say? Send them some of your voice credits to invite them.</p>
             <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election. At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! If you want to save all of your credits for your own use in the election, that’s fine too.</p>
