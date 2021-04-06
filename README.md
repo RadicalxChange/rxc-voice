@@ -40,7 +40,9 @@ POSTGRES_USER=
 POSTGRES_PASSWORD=
 ```
 
-5. Build images and stand up containers (make sure docker is running first). Choose a docker-compose yaml file. <polis> to run RxC Conversations, <voice> to run RxC Voice, and <prod> to run both apps at once in a production environment.
+5. Configure urls in rxc-voice/src/utils/urls.ts -- comment out the production urls and uncomment the local urls.
+
+6. Build images and stand up containers (make sure docker is running first). Choose a docker-compose yaml file. <polis> to run RxC Conversations, <voice> to run RxC Voice, and <prod> to run both apps at once in a production environment.
 
 ```
 docker-compose -f docker-compose-<polis / voice / prod>.yml up --build
@@ -54,15 +56,15 @@ Backend API - http://127.0.0.1:8000
 
 RxC Conversations - http://localhost:4000
 
-Polis app frontend - http://localhost:3000
+RxC Voice - http://localhost:3000
 
-6. Create a superuser to access the admin site
+7. Create a superuser to access the admin site
 
 ```
 docker exec -it QVtool_api_1 ./manage.py createsuperuser
 ```
 
-7. Log in to the admin site at http://127.0.0.1:8000/admin
+8. Log in to the admin site at http://127.0.0.1:8000/admin
 
 ## Contribute
 
