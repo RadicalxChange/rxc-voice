@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ActionContext, StateContext } from "../../hooks";
 import { WebService } from "../../services";
-import { Domain } from "../../utils";
+import logo from "../../assets/icons/rxc-voice-beta-logo.png";
 
 import "./Header.scss";
 
@@ -28,12 +28,12 @@ function Header() {
 
   return (
     <div className="App-header">
-      <a
-      href={Domain.WEB}
+      <Link
+      to={`/`}
       className="app-title"
       >
-        RxC VOICE
-      </a>
+        <img src={logo} className="App-logo" alt="logo" />
+      </Link>
       <ul className="nav">
         <Link
         to={`/about`}

@@ -6,6 +6,7 @@ import { WebService } from "../../services";
 import { useAlert } from 'react-alert'
 import { Link } from "react-router-dom";
 import { userIsVerified } from "../../utils";
+import logo from "../../assets/icons/rxc-voice-beta-logo.png";
 
 import "./Login.scss";
 
@@ -65,7 +66,7 @@ function Login() {
   }
   return (
     <form className="login" onSubmit={login}>
-      <label className="app-title">RxC Voice</label>
+      <img src={logo} className="App-logo" alt="logo" />
       <input
         type="text"
         placeholder="Email"

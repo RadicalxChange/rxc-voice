@@ -7,6 +7,7 @@ import { BgColor } from "../../models/BgColor";
 import { OauthProvider } from "../../models/OauthProvider";
 import { WebService } from "../../services";
 import { getDelegateId, getUserId, validateEmail } from "../../utils";
+import logo from "../../assets/icons/rxc-voice-beta-logo.png";
 // import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, validatePasswordLength } from "../../utils";
 
 import "./ValidationPage.scss";
@@ -151,7 +152,7 @@ function ValidationPage() {
   } else {
     return (
       <form className="create-account" onSubmit={modify}>
-        <label className="app-title">RxC Voice</label>
+        <img src={logo} className="App-logo" alt="logo" />
         <p>Create your account to participate in the democratic process!</p>
 
         <input
