@@ -65,17 +65,25 @@ RxC Conversations - http://localhost:4000
 
 RxC Voice - http://localhost:3000
 
-7. Create a superuser to access the admin site
+## Creating users and accessing the site for testing
+
+1. Create a superuser to access the admin site
 
 ```
 docker exec -it qvtool_api_1 ./QVtoolapi/manage.py createsuperuser
 ```
 
-8. Log in to the admin site at http://127.0.0.1:8000/admin
+2. Log in to the admin site at http://127.0.0.1:8000/admin
 
-9. Create a Group named "RxC Voice" -- any objects you create for RxC Voice must be added to this group.
+3. Create a Group named "RxC Voice" -- any objects you create for RxC Voice must be added to this group.
 
-10. Create a Group named "RxC Conversations" -- any objects you create for RxC Conversations must be added to this group.
+4. Create a Group named "RxC Conversations" -- any objects you create for RxC Conversations must be added to this group.
+
+5. Create a User. It is recommended that you use the same email address for both the "Email address" field and the "Username" field. Add the user to the "RxC Voice" group you created in step 3.
+
+6. Now create a Delegate for the User you just created (The Delegate class is an extension/wrapper of the User class). If you have not set up email services, you can bypass the user verification process by checking "Is verified" and entering something into the "Public username" field.
+
+7. You should now be able to log in to the site with the test user's email and password.
 
 ## Contribute
 
