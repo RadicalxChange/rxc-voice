@@ -8,4 +8,6 @@ WORKDIR /rxc-voice
 
 RUN npm install
 
+RUN npm rebuild node-sass
+
 EXPOSE 4000
