@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
-import defaultPic from '../../assets/icons/profile_icon.svg';
+import { WebService } from "../../services";
+import ProfileIcon from "../Delegation/components/ProfileIcon";
 
 import "./Account.scss";
-import { WebService } from "../../services";
 
 function Account() {
   const { setColor, logoutUser, updateCreditBalance } = useContext(ActionContext);
@@ -38,7 +38,7 @@ function Account() {
           {user.profile_pic ? (
             <img src={user.profile_pic} className="profile-pic" alt="profile-pic" />
           ) : (
-            <img src={defaultPic} className="profile-pic" alt="profile-pic" />
+            <ProfileIcon />
           )}
           <div className="info">
             <h3 className="name">{user.first_name + " " + user.last_name}</h3>
