@@ -73,6 +73,10 @@ docker exec -it qvtool_api_1 ./QVtoolapi/manage.py createsuperuser
 
 8. Log in to the admin site at http://127.0.0.1:8000/admin
 
+9. Create a Group named "RxC Voice" -- any objects you create for RxC Voice must be added to this group.
+
+10. Create a Group named "RxC Conversations" -- any objects you create for RxC Conversations must be added to this group.
+
 ## Contribute
 
 For questions, comments, or troubleshooting, please feel free to open an issue on this repo. Our team currently includes only one developer--any kind of contribution from the community is greatly appreciated!
