@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 // import { Link } from "react-router-dom";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
@@ -10,7 +10,6 @@ import "./Home.scss";
 function Home() {
   const { setColor, fetchProcesses } = useContext(ActionContext);
   const { processes, activeProcesses, pastProcesses } = useContext(StateContext);
-  const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
     setColor(BgColor.Yellow);
