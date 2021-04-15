@@ -12,7 +12,7 @@ This repo also hosts RxC Conversations, a wrapper for Pol.is conversations held 
 
 3. Clone project -
 ```
-git clone https://github.com/alexrandaccio/QVtool.git
+git clone https://github.com/RadicalxChange/rxc-voice.git
 git checkout master
 ```
 
@@ -31,7 +31,7 @@ DJANGO_SECRET_KEY=
 # needed for database
 POSTGRES_HOST=db
 POSTGRES_PORT=5432
-POSTGRES_DB=qvtoolapi_db
+POSTGRES_DB=rxcvoiceapi_db
 POSTGRES_USER=
 POSTGRES_PASSWORD=
 
@@ -49,7 +49,7 @@ TRANSACTION_EMAIL=
 
 5. Configure urls in rxc-voice/src/utils/urls.ts -- comment out the production urls and uncomment the local urls.
 
-6. Build images and stand up containers (make sure docker is running first). Choose a docker-compose yaml file. <polis> to run RxC Conversations, <voice> to run RxC Voice, and <prod> to run both apps at once in a production environment (not recommended for dev / testing).
+6. Build images and stand up containers (make sure docker is running first). Choose a docker-compose yaml file. Use docker-compose-polis.yml to run RxC Conversations, docker-compose-voice.yml to run RxC Voice, and docker-compose-prod.yml to run both apps at once in a production environment (not recommended for dev / testing).
 
 ```
 docker-compose -f docker-compose-<polis / voice / prod>.yml up --build
@@ -70,7 +70,7 @@ RxC Voice - http://localhost:3000
 1. Create a superuser to access the admin site
 
 ```
-docker exec -it qvtool_api_1 ./manage.py createsuperuser
+docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
 ```
 
 2. Log in to the admin site at http://127.0.0.1:8000/admin
