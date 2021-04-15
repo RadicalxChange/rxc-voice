@@ -70,7 +70,7 @@ RxC Voice - http://localhost:3000
 1. Create a superuser to access the admin site
 
 ```
-docker exec -it qvtool_api_1 ./QVtoolapi/manage.py createsuperuser
+docker exec -it qvtool_api_1 ./manage.py createsuperuser
 ```
 
 2. Log in to the admin site at http://127.0.0.1:8000/admin

@@ -7,7 +7,7 @@ services:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
 
@@ -23,6 +23,7 @@ services:
     volumes:
       - ./backend:/backend
       - ./scripts:/scripts
+    working_dir: /backend/RxcVoiceApi/
     environment:
       - DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
       - POSTGRES_HOST=$POSTGRES_HOST
@@ -31,7 +32,7 @@ services:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
-  web:
+  voice:
     build:
       context: .
       dockerfile: ./rxc-voice/Dockerfile

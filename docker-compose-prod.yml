@@ -11,7 +11,7 @@ services:
     volumes:
       - ./backend:/backend
       - ./scripts:/scripts
-    working_dir: /backend/QVtoolapi/
+    working_dir: /backend/RxcVoiceApi/
     environment:
       - PRODUCTION=True
       - DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY

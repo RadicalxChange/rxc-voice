@@ -2,7 +2,7 @@ FROM python:3
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /backend
-COPY backend/QVtoolapi/ /backend
+COPY backend/RxcVoiceApi/ /backend
 
 WORKDIR /backend
 
