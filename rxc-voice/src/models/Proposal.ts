@@ -3,5 +3,6 @@ export interface Proposal {
   title: string,
   description: string,
   link: string,
+  ballot_ratification: boolean,
   votes_received: number,
 }

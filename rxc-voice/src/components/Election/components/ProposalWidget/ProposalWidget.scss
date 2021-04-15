@@ -1,5 +1,6 @@
 .proposal-widget {
   margin: 15vw 0 10vw 0;
+  padding: 1rem;
 
   .proposal-info {
     display: block;
@@ -44,9 +45,18 @@
       }
 
       .vote-counter {
-        margin: 2vw;
+        // margin: 2vw;
       }
     }
+  }
+}
+
+#ratification-proposal {
+  border: 1px solid black;
+  border-radius: 8px;
+
+  .proposal-info {
+    // font-weight: bolder;
   }
 }
 
@@ -61,17 +71,17 @@
       grid-template-columns: 1fr auto 2rem 5rem;
 
       .voice-credits {
-        margin: 3rem auto auto auto;
+        margin: 2.3rem auto auto auto;
       }
 
       .equals {
-        margin: 3rem auto auto auto;
+        margin: 2.3rem auto auto auto;
       }
 
       .counter-container {
 
         .vote-counter {
-          margin: 2vw;
+          // margin: 2vw;
         }
       }
     }

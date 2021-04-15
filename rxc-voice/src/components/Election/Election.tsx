@@ -44,6 +44,7 @@ function Election() {
   const [creditsSpent, setCreditsSpent] = useState(0);
   const creditsRemaining = creditBalance ? (creditBalance! - creditsSpent) : 0
   const [proposals, setProposals] = useState(new Array<Proposal>());
+  const [ratProposal, setRatProposal] = useState({exists: false, index: 0});
   const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
   const [viewResults, setViewResults] = useState(false);
   const [resultData, setResultData] = useState(standInResultData);
@@ -60,15 +61,16 @@ function Election() {
           setElection(election => thisElection!);
           if (thisElection.show_results) {
             setViewResults(true);
-            console.log('hi')
           }
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
-            console.log(data);
-            setProposals(proposals => data);
             var highestProposal = 0;
             var lowestProposal = 0;
-            data.forEach(proposal => {
+            var ratificationIndex: number | undefined = undefined;
+            data.forEach((proposal, i) => {
+              if (proposal.ballot_ratification) {
+                ratificationIndex = i;
+              }
               let votesReceived = Number(proposal.votes_received);
               if (votesReceived > highestProposal) {
                 highestProposal = votesReceived;
@@ -77,6 +79,12 @@ function Election() {
               }
               voteDispatch({ proposal: proposal.id, amount: 0, });
             });
+            if (ratificationIndex) {
+              setRatProposal({exists: true, index: ratificationIndex});
+            } else {
+              setRatProposal({exists: false, index: 0});
+            }
+            setProposals(proposals => data);
             setResultData({
               proposals: data,
               highestProposal: highestProposal,
@@ -90,6 +98,10 @@ function Election() {
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [processId, selectedProcess]);
+
+  const notRatProposal = (proposal: Proposal, index, array) => {
+   return !proposal.ballot_ratification;
+  };
 
   const onChangeVoteCount = (change: any) => {
     setCreditsSpent(creditsSpent =>
@@ -185,7 +197,14 @@ function Election() {
             <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
             <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot accurately represents the delegation’s submissions. If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
             <ul className="proposal-list">
-              {proposals.map((proposal: Proposal, i) => (
+              {ratProposal.exists === true && proposals[ratProposal.index] ? (
+                <ProposalWidget key={ratProposal.index}
+                                creditsRemaining={creditsRemaining}
+                                proposal={proposals[ratProposal.index]}
+                                negativeVotes={election.negative_votes}
+                                onChange={onChangeVoteCount} />
+              ) : null}
+              {proposals.filter(notRatProposal).map((proposal: Proposal, i) => (
                 <ProposalWidget key={i}
                                 creditsRemaining={creditsRemaining}
                                 proposal={proposal}

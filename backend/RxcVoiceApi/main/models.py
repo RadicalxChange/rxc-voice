@@ -65,6 +65,7 @@ class Proposal(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True)
+    ballot_ratification = models.BooleanField(default=False)
     link = models.CharField(max_length=512, blank=True)
     election = models.ForeignKey(Election, on_delete=models.CASCADE,
                                  null=True, blank=False)

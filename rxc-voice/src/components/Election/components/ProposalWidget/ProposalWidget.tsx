@@ -31,16 +31,16 @@ function ProposalWidget(props: any) {
 
 
   return (
-    <li className="proposal-widget">
+    <li
+      id={`${props.proposal.ballot_ratification ? "ratification-proposal" : ""}`}
+      className="proposal-widget">
       <label className="proposal-info">{props.proposal.title}</label>
       <div className="widget">
         <ProposalBlocks cost={cost} />
         {(cost !== 0) ? (
           <><h3 className="voice-credits">voice credits</h3>
             <h3 className="equals">=</h3></>
-        ) : (
-          <></>
-        )}
+        ) : null}
         <div className="counter-container">
           <button
             type="button"
