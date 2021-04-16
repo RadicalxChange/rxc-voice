@@ -23,7 +23,10 @@
     }
 
     .transfers {
-      margin: 15vw 0;
+      margin: 3rem 0;
+      border: 1px solid black;
+      border-radius: 8px;
+      padding: 1rem;
 
       .transfers-header {
         margin-left: 2vw;
@@ -53,6 +56,10 @@
 
     .delegation-content {
 
+      .matching-pool {
+        font-size: 1rem;
+      }
+
       .submit-button {
         font-size: 1rem;
         display: block;
@@ -68,13 +75,6 @@
       .submit-button:hover {
         background: var(--whiteColor);
         color: black;
-      }
-
-      .invite-link {
-        text-decoration: underline;
-      }
-      .invite-link:hover {
-        text-decoration: none;
       }
     }
   }
@@ -94,10 +94,13 @@
       }
 
       .transfers {
-        margin: 8vw 0;
       }
 
       .delegation-content {
+
+        .matching-pool {
+          margin-top: 3rem;
+        }
 
         .delegate-list {
           margin-right: 5vw;

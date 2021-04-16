@@ -60,25 +60,15 @@
     .info {
       grid-column: 2;
       padding: 1em 0 1em 0;
-      display: grid;
-      grid-template-rows: auto auto auto;
 
-      .name {
-        grid-row: 1;
-        margin: 0;
+      .info-name {
+        line-height: 2rem;
+        font-size: 1.5em;
+      }
+
+      .info-text {
+        line-height: 1.3rem;
         font-size: 1.2em;
-      }
-
-      .username {
-        grid-row: 2;
-        margin: 0;
-        font-size: 1em;
-      }
-
-      .credit-balance {
-        grid-row: 3;
-        margin: 0;
-        font-size: 1em;
       }
     }
 

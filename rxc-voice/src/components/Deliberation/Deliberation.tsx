@@ -54,11 +54,15 @@ function Deliberation() {
       <div className="body">
       <h1>Deliberation</h1>
       <h2 className="content-header">{getTitle(selectedProcess)}</h2>
-      <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
-      <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>
+      <div className="explain-text">
+        <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
+        <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>
+      </div>
       {(conversation && WebService.userobj) ? (
-          (moment(conversation.end_date) > moment()) ? (
-            <>
+          (moment() < moment(conversation.end_date)) ? (
+            (moment() > moment(conversation.start_date)) ? (
+              <>
+              <p className="explain-text"><strong>The Deliberation Stage closes on {moment(conversation.end_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
               <div
                 id="polis-iframe"
                 className='polis'
@@ -82,12 +86,14 @@ function Deliberation() {
                   src={"https://pol.is/report/" + conversation.report_id}
                 >
                 </iframe>
-              ) : (
-                <h3>No report to show at this time.</h3>
-              )}
+              ) : null}
               </>
+            ) : (
+              <p className="explain-text"><strong>The Deliberation Stage begins on {moment(conversation.start_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+            )
           ) : (
             <div className="body">
+              <p className="explain-text"><strong>The Deliberation Stage has concluded. You can see the results of the conversation below!</strong></p>
               <iframe
                 title="conversation-results"
                 className="results-iframe"

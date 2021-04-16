@@ -33,12 +33,10 @@ function Delegation() {
       selectProcess(processId);
     }
 
-    if (delegationOngoing) {
+    if (!delegationOngoing) {
         WebService.fetchTransfers(processId).subscribe((data: any) => {
         processTransferData(data);
       });
-    } else {
-      setColor(BgColor.Yellow);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,18 +113,25 @@ function Delegation() {
           <div className="delegation-content">
             <h1>Delegation</h1>
             <h2>{getTitle(selectedProcess)}</h2>
-            <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some of their voice credits. Voice credits are used for voting in the election later on. Is there anyone you don’t see in the list below that you think should have a say? Send them some of your voice credits to invite them.</p>
-            <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election. At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! If you want to save all of your credits for your own use in the election, that’s fine too.</p>
-            {delegationOngoing ? (
-              <><h3 className="matching-pool">Matching Fund: {getMatchingPool(selectedProcess)} voice credits.</h3>
-                <button
-                  type="button"
-                  className="submit-button"
-                  onClick={() => setInviteModal(true)}
-                >
-                  + Invite someone else
-                </button></>
+            <div className="explain-text">
+              <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some of their voice credits. Voice credits are used for voting in the election later on. Is there anyone you don’t see in the list below that you think should have a say? Send them some of your voice credits to invite them.</p>
+              <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election. At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! If you want to save all of your credits for your own use in the election, that’s fine too.</p>
+            </div>
+            {conversation && delegationOngoing ? (
+              <>
+              <p className="explain-text"><strong>The Delegation Stage closes on {moment(conversation.start_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+              <h3 className="matching-pool">Matching Fund: {getMatchingPool(selectedProcess)} voice credits.</h3>
+              <button
+                type="button"
+                className="submit-button"
+                onClick={() => setInviteModal(true)}
+              >
+                + Invite someone else
+              </button>
+              </>
             ) : (
+              <>
+              <p className="explain-text"><strong>The Delegation Stage has concluded. You can see the final delegate list below!</strong></p>
               <div className="transfers">
                 <h2>Your transfers</h2>
                 <div className="transfers-header">
@@ -159,6 +164,7 @@ function Delegation() {
                   <h3>You did not send or receive any transfers.</h3>
                 )}
               </div>
+              </>
             )}
             {getDelegates(selectedProcess)!.filter(isVerified).length ? (
               <>

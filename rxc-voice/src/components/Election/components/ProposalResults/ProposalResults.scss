@@ -1,9 +1,12 @@
 #responsive-graph {
-      width: 95%;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 95%;
 }
 
 @media only screen and (min-width: 768px) {
 #responsive-graph {
-        // width: 700px;
+  // width: 700px;
   }
 }

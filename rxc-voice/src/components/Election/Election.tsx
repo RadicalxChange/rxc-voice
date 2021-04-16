@@ -145,7 +145,7 @@ function Election() {
         <div className="body">
           <h1>Election</h1>
           <h2>{getTitle(selectedProcess)}</h2>
-          <p>This election begins {moment(election.start_date, "YYYYMMDD").fromNow()}</p>
+          <p className="explain-text"><strong>The Election Stage begins on {moment(election.start_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
         </div>
       </div>
     );
@@ -156,6 +156,7 @@ function Election() {
         <div className="body">
           <h1>Election Results</h1>
           <h2>{getTitle(selectedProcess)}</h2>
+          <p className="explain-text"><strong>The Election Stage has concluded. You can see the results below!</strong></p>
           <ProposalResults resultData={resultData} />
         </div>
       </div>
@@ -167,6 +168,7 @@ function Election() {
         <div className="body">
           <h1>Election</h1>
           <h2>{getTitle(selectedProcess)}</h2>
+          <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
           <p>Thanks for voting! The results will
             appear here when the election stage is over.
           </p>
@@ -194,8 +196,11 @@ function Election() {
           <div className="body">
             <h1>Election</h1>
             <h2>{getTitle(selectedProcess)}</h2>
-            <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
-            <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot accurately represents the delegation’s submissions. If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
+            <div className="explain-text">
+              <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
+              <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot accurately represents the delegation’s submissions. If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
+            </div>
+            <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
             <ul className="proposal-list">
               {ratProposal.exists === true && proposals[ratProposal.index] ? (
                 <ProposalWidget key={ratProposal.index}

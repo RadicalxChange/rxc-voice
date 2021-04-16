@@ -15,6 +15,7 @@
 
   .give-credits-page {
     text-align: center;
+    position: relative;
 
     .title {
       font-size: 2em;
@@ -160,7 +161,7 @@
       .transfer-field-container {
         border: 1px solid black;
         border-radius: 0;
-        width: 45vw;
+        width: 96%;
         height: 8vh;
         font-size: 1em;
         text-align: right;
