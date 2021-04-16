@@ -194,6 +194,7 @@ function ValidationPage() {
           onChange={(e) => setPassReEntry(e.target.value)}
         />
 
+        <p className="oauth-message">Login to either a Github or Twitter account to verify your identity. We will not access any information on your third-party account other than your username.</p>
         <select
           className="oauth-provider"
           id="select-oauth-provider"

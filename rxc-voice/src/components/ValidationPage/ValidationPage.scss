@@ -28,10 +28,15 @@
     font-size: 1rem;
   }
 
+  .oauth-message {
+    font-size: 1rem;
+    margin: 8vmin auto 0 auto;
+  }
+
   .oauth-provider {
     display: block;
     width: 80%;
-    margin: 8vmin auto 0 auto;
+    margin: 2vmin auto;
     font-size: 1rem;
     outline: none;
   }
