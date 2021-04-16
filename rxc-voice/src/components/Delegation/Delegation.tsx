@@ -119,7 +119,7 @@ function Delegation() {
             </div>
             {conversation && delegationOngoing ? (
               <>
-              <p className="explain-text"><strong>The Delegation Stage closes on {moment(conversation.start_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+              <p className="explain-text"><strong>The Delegation Stage closes on {moment(conversation.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
               <h3 className="matching-pool">Matching Fund: {getMatchingPool(selectedProcess)} voice credits.</h3>
               <button
                 type="button"

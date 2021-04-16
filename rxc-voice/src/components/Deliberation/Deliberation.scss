@@ -6,6 +6,13 @@
   .body {
     grid-column: 1 / -1;
 
+    .insufficient-credits {
+      font-size: 1rem;
+      padding: 1rem;
+      border: 1px solid black;
+      border-radius: 8px;
+    }
+
     .results-iframe {
       width: 99%;
       border: none;

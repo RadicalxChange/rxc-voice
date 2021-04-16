@@ -13,9 +13,11 @@ function TransferModal(props: any) {
     const [recipientEmail, setRecipientEmail] = useState("");
     const [amount, setAmount] = useState("");
     const [estMatch, setEstMatch] = useState(0);
+    const [thresholdWarning, setThresholdWarning] = useState(false);
     const [transferSuccess, setTransferSuccess] = useState(false);
 
     const submit = () => {
+      setThresholdWarning(false);
       const recipient = props.recipient ? props.recipient : recipientEmail;
       if (recipient && amount) {
         WebService.postTransfer({
@@ -42,6 +44,14 @@ function TransferModal(props: any) {
       }
     };
 
+    const maybeSubmit = () => {
+      if (creditBalance! - (+amount) < 25) {
+        setThresholdWarning(true);
+      } else {
+        submit();
+      }
+    };
+
     const reset = () => {
       props.closeModal();
       setRecipientEmail("");
@@ -53,6 +63,7 @@ function TransferModal(props: any) {
     const onChangeAmount = (new_amt) => {
       setAmount(new_amt);
       if (new_amt !== "") {
+        console.log(WebService.userobj.id)
         const recipient = props.recipient ? props.recipient : recipientEmail;
         WebService.estimateMatch({
           sender: WebService.userobj.id,
@@ -83,57 +94,87 @@ function TransferModal(props: any) {
             </button>
           </div>
         ) : (
-          <div className={`transfer-modal ${!props.recipient && !props.invite ? "closed" : ""}`}>
-            <div className="give-credits-page">
-              <h1 className="title">give credits</h1>
-              <div className="transfer-field-container">
-                <div className="field-label">Amount</div>
-                <input
-                  type="number"
-                  placeholder="0"
-                  className="amount-input"
-                  value={amount}
-                  onChange={(e) => onChangeAmount(e.target.value)}
-                />
-              </div>
-              {props.recipient ? (
-                <div className="transfer-field-container">
-                  <div className="field-label">Send to</div>
-                  <p className="recipient">{props.recipient}</p>
+          <>
+          {thresholdWarning ? (
+            <div className={`transfer-modal ${!props.recipient && !props.invite ? "closed" : ""}`}>
+              <div className="give-credits-page">
+                <h2>Threshold Warning</h2>
+                <div className="explain-text">
+                  <p>Are you sure you'd like to send {amount} voice credits to {props.recipient ? props.recipient : recipientEmail}?</p>
+                  <p>If you do, your voice credit balance will fall below the threshold for participation (25 voice credits) and you may not be able to participate in Deliberation and Election.</p>
                 </div>
-              ) : (
-                <div className="transfer-field-container">
-                  <div className="field-label">Send to</div>
-                  <input
-                    type="email"
-                    placeholder="example@mail.com"
-                    className="email-input"
-                    value={recipientEmail}
-                    onChange={(e) => setRecipientEmail(e.target.value)}
-                  />
+                <div className="button-container">
+                  <button
+                    type="button"
+                    className="submit-button"
+                    onClick={() => submit()}
+                    >
+                    submit
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-button"
+                    onClick={() => reset()}
+                    >
+                    cancel
+                  </button>
                 </div>
-              )}
-              <p className={`match-estimate ${(estMatch === 0) ? "closed" : ""}`}>
-                Estimated Match: <strong>+ {estMatch} voice credits</strong>
-              </p>
-              <div className="button-container">
-                <button
-                  type="button"
-                  className="submit-button"
-                  onClick={() => submit()}
-                  >
-                  submit
-                </button>
-                <button
-                  type="button"
-                  className="cancel-button"
-                  onClick={() => reset()}
-                  >
-                  cancel
-                </button>
               </div>
             </div>
-        </div>
+          ) : (
+            <div className={`transfer-modal ${!props.recipient && !props.invite ? "closed" : ""}`}>
+              <div className="give-credits-page">
+                <h1 className="title">give credits</h1>
+                <div className="transfer-field-container">
+                  <div className="field-label">Amount</div>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    className="amount-input"
+                    value={amount}
+                    onChange={(e) => onChangeAmount(e.target.value)}
+                  />
+                </div>
+                {props.recipient ? (
+                  <div className="transfer-field-container">
+                    <div className="field-label">Send to</div>
+                    <p className="recipient">{props.recipient}</p>
+                  </div>
+                ) : (
+                  <div className="transfer-field-container">
+                    <div className="field-label">Send to</div>
+                    <input
+                      type="email"
+                      placeholder="example@mail.com"
+                      className="email-input"
+                      value={recipientEmail}
+                      onChange={(e) => setRecipientEmail(e.target.value)}
+                    />
+                  </div>
+                )}
+                <p className={`match-estimate ${(estMatch === 0) ? "closed" : ""}`}>
+                  Estimated Match: <strong>+ {estMatch} voice credits</strong>
+                </p>
+                <div className="button-container">
+                  <button
+                    type="button"
+                    className="submit-button"
+                    onClick={() => maybeSubmit()}
+                    >
+                    submit
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-button"
+                    onClick={() => reset()}
+                    >
+                    cancel
+                  </button>
+                </div>
+              </div>
+          </div>
+        )}
+        </>
         )}
         <div
           className={`modal-overlay ${!props.recipient && !props.invite ? "closed" : ""}`}

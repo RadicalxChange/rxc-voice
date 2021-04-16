@@ -145,7 +145,7 @@ function Election() {
         <div className="body">
           <h1>Election</h1>
           <h2>{getTitle(selectedProcess)}</h2>
-          <p className="explain-text"><strong>The Election Stage begins on {moment(election.start_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+          <p className="explain-text"><strong>The Election Stage begins on {moment(election.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
         </div>
       </div>
     );
@@ -168,7 +168,7 @@ function Election() {
         <div className="body">
           <h1>Election</h1>
           <h2>{getTitle(selectedProcess)}</h2>
-          <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+          <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
           <p>Thanks for voting! The results will
             appear here when the election stage is over.
           </p>
@@ -179,20 +179,22 @@ function Election() {
     return (
         <div className="voting-page">
           <ProcessMenu />
-          <div className="button-container">
-            <RemainingCredits
-              creditsRemaining={creditsRemaining}
-              creditBalance={creditBalance}
-            />
-            <label className="votes-cast">Total votes cast: {votesCast}</label>
-            <button
-              type="button"
-              className="submit-button"
-              onClick={() => submitVotes()}
-              >
-              submit votes
-            </button>
-          </div>
+          {(creditBalance && (creditBalance! >= 25)) ? (
+            <div className="button-container">
+              <RemainingCredits
+                creditsRemaining={creditsRemaining}
+                creditBalance={creditBalance}
+              />
+              <label className="votes-cast">Total votes cast: {votesCast}</label>
+              <button
+                type="button"
+                className="submit-button"
+                onClick={() => submitVotes()}
+                >
+                submit votes
+              </button>
+            </div>
+          ) : null}
           <div className="body">
             <h1>Election</h1>
             <h2>{getTitle(selectedProcess)}</h2>
@@ -200,7 +202,8 @@ function Election() {
               <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
               <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot accurately represents the delegation’s submissions. If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
             </div>
-            <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm:ss a')}</strong></p>
+            <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+            {(creditBalance && (creditBalance! >= 25)) ? (
             <ul className="proposal-list">
               {ratProposal.exists === true && proposals[ratProposal.index] ? (
                 <ProposalWidget key={ratProposal.index}
@@ -217,6 +220,9 @@ function Election() {
                                 onChange={onChangeVoteCount} />
               ))}
             </ul>
+            ) : (
+              <p className="insufficient-credits">Sorry! You do not have enough voice credits to participate in Deliberation or Election. The threshold for participation is 25 voice credits.</p>
+            )}
           </div>
         </div>
     );
