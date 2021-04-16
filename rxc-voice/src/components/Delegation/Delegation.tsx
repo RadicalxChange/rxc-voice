@@ -114,8 +114,15 @@ function Delegation() {
             <h1>Delegation</h1>
             <h2>{getTitle(selectedProcess)}</h2>
             <div className="explain-text">
-              <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some of their voice credits. Voice credits are used for voting in the election later on. Is there anyone you don’t see in the list below that you think should have a say? Send them some of your voice credits to invite them.</p>
+              <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some of their voice credits. Voice credits are used for voting in the election later on.</p>
+              <p>Is there anyone you don’t see in the list below that you think should have a say? Send them some of your voice credits to invite them.
+                <strong> Note:</strong> to keep the dry run private, we ask that you please only invite "new" people from{" "}
+                <a className="inline-link" href="https://docs.google.com/spreadsheets/d/1QLTC4aqvICnb3_YuUJvD9UQBQdEQqZev5MRdK8lEHnI/edit?usp=sharing"
+                >this list.
+                </a>
+              </p>
               <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election. At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! If you want to save all of your credits for your own use in the election, that’s fine too.</p>
+              <p>Keep in mind, the threshold for participating in Delegation and Election is 25 voice credits. If you want to participate in the decision, <strong>make sure you keep at least 25 voice credits for yourself.</strong></p>
             </div>
             {conversation && delegationOngoing ? (
               <>
