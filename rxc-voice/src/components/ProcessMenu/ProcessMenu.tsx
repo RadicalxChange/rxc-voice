@@ -28,19 +28,19 @@ function ProcessMenu() {
       to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Delegation`}
       className="nav-stage"
       >
-      Delegation
+      1. Delegation
       </Link>
       <Link
       to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Deliberation`}
       className="nav-stage"
       >
-      Deliberation
+      2. Deliberation
       </Link>
       <Link
       to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Election`}
       className="nav-stage"
       >
-      Election
+      3. Election
       </Link>
     </div>
   );
