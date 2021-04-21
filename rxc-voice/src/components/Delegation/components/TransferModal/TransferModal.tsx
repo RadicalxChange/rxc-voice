@@ -5,6 +5,7 @@ import moment from "moment";
 import { ActionContext, StateContext } from "../../../../hooks";
 
 import "./TransferModal.scss";
+import { userobj } from "../../../../utils";
 
 function TransferModal(props: any) {
     const { processId } = useParams<any>();
@@ -21,7 +22,7 @@ function TransferModal(props: any) {
       const recipient = props.recipient ? props.recipient : recipientEmail;
       if (recipient && amount) {
         WebService.postTransfer({
-          sender: WebService.userobj.id,
+          sender: userobj().id,
           recipient: recipient,
           amount: amount,
           date: moment().toISOString(),
@@ -63,10 +64,9 @@ function TransferModal(props: any) {
     const onChangeAmount = (new_amt) => {
       setAmount(new_amt);
       if (new_amt !== "") {
-        console.log(WebService.userobj.id)
         const recipient = props.recipient ? props.recipient : recipientEmail;
         WebService.estimateMatch({
-          sender: WebService.userobj.id,
+          sender: userobj().id,
           recipient: recipient,
           amount: new_amt,
           date: moment().toISOString(),

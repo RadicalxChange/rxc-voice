@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
+import { userobj } from "../../utils";
 import ProfileIcon from "../Delegation/components/ProfileIcon";
 
 import "./Account.scss";
@@ -9,7 +10,7 @@ import "./Account.scss";
 function Account() {
   const { setColor, logoutUser, updateCreditBalance } = useContext(ActionContext);
   const { creditBalance } = useContext(StateContext);
-  const [user, setUser] = useState(WebService.userobj);
+  const [user, setUser] = useState(userobj());
 
   useEffect(() => {
     setColor(BgColor.Yellow);

@@ -7,10 +7,6 @@ import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess, Domain } from
 
 const ROOT_URL = Domain.API;
 
-export const userobj = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null;
-export const oauthState = sessionStorage.getItem("oauthState");
-export const twitterOauthSecret = sessionStorage.getItem("twitterOauthSecret");
-
 export const loginUser = (data: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(

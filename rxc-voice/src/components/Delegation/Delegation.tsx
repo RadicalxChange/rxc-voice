@@ -5,7 +5,7 @@ import { BgColor } from "../../models/BgColor";
 import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../models/Delegate";
-import { getAmount, getConversation, getDelegates, getId, getMatchingPool, getRecipient, getTitle, mapToTransfers } from "../../utils";
+import { getAmount, getConversation, getDelegates, getId, getMatchingPool, getRecipient, getTitle, mapToTransfers, userobj } from "../../utils";
 import moment from "moment";
 import { WebService } from "../../services";
 import { Transfer } from "../../models/Transfer";
@@ -58,7 +58,7 @@ function Delegation() {
     if (stagedTransfer) {
       if (getRecipient(stagedTransfer) && getAmount(stagedTransfer)) {
         WebService.postTransfer({
-          sender: WebService.userobj.id,
+          sender: userobj().id,
           recipient: getRecipient(stagedTransfer),
           amount: getAmount(stagedTransfer),
           date: moment().toISOString(),

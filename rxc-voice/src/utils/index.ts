@@ -12,6 +12,16 @@ import * as Domain from "./urls";
 
 export { Domain };
 
+export const userobj = () => {
+  if (sessionStorage.getItem("user")) {
+    return JSON.parse(sessionStorage.getItem("user")!);
+  } else {
+    return null;
+  }
+};
+export const oauthState = sessionStorage.getItem("oauthState");
+export const twitterOauthSecret = sessionStorage.getItem("twitterOauthSecret");
+
 export const standInElection = (): Election => ({
   id: 0,
   title: 'loading election...',

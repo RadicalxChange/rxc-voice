@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { ActionContext, StateContext } from "../../hooks";
 import { WebService } from "../../services";
-import { Domain, verifyUser } from "../../utils";
+import { Domain, oauthState, twitterOauthSecret, verifyUser } from "../../utils";
 
 import "./Callback.scss";
 
@@ -24,7 +24,7 @@ function Callback() {
         if (!twitter_token) {
           console.error("Access Denied: user did not grant RxC Voice permission to access their Twitter account.");
           setAccessDenied(true);
-        } else if (twitter_token !== WebService.oauthState) {
+        } else if (twitter_token !== oauthState) {
           if (error_msg && error_description) {
             console.error(error_msg + ": " + error_description);
           } else {
@@ -35,7 +35,7 @@ function Callback() {
           const params: any = {
             oauth_token: twitter_token,
             oauth_verifier: twitter_verifier,
-            oauth_secret: WebService.twitterOauthSecret,
+            oauth_secret: twitterOauthSecret,
            }
           WebService.getTwitterAccessToken(params).subscribe(async (data) => {
             if (data.ok) {
@@ -48,7 +48,7 @@ function Callback() {
           });
         }
       } else {
-        if (github_state !== WebService.oauthState) {
+        if (github_state !== oauthState) {
           console.error("Access Denied: Github token is invalid.");
           setAccessDenied(true);
         } else {
