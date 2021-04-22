@@ -12,13 +12,16 @@ import "./Deliberation.scss";
 function Deliberation() {
   const POLIS_SITE_ID = 'polis_site_id_cG2opQF5hsqj9jGCsr';
   const { processId } = useParams<ProcessPageRouteParams>();
-  const { selectedProcess, creditBalance, loading } = useContext(StateContext);
-  const { selectProcess, setColor } = useContext(ActionContext);
+  const { user, selectedProcess, creditBalance, loading } = useContext(StateContext);
+  const { selectProcess, setUserData, setColor } = useContext(ActionContext);
 
   useEffect(() => {
     setColor(BgColor.White);
     if (processId && (!selectedProcess || getId(selectedProcess) !== +processId)) {
       selectProcess(processId);
+    }
+    if (!user) {
+      setUserData(userobj());
     }
     // load pol.is embed script
     console.log("loading script...")
@@ -61,7 +64,7 @@ function Deliberation() {
           <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
           <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>
         </div>
-        {(getConversation(selectedProcess) && creditBalance) ? (
+        {(getConversation(selectedProcess) && user && creditBalance) ? (
             (moment() < moment(getConversation(selectedProcess)!.end_date)) ? (
               (moment() > moment(getConversation(selectedProcess)!.start_date)) ? (
                 <>
