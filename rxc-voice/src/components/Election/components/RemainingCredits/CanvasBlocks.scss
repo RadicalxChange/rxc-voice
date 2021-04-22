@@ -1,0 +1,12 @@
+#responsive-graph {
+  padding: .5rem !important;
+  border: none !important;
+  max-width: 80%;
+  height: 40vh;
+}
+
+@media only screen and (min-width: 768px) {
+#responsive-graph {
+  // width: 700px;
+  }
+}
