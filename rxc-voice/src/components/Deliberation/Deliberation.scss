@@ -6,6 +6,19 @@
   .body {
     grid-column: 1 / -1;
 
+    .warning {
+      border: 1px solid black;
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .polis-link {
+      text-decoration: underline;
+    }
+    .polis-link:hover {
+      text-decoration: none;
+    }
+
     .insufficient-credits {
       font-size: 1rem;
       padding: 1rem;
