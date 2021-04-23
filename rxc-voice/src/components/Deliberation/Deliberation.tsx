@@ -64,7 +64,7 @@ function Deliberation() {
           <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
           <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>
           {getConversation(selectedProcess) ? (
-          <p className="warning"><strong>Technical difficulties: </strong>as of 4/24/21, a recent pol.is update has caused temporary problems with our embedded conversations. If you experience problems voting or commenting, please{" "}
+          <p className="warning"><strong>Technical difficulties: </strong>as of 4/22/21, a recent pol.is update has caused temporary problems with our embedded conversations. If you experience problems voting or commenting, please{" "}
             <a
               className="polis-link"
               href="https://pol.is/3s63japakd"
