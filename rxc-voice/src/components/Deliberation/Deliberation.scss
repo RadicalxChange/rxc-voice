@@ -6,16 +6,16 @@
   .body {
     grid-column: 1 / -1;
 
-    .warning {
+    .notice {
       border: 1px solid black;
       border-radius: 8px;
       padding: 15px;
     }
 
-    .polis-link {
+    .notice-link {
       text-decoration: underline;
     }
-    .polis-link:hover {
+    .notice-link:hover {
       text-decoration: none;
     }
 
