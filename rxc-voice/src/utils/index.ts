@@ -120,7 +120,8 @@ export const mapToDelegate = (delegate: Delegate): Delegate => {
     is_verified: delegate.is_verified,
     user: delegate.user,
     public_username: delegate.public_username,
-    credit_balance: delegate.credit_balance
+    credit_balance: delegate.credit_balance,
+    pending_credits: delegate.pending_credits,
   };
 };
 

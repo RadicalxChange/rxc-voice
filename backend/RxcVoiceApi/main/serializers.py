@@ -7,6 +7,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 from .models import Election, Vote, Proposal, Delegate, Conversation, Process, Transfer
 from django.contrib.auth.models import (User, Group, Permission)
@@ -131,11 +132,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DelegateSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
+    pending_credits = serializers.SerializerMethodField()
 
     class Meta:
         model = Delegate
         fields = '__all__'
-        read_only_fields = ('is_verified', 'credit_balance', 'user', 'public_username', 'oauth_token', 'oauth_token_secret', 'invited_by')
+        read_only_fields = ('pending_credits', 'is_verified', 'credit_balance', 'user', 'public_username', 'oauth_token', 'oauth_token_secret', 'invited_by')
+
+    def get_pending_credits(self, obj):
+        pending_transfers = Transfer.objects.all().filter(Q(recipient_object=obj), Q(status='P'))
+        total = 0
+        for transfer in pending_transfers:
+            total += transfer.amount
+        return total
 
     def create(self, validated_data, set_unusable_password):
         user_data = validated_data.get('user')
@@ -207,7 +216,7 @@ class TransferSerializer(serializers.ModelSerializer):
             recipient_object=recipient_object,
             amount=validated_data.get('amount'),
             date=validated_data.get('date'),
-            status=('P' if is_invitation else 'A'),
+            status=('P'),
             process=process,
             )
         return transfer
@@ -221,10 +230,19 @@ class PrivateUserSerializer(serializers.ModelSerializer):
 
 class PrivateDelegateSerializer(serializers.ModelSerializer):
     user = PrivateUserSerializer(required=True)
+    pending_credits = serializers.SerializerMethodField()
 
     class Meta:
         model = Delegate
-        fields = ['id', 'user', 'public_username', 'credit_balance']
+        fields = ['id', 'user', 'public_username', 'credit_balance', 'pending_credits']
+        read_only_fields = ['pending_credits']
+
+    def get_pending_credits(self, obj):
+        pending_transfers = Transfer.objects.all().filter(Q(recipient_object=obj), Q(status='P'))
+        total = 0
+        for transfer in pending_transfers:
+            total += transfer.amount
+        return total
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):

@@ -3,5 +3,6 @@ export interface Delegate {
   is_verified: boolean,
   user: any,
   public_username: string,
-  credit_balance: number
+  credit_balance: number,
+  pending_credits: number,
 }
