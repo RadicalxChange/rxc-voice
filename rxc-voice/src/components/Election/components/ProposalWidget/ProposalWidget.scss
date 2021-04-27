@@ -11,14 +11,16 @@
     display: grid;
     grid-template-columns: 1fr 4rem 1rem 3rem;
 
-    .blocks {
-      grid-column: 1;
-      margin: auto 2vw;
+    .blocks-container {
+      height: 6rem;
+      width: 100%;
+      position: relative;
     }
 
     .voice-credits {
       grid-column: 2;
       margin: auto 1vw auto 1vw;
+      text-align: center;
     }
 
     .equals {
@@ -70,12 +72,16 @@
     .widget {
       grid-template-columns: 1fr 5rem 2rem 5rem;
 
+      .blocks-container {
+        height: 6rem;
+      }
+
       .voice-credits {
-        margin: 2.3rem auto auto auto;
+        margin: auto;
       }
 
       .equals {
-        margin: 2.3rem auto auto auto;
+        margin: auto;
       }
 
       .counter-container {

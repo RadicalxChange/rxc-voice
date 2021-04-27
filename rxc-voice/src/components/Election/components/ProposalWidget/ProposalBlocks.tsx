@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 
+import "./ProposalBlocks.scss";
+
 function ProposalBlocks(props: any) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const totalHeightBlocks = Math.sqrt(props.cost)
@@ -43,13 +45,14 @@ function ProposalBlocks(props: any) {
   // draw
   const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
     const cellHeight = Math.min(canvas.height / totalHeightBlocks, 10);
-    const blockHeight = cellHeight * .8;
+    const blockHeight = cellHeight * .7;
     const gutter = cellHeight - blockHeight;
-    const padding = (canvas.height - cellHeight*totalHeightBlocks) / 2
+    const px = (canvas.width - cellHeight*totalHeightBlocks) / 2
+    const py = (canvas.height - cellHeight*totalHeightBlocks) / 2
     for (let j = 0; j < totalHeightBlocks; j++) {
       for (let i = 0; i < totalHeightBlocks; i++) {
-        const x = padding + (blockHeight + gutter) * i;
-        const y = padding + (blockHeight + gutter) * j;
+        const x = px + (blockHeight + gutter) * i;
+        const y = py + (blockHeight + gutter) * j + (gutter / 2);
         ctx.fillStyle = "black";
         ctx.fillRect(x, y, blockHeight, blockHeight);
       }
