@@ -4,8 +4,20 @@ import "./CanvasBlocks.scss";
 
 function CanvasBlocks(props: any) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // the blocks are drawn in "stacks" of 25
+  const numStacks = Math.ceil(props.creditBalance / 25);
+  // set the size of the gap between stacks here
   const stackGutter = 3;
-  const numStacks = Math.ceil(props.creditBalance / 25)
+
+  useEffect(() => {
+    draw()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[props.creditBalance, props.creditsRemaining]);
+
+  // make canvas responsive
+  window.addEventListener('resize', () => {
+    draw()
+  });
 
   const draw = () => {
     if (canvasRef.current) {
@@ -18,16 +30,6 @@ function CanvasBlocks(props: any) {
       }
     }
   };
-
-  useEffect(() => {
-    draw()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[props.creditBalance, props.creditsRemaining]);
-
-  // make canvas responsive
-  window.addEventListener('resize', () => {
-    draw()
-  });
 
   // set up canvas dimensions
   const setUpCanvas = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
@@ -55,21 +57,38 @@ function CanvasBlocks(props: any) {
     const blockHeight = cellHeight - gutterHeight;
     ctx.fillStyle = "black";
     let counter = 0;
-    for (let j = 0; j < (5 * nrows); j++) {
-      for (let i = 0; i < (5 * ncols) && counter < props.creditBalance; i++) {
-        // ctx.fillStyle = (counter < props.creditsRemaining) ? "black" : "none";
-        const x = padding + (blockHeight + gutterHeight) * i + stackGutter * Math.floor(i / 5);
-        const y = canvas.height - ((blockHeight + gutterHeight) * j + stackGutter * Math.floor(counter / (25 * ncols)) + gutterHeight + blockHeight);
-        if (counter < props.creditsRemaining) {
-          ctx.fillRect(x, y, blockHeight, blockHeight);
-        } else {
-          ctx.clearRect(x, y, blockHeight, blockHeight);
+    // loop through each row of stacks
+    for (let stackRow = 0; stackRow < nrows; stackRow++) {
+      // loop through each stack in the current row
+      for (let stackCol = 0; stackCol < ncols; stackCol++) {
+        // draw the current stack of blocks
+        for (let j = 0; j < 5; j++) {
+          for (let i = 0; i < 5 && counter < props.creditBalance; i++) {
+            // draw the ith block in the jth row of the current stack
+            const blockCol = stackCol*5 + i;
+            const blockRow = stackRow*5 + j;
+            const x = padding + (blockHeight + gutterHeight) * blockCol
+              + stackGutter * Math.floor(blockCol / 5);
+            const y = canvas.height - ((blockHeight + gutterHeight) * blockRow
+              + stackGutter * Math.floor(counter / (25 * ncols))
+              + gutterHeight + blockHeight);
+            /*
+            if the user allocates the current block to a proposal, then
+            remove it from their budget
+            */
+            if (counter < props.creditsRemaining) {
+              ctx.fillRect(x, y, blockHeight, blockHeight);
+            } else {
+              ctx.clearRect(x, y, blockHeight, blockHeight);
+            }
+            counter++;
+          }
         }
-        counter++;
       }
     }
   };
 
+  // https://math.stackexchange.com/questions/466198/algorithm-to-get-the-maximum-size-of-n-squares-that-fit-into-a-rectangle-with-a
   const optimizeStackHeight = (canvas: HTMLCanvasElement): [number, number, number] => {
     // Compute number of rows and columns, and cell size
     var ratio = canvas.width / canvas.height;
