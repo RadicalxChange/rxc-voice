@@ -1,11 +1,11 @@
-#responsive-graph {
+#remaining-credits-blocks {
   padding: .5rem !important;
   border: none !important;
   max-height: 10vh;
 }
 
 @media only screen and (min-width: 768px) {
-#responsive-graph {
+#remaining-credits-blocks {
     max-height: none;
     max-width: 80%;
     height: 40vh;

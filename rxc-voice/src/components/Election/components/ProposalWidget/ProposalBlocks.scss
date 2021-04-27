@@ -1,0 +1,14 @@
+#proposal-blocks {
+  // padding: .5rem !important;
+  border: none !important;
+  // max-height: 10vh;
+  // width: 50vw !important;
+}
+
+@media only screen and (min-width: 768px) {
+#proposal-blocks {
+    // max-height: none;
+    // max-width: 80%;
+    // height: 40vh;
+  }
+}

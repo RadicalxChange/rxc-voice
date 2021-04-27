@@ -33,7 +33,6 @@ function CanvasBlocks(props: any) {
 
   // set up canvas dimensions
   const setUpCanvas = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
-    // TODO: width and height based on props.creditBalance
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
     var w = canvas.width, h = canvas.height;
@@ -128,7 +127,7 @@ function CanvasBlocks(props: any) {
   }
 
   return (
-    <canvas id="responsive-graph" ref={canvasRef} />
+    <canvas id="remaining-credits-blocks" ref={canvasRef} />
   );
 };
 
