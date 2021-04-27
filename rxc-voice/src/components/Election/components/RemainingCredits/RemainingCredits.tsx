@@ -1,5 +1,4 @@
 import React from "react";
-// import Blocks from "./Blocks";
 import CanvasBlocks from "./CanvasBlocks";
 
 import "./RemainingCredits.scss";
