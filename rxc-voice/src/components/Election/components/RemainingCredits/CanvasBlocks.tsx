@@ -48,7 +48,7 @@ function CanvasBlocks(props: any) {
   // draw
   const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
     const [nrows, ncols, stack_size] = optimizeStackHeight(canvas);
-    const stackHeight = +stack_size - (2 * stackGutter);
+    const stackHeight = Math.min(+stack_size - (2 * stackGutter), 90);
     const widthPixels = ncols * stackHeight;
     const padding = ((canvas.width - widthPixels) / 2) - stackGutter;
     const cellHeight = stackHeight / 5;
