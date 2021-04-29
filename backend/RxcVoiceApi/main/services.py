@@ -33,28 +33,29 @@ def match_transfers(process):
     # {recipient_id: amount} => the sum of the roots of all distinct contributions to each recipient
     sum_of_roots = {}
     for transfer in transfers:
-        if transfer.recipient_object.is_verified:
-            transfer.status = 'A'
-            transfer.save()
-            transfer.recipient_object.credit_balance += transfer.amount
-            transfer.recipient_object.save()
-            if transfer.recipient_object.id in distinct_contributions and transfer.recipient_object.id in pledged_totals and transfer.recipient_object.id in sum_of_roots:
-                if transfer.sender.id in distinct_contributions[transfer.recipient_object.id]:
-                    sum_of_roots[transfer.recipient_object.id] -= math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
-                    distinct_contributions[transfer.recipient_object.id][transfer.sender.id] += transfer.amount
+        if transfer.recipient_object and transfer.sender:
+            if transfer.recipient_object.is_verified:
+                transfer.status = 'A'
+                transfer.save()
+                transfer.recipient_object.credit_balance += transfer.amount
+                transfer.recipient_object.save()
+                if transfer.recipient_object.id in distinct_contributions and transfer.recipient_object.id in pledged_totals and transfer.recipient_object.id in sum_of_roots:
+                    if transfer.sender.id in distinct_contributions[transfer.recipient_object.id]:
+                        sum_of_roots[transfer.recipient_object.id] -= math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
+                        distinct_contributions[transfer.recipient_object.id][transfer.sender.id] += transfer.amount
+                    else:
+                        distinct_contributions[transfer.recipient_object.id][transfer.sender.id] = transfer.amount
+                    pledged_totals[transfer.recipient_object.id] += transfer.amount
+                    sum_of_roots[transfer.recipient_object.id] += math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
                 else:
-                    distinct_contributions[transfer.recipient_object.id][transfer.sender.id] = transfer.amount
-                pledged_totals[transfer.recipient_object.id] += transfer.amount
-                sum_of_roots[transfer.recipient_object.id] += math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
+                    distinct_contributions[transfer.recipient_object.id] = {transfer.sender.id: transfer.amount}
+                    pledged_totals[transfer.recipient_object.id] = transfer.amount
+                    sum_of_roots[transfer.recipient_object.id] = math.sqrt(transfer.amount)
             else:
-                distinct_contributions[transfer.recipient_object.id] = {transfer.sender.id: transfer.amount}
-                pledged_totals[transfer.recipient_object.id] = transfer.amount
-                sum_of_roots[transfer.recipient_object.id] = math.sqrt(transfer.amount)
-        else:
-            transfer.status = 'C'
-            transfer.save()
-            transfer.sender.credit_balance += transfer.amount
-            transfer.sender.save()
+                transfer.status = 'C'
+                transfer.save()
+                transfer.sender.credit_balance += transfer.amount
+                transfer.sender.save()
     raw_matches = {}
     raw_match_total = 0
     for recipient_id, sum in sum_of_roots.items():
@@ -99,18 +100,19 @@ def estimate_match(new_transfer):
     # {recipient_id: amount} => the sum of the roots of all distinct contributions to each recipient
     sum_of_roots = {}
     for transfer in transfers:
-        if transfer.recipient_object.id in distinct_contributions and transfer.recipient_object.id in pledged_totals and transfer.recipient_object.id in sum_of_roots:
-            if transfer.sender.id in distinct_contributions[transfer.recipient_object.id]:
-                sum_of_roots[transfer.recipient_object.id] -= math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
-                distinct_contributions[transfer.recipient_object.id][transfer.sender.id] += transfer.amount
+        if transfer.recipient_object and transfer.sender:
+            if transfer.recipient_object.id in distinct_contributions and transfer.recipient_object.id in pledged_totals and transfer.recipient_object.id in sum_of_roots:
+                if transfer.sender.id in distinct_contributions[transfer.recipient_object.id]:
+                    sum_of_roots[transfer.recipient_object.id] -= math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
+                    distinct_contributions[transfer.recipient_object.id][transfer.sender.id] += transfer.amount
+                else:
+                    distinct_contributions[transfer.recipient_object.id][transfer.sender.id] = transfer.amount
+                pledged_totals[transfer.recipient_object.id] += transfer.amount
+                sum_of_roots[transfer.recipient_object.id] += math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
             else:
-                distinct_contributions[transfer.recipient_object.id][transfer.sender.id] = transfer.amount
-            pledged_totals[transfer.recipient_object.id] += transfer.amount
-            sum_of_roots[transfer.recipient_object.id] += math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
-        else:
-            distinct_contributions[transfer.recipient_object.id] = {transfer.sender.id: transfer.amount}
-            pledged_totals[transfer.recipient_object.id] = transfer.amount
-            sum_of_roots[transfer.recipient_object.id] = math.sqrt(transfer.amount)
+                distinct_contributions[transfer.recipient_object.id] = {transfer.sender.id: transfer.amount}
+                pledged_totals[transfer.recipient_object.id] = transfer.amount
+                sum_of_roots[transfer.recipient_object.id] = math.sqrt(transfer.amount)
     # calculate change the new transfer would cause
     sender = new_transfer['sender']
     recipient_object = Delegate.objects.filter(user__email=new_transfer['recipient']).first()
