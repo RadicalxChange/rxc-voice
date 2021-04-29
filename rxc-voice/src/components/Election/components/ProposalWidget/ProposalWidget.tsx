@@ -32,7 +32,13 @@ function ProposalWidget(props: any) {
     <li
       id={`${props.proposal.ballot_ratification ? "ratification-proposal" : ""}`}
       className="proposal-widget">
-      <label className="proposal-info">{props.proposal.title}</label>
+      <h3 className="proposal-info">{props.proposal.title}</h3>
+      <span className="proposal-info">{props.proposal.description}</span>
+      <a
+        className="proposal-link"
+        href={props.proposal.link}
+      >{props.proposal.link}
+      </a>
       <div className="widget">
         <div className="blocks-container">
           <ProposalBlocks cost={Math.pow(props.proposal.amount, 2)} />
