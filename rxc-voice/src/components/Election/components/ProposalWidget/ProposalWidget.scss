@@ -5,11 +5,20 @@
   .proposal-info {
     display: block;
     margin: 1rem 0 1rem 0;
+    white-space: pre-wrap;
+  }
+
+  .proposal-link {
+    text-decoration: underline;
+  }
+  .proposal-link:hover {
+    text-decoration: none;
   }
 
   .widget {
     display: grid;
     grid-template-columns: 1fr 4rem 1rem 3rem;
+    margin-top: 1rem;
 
     .blocks-container {
       height: 6rem;
