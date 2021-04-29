@@ -1,0 +1,16 @@
+#proposal-blocks {
+  // padding: .5rem !important;
+  border: none !important;
+  height: 100% !important;
+  width: 100% !important;
+  position: relative;
+  z-index: inherit;
+}
+
+@media only screen and (min-width: 768px) {
+#proposal-blocks {
+    // max-height: none;
+    // max-width: 80%;
+    // height: 40vh;
+  }
+}

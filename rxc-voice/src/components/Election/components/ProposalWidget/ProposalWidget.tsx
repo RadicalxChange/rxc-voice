@@ -36,7 +36,9 @@ function ProposalWidget(props: any) {
       className="proposal-widget">
       <label className="proposal-info">{props.proposal.title}</label>
       <div className="widget">
-        <ProposalBlocks cost={cost} />
+        <div className="blocks-container">
+          <ProposalBlocks cost={cost} />
+        </div>
         {(cost !== 0) ? (
           <><h3 className="voice-credits">voice credits</h3>
             <h3 className="equals">=</h3></>

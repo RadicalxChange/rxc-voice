@@ -1,5 +1,5 @@
 import React from "react";
-import Blocks from "./Blocks";
+import CanvasBlocks from "./CanvasBlocks";
 
 import "./RemainingCredits.scss";
 
@@ -8,7 +8,7 @@ function RemainingCredits(props: any) {
   return (
     <div className="container">
       <h3>Available Voice Credits</h3>
-      <Blocks
+      <CanvasBlocks
         creditsRemaining={props.creditsRemaining}
         creditBalance={props.creditBalance}
       />
