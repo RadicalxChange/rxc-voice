@@ -29,10 +29,6 @@ function TransferModal(props: any) {
           process: processId,
         }).subscribe(async (data) => {
           if (data.ok) {
-            selectProcess(processId);
-            if (creditBalance !== null) {
-              updateCreditBalance(creditBalance! - (+amount));
-            }
             setTransferSuccess(true);
             setRecipientEmail("");
             setAmount("");
@@ -58,6 +54,12 @@ function TransferModal(props: any) {
       setRecipientEmail("");
       setAmount("");
       setEstMatch(0);
+      if (transferSuccess) {
+        selectProcess(processId);
+        if (creditBalance !== null) {
+          updateCreditBalance(creditBalance! - (+amount));
+        }
+      }
       setTransferSuccess(false);
     };
 
