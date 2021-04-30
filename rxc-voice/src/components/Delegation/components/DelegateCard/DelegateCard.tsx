@@ -18,8 +18,8 @@ function DelegateCard(props: any) {
       <div className="info">
         <h3 className="info-name">{props.delegate.user.first_name + " " + props.delegate.user.last_name}</h3>
         <h3 className="info-text">{props.delegate.public_username}</h3>
-        <h3 className="info-text">Credit Balance: {props.delegate.credit_balance}</h3>
-        <h3 className="info-text">Pending: {props.delegate.pending_credits}</h3>
+        <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
+        <h3 className="info-text">Received via transfer: {props.delegate.pending_credits}</h3>
       </div>
       {(delegationOngoing && (props.delegate.public_username !== (user ? user.public_username : null))) ? (
         <button

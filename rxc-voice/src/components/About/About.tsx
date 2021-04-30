@@ -19,18 +19,31 @@ function About() {
         <h1 className="title">About RxC Voice</h1>
         <p>RadicalxChange's platform for collective decision making!</p>
       </div>
-      <h3>Delegation</h3>
-      <span>
+      <h2>Delegation</h2>
+      <span className="explain-text">
         The process begins with the Delegation Stage. In this stage,
         you can invite others to participate by sending them
         voice credits. You can also send voice credits to other existing
         delegates. At the end of the Delegation Stage, we match all your
-        transfers using Quadratic Funding! This gives you the power to
+        transfers using{" "}
+        <a
+          href="https://www.radicalxchange.org/concepts/quadratic-funding/"
+          target="_blank"
+          rel="noopener nofollow noreferrer"
+          className="inline-link"
+        >Quadratic Funding</a>! This gives you the power to
         democratically determine who gets a voice in the decision making
         process, and how strong each delegate's voice will be.
       </span>
-      <h3>Deliberation</h3>
-      <span>
+      <h3>Matching fund size</h3>
+      <span className="explain-text">
+        The size of the matching pool is determined by the number of voice
+        credits in circulation. We multiply the number of initial delegates by
+        the number of voice credits distributed to each delegate, then round
+        the result to the nearest hundred.
+      </span>
+      <h2>Deliberation</h2>
+      <span className="explain-text">
         In the Deliberation Stage, you have the power to submit proposals
         for the final ballot! This stage is a conversation, where delegates
         can communicate the insights, opinions, or values/principles that
@@ -40,9 +53,15 @@ function About() {
         the highest degree of consensus into a user-generated ballot for
         the final vote.
       </span>
-      <h3>Election</h3>
-      <span>
-        The Election stage is where delegates will vote on the proposals
+      <h2>Election</h2>
+      <span className="explain-text">
+        The Election stage is where delegates will use{" "}
+        <a
+          href="https://www.radicalxchange.org/concepts/quadratic-voting/"
+          target="_blank"
+          rel="noopener nofollow noreferrer"
+          className="inline-link"
+        >Quadratic Voting</a> to vote on the proposals
         generated in the Deliberation Stage. An essential option on the ballot
         will be "Ballot Ratification." With this particular ballot item, you
         can express whether or not you feel that the ballot fairly and
@@ -53,8 +72,8 @@ function About() {
         so make sure you place a couple of voice credits toward supporting or
         opposing the Ballot Ratification option, depending on your satisfaction
         with the ballot curation. If the ballot gets approved, this stage
-        captures a detailed image of individual preferences using Quadratic
-        Voting and publishes them for all delegates to see.
+        captures a detailed image of individual preferences and publishes them
+        for all delegates to see.
       </span>
     </div>
   );

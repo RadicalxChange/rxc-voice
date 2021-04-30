@@ -66,10 +66,10 @@ function Deliberation() {
           {getConversation(selectedProcess) ? (
           <p className="notice"><strong>Ballot Curation: </strong>we curated the final ballot from the pol.is report below. Find out more about the curation process in{" "}
             <a
-              className="notice-link"
+              className="inline-link"
               href="https://docs.google.com/document/d/1tSr5ceeMql4wtf-4WRmbjJhvIR11zCP25T5po379nyg/edit?usp=sharing"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener nofollow noreferrer"
             >this document.
             </a></p>
           ) : null}
