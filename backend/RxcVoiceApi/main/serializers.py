@@ -36,7 +36,7 @@ class VoteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        election = Election.objects.get(pk=self.context.get("election_id"))
+        election = Election.objects.get(pk=self.context.get('election_id'))
         sender = Delegate.objects.get(pk=validated_data['sender'].id)
         # if sender.user.has_perm('can_view_results', election):
         #     raise ValidationError("Invalid Vote: user already voted.")
@@ -60,15 +60,26 @@ class VoteSerializer(serializers.ModelSerializer):
 
 
 class ProposalSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super(ProposalSerializer, self).__init__(*args, **kwargs)
+        election = Election.objects.get(id=self.context.get('election_id'))
+        if timezone.now() < election.end_date:
+            self.fields.pop('votes_received')
+
     class Meta:
         model = Proposal
         fields = '__all__'
 
 
 class ElectionSerializer(serializers.ModelSerializer):
+    show_results = serializers.SerializerMethodField()
+
     class Meta:
         model = Election
         fields = '__all__'
+
+    def get_show_results(self, obj):
+        return self.context.get('request').user.has_perm('can_view_results', obj)
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -84,6 +95,15 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super(UserSerializer, self).__init__(*args, **kwargs)
+        allowed_fields = self.context.get('allowed_fields', None)
+        if allowed_fields:
+            field_names = list(self.fields.keys()).copy()
+            for field in field_names:
+                if field not in set(allowed_fields):
+                    self.fields.pop(field)
+
     class Meta:
         model = User
         fields = '__all__'
@@ -131,8 +151,21 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class DelegateSerializer(serializers.ModelSerializer):
-    user = UserSerializer(required=True)
-    pending_credits = serializers.SerializerMethodField()
+    def __init__(self, *args, **kwargs):
+        super(DelegateSerializer, self).__init__(*args, **kwargs)
+        self.fields['pending_credits'] = serializers.SerializerMethodField()
+        allowed_fields = self.context.get('allowed_fields', None)
+        if allowed_fields:
+            field_names = list(self.fields.keys()).copy()
+            for field in field_names:
+                if field not in set(allowed_fields):
+                    self.fields.pop(field)
+            self.fields['user'] = UserSerializer(
+                required=True,
+                context={'allowed_fields': ['id', 'first_name', 'last_name', 'is_active']}
+                )
+        else:
+            self.fields['user'] = UserSerializer(required=True)
 
     class Meta:
         model = Delegate
@@ -166,14 +199,20 @@ class DelegateSerializer(serializers.ModelSerializer):
 
 
 class TransferSerializer(serializers.ModelSerializer):
+    user_is_sender = serializers.SerializerMethodField()
+
     class Meta:
         model = Transfer
         fields = '__all__'
         extra_kwargs = {
+            'sender' : {'write_only': True},
             'recipient': {'write_only': True},
             'recipient_object': {'write_only': True},
             'date': {'write_only': True},
             }
+
+    def get_user_is_sender(self, obj):
+        return obj.sender.user.id == self.context.get('request').user.id if obj.sender else False
 
     def create(self, validated_data):
         process = validated_data.get('process')
@@ -222,29 +261,6 @@ class TransferSerializer(serializers.ModelSerializer):
         return transfer
 
 
-class PrivateUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'is_active']
-
-
-class PrivateDelegateSerializer(serializers.ModelSerializer):
-    user = PrivateUserSerializer(required=True)
-    pending_credits = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Delegate
-        fields = ['id', 'user', 'public_username', 'credit_balance', 'pending_credits']
-        read_only_fields = ['pending_credits']
-
-    def get_pending_credits(self, obj):
-        pending_transfers = Transfer.objects.all().filter(Q(recipient_object=obj), Q(status='P'))
-        total = 0
-        for transfer in pending_transfers:
-            total += transfer.amount
-        return total
-
-
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.EmailField(
         label=_("Email"),
@@ -285,9 +301,14 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
 
 class ProcessSerializer(serializers.ModelSerializer):
-    delegates = PrivateDelegateSerializer(many=True)
-    conversation = ConversationSerializer()
-    election = ElectionSerializer()
+    def __init__(self, *args, **kwargs):
+        super(ProcessSerializer, self).__init__(*args, **kwargs)
+        self.fields['election'] = ElectionSerializer(context=self.context)
+        self.fields['delegates'] = DelegateSerializer(
+            many=True,
+            context={'allowed_fields': ['id', 'user', 'is_verified', 'public_username', 'credit_balance', 'pending_credits']}
+            )
+        self.fields['conversation'] = ConversationSerializer()
 
     class Meta:
         model = Process

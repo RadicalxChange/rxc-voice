@@ -80,15 +80,11 @@ class ProcessDetail(mixins.RetrieveModelMixin,
         else:
             instance.status = 'Delegation'
         instance.save()
-        election_object = instance.election
-        serializer = self.get_serializer(instance)
-        response_election = {
-            'show_results': request.user.has_perm('can_view_results', election_object)
-            }
-        response_election.update(serializer.data['election'])
-        result = serializer.data
-        result['election'] = response_election
-        return Response(result)
+        serializer = self.get_serializer(
+            instance,
+            context={'request': request}
+            )
+        return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -112,23 +108,14 @@ class TransferList(mixins.CreateModelMixin,
         process = self.kwargs['pk']
         transfers = self.get_queryset().filter(Q(process__id=process),
             Q(recipient_object__user=request.user) | Q(sender__user=request.user))
-        page = self.paginate_queryset(transfers)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(transfers, many=True)
-        result_transfers = []
-        for transfer in serializer.data:
-            sender_object = Delegate.objects.get(id=transfer['sender'])
-            t = {
-                'user_is_sender': (sender_object.user.id == request.user.id)
-                }
-            t.update(transfer)
-            t.pop("sender")
-            result_transfers.append(t)
+        serializer = self.get_serializer(
+            transfers,
+            many=True,
+            context={'request': request}
+            )
         match = MatchPayment.objects.all().filter(Q(recipient__user=request.user), Q(process__id=process)).first()
         result = {}
-        result["transfers"] = result_transfers
+        result["transfers"] = serializer.data
         result["match"] = match.amount if match else 0
         return Response(result)
 
@@ -161,23 +148,3 @@ class EstimateMatch(mixins.CreateModelMixin,
         response = {}
         response['estimated_match'] = match
         return JsonResponse({'estimated_match': match})
-
-
-# for testing only.
-# class TransferListAll(mixins.CreateModelMixin,
-#                       mixins.ListModelMixin,
-#                       generics.GenericAPIView):
-#
-#     queryset = Transfer.objects.all()
-#     serializer_class = TransferSerializer
-#
-#     def get(self, request, *args, **kwargs):
-#         return self.list(request, *args, **kwargs)
-#
-#     def post(self, request, *args, **kwargs):
-#         return self.create(request, *args, **kwargs)
-#
-#     def delete(self, request, *args, **kwargs):
-#         for instance in self.get_queryset():
-#             instance.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
