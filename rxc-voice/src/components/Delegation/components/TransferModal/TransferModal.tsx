@@ -87,6 +87,7 @@ function TransferModal(props: any) {
         {transferSuccess ? (
           <div className={`transfer-modal ${!props.recipient && !props.invite ? "closed" : ""}`}>
             <h2>Transfer successful!</h2>
+                <p>Note that the voice credit transfers do not affect the recipients' balances until the end of the Delegation stage.</p>   
             <button
               type="button"
               className="submit-button"
@@ -103,7 +104,7 @@ function TransferModal(props: any) {
                 <h2>Threshold Warning</h2>
                 <div className="explain-text">
                   <p>Are you sure you'd like to send {amount} voice credits to {props.recipient ? props.recipient : recipientEmail}?</p>
-                  <p>If you do, your voice credit balance will fall below the threshold for participation (25 voice credits) and you may not be able to participate in Deliberation and Election.</p>
+                  <p>If you do, your voice credit balance will fall below the threshold for participation (25 voice credits), and you may not be able to participate in the Deliberation and Election phases.</p>
                 </div>
                 <div className="button-container">
                   <button
