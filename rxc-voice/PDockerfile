@@ -1,4 +1,4 @@
-FROM node as builder
+FROM node:15.14 as builder
 
 RUN mkdir /rxc-voice
 COPY rxc-voice/ /rxc-voice
