@@ -23,6 +23,7 @@ services:
     volumes:
       - ./backend:/backend
       - ./scripts:/scripts
+    working_dir: /backend/RxcVoiceApi/
     environment:
       - DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
       - POSTGRES_HOST=$POSTGRES_HOST
