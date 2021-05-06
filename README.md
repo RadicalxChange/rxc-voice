@@ -13,7 +13,9 @@ This repo also hosts RxC Conversations, a wrapper for Pol.is conversations held 
 3. Clone project -
 ```
 git clone https://github.com/RadicalxChange/rxc-voice.git
+cd rxc-voice
 git checkout master
+cp .env-example .env
 ```
 
 4. Create .env file and fill up suitable environment variables
@@ -47,15 +49,23 @@ SENDGRID_API_KEY=
 TRANSACTION_EMAIL=
 ```
 
-5. Configure urls in rxc-voice/src/utils/urls.ts -- comment out the production urls and uncomment the local urls.
+5. Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
 
-6. Build images and stand up containers (make sure docker is running first). Choose a docker-compose yaml file. Use docker-compose-polis.yml to run RxC Conversations, docker-compose-voice.yml to run RxC Voice, and docker-compose-prod.yml to run both apps at once in a production environment (not recommended for dev / testing).
+6. Build images and stand up containers (make sure docker is running first). Choose a docker-compose yaml file. Use `docker-compose-polis.yml` to run RxC Conversations, `docker-compose-voice.yml` to run RxC Voice, and `docker-compose-prod.yml` to run both apps at once in a production environment (not recommended for dev / testing).
 
 ```
 docker-compose -f docker-compose-<polis / voice / prod>.yml up --build
 ```
 
-Note - If images are already present ```docker-compose -f docker-compose-<polis / voice / prod>.yml up```
+For example, 
+```
+ docker-compose -f docker-compose-polis.yml build
+```
+
+Note - If images are already present 
+```
+docker-compose -f docker-compose-<polis / voice / prod>.yml up
+```
 
 The project is now up and running -
 
