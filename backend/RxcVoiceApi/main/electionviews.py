@@ -3,6 +3,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import generics, mixins, status
 from django.utils import timezone
+from django.db.models import Q
 from .permissions import (ElectionPermission,
                           VotePermission,
                           ProposalPermission
@@ -131,7 +132,8 @@ class VoteList(mixins.CreateModelMixin,
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED,
-            headers=headers)
+            headers=headers
+            )
 
     def delete(self, request, *args, **kwargs):
         for instance in self.get_queryset():
@@ -152,14 +154,22 @@ class ProposalList(mixins.CreateModelMixin,
         election_id = self.kwargs['pk']
         election_proposals = self.get_queryset().filter(
             election__id=election_id)
-        serializer = self.get_serializer(
+        proposal_serializer = self.get_serializer(
             election_proposals,
             many=True,
             context={
                 'election_id': self.kwargs['pk']
                 },
             )
-        return Response(serializer.data)
+        votes = Vote.objects.all().filter(Q(sender__user=request.user), Q(proposal__election__id=election_id))
+        vote_serializer = VoteSerializer(
+            votes,
+            many=True,
+        )
+        return Response({
+            "proposals": proposal_serializer.data,
+            "votes": vote_serializer.data
+            })
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)

@@ -36,27 +36,39 @@ class VoteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        election = Election.objects.get(pk=self.context.get('election_id'))
-        sender = Delegate.objects.get(pk=validated_data['sender'].id)
-        # if sender.user.has_perm('can_view_results', election):
-        #     raise ValidationError("Invalid Vote: user already voted.")
-        assign_perm('can_view_results', sender.user, election)
+        try:
+            existing_vote = Vote.objects.get(Q(proposal=validated_data['proposal'], sender=validated_data['sender']))
+        except(Vote.DoesNotExist):
+            existing_vote = None
+        if existing_vote is not None:
+            updated_vote = self.update(existing_vote, validated_data)
+            return updated_vote
+        else:
+            election = Election.objects.get(pk=self.context.get('election_id'))
+            sender = Delegate.objects.get(pk=validated_data['sender'].id)
+            # if sender.user.has_perm('can_view_results', election):
+            #     raise ValidationError("Invalid Vote: user already voted.")
+            assign_perm('can_view_results', sender.user, election)
 
-        proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
-        amount = int(validated_data['amount'])
-        proposal.votes_received = proposal.votes_received + amount
-        proposal.credits_received = proposal.credits_received + (amount * amount)
-        proposal.save()
-        sender.credit_balance -= amount * amount
-        sender.save()
+            proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
+            amount = int(validated_data['amount'])
+            proposal.votes_received = proposal.votes_received + amount
+            proposal.credits_received = proposal.credits_received + (amount * amount)
+            proposal.save()
+            sender.credit_balance -= amount * amount
+            sender.save()
+            vote = Vote.objects.create(
+                sender=sender,
+                proposal=validated_data['proposal'],
+                amount=validated_data['amount'],
+                date=validated_data['date'],
+            )
+            return vote
 
-        vote = Vote.objects.create(
-            sender=sender,
-            proposal=validated_data['proposal'],
-            amount=validated_data['amount'],
-            date=validated_data['date'],
-        )
-        return vote
+    def update(self, instance, validated_data):
+        instance.amount = validated_data.get('amount', instance.amount)
+        instance.save()
+        return instance
 
 
 class ProposalSerializer(serializers.ModelSerializer):

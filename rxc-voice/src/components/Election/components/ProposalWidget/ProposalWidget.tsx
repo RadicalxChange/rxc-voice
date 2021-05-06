@@ -1,30 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import ProposalBlocks from "./ProposalBlocks";
 import { useAlert } from 'react-alert'
 
 import "./ProposalWidget.scss";
 
 function ProposalWidget(props: any) {
-  const [amount, setAmount] = useState(0);
-  const [cost, setCost] = useState(0);
 
   const alert = useAlert()
 
   // TODO: change type to ENUM
-  const handleChange = (change: number) => {
-    const newAmount: number = amount + change;
+  const handleChange = (amountChange: number) => {
+    const newAmount: number = props.proposal.amount + amountChange;
     if (newAmount < 0 && props.negativeVotes === false) {
       console.log("negative votes disabled.")
     } else {
       const newCost: number = newAmount * newAmount;
-      if (newCost - cost > props.creditsRemaining) {
+      const costChange: number = newCost - Math.pow(props.proposal.amount, 2);
+      if (costChange > props.creditsRemaining) {
         alert.error("you don't have enough voice credits")
       } else {
-        props.onChange({ proposal: props.proposal.id,
-                         amount: change,
-                         cost: newCost - cost, });
-        setAmount(amount => newAmount);
-        setCost(cost => newCost);
+        props.onChange({
+          id: props.proposal.id,
+          amount: amountChange,
+          cost: costChange
+        });
       }
     }
   };
@@ -37,9 +36,9 @@ function ProposalWidget(props: any) {
       <label className="proposal-info">{props.proposal.title}</label>
       <div className="widget">
         <div className="blocks-container">
-          <ProposalBlocks cost={cost} />
+          <ProposalBlocks cost={Math.pow(props.proposal.amount, 2)} />
         </div>
-        {(cost !== 0) ? (
+        {(Math.pow(props.proposal.amount, 2) !== 0) ? (
           <><h3 className="voice-credits">voice credits</h3>
             <h3 className="equals">=</h3></>
         ) : null}
@@ -53,7 +52,7 @@ function ProposalWidget(props: any) {
                 <path className="path" d="M13 8L7 2L1 8" stroke="black" strokeWidth="1.5"/>
               </svg>
           </button>
-          <h3 className="vote-counter">{amount} votes</h3>
+          <h3 className="vote-counter">{props.proposal.amount} votes</h3>
           <button
             type="button"
             className="arrow"

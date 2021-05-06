@@ -18,22 +18,19 @@ import "./Election.scss";
 function Election() {
   const [votesCast, setVotesCast] = useState(0);
 
-  function voteReducer(votes: Vote[], change: any) {
-    const voteToChange: Vote | undefined = votes.find(
-      vote => vote.proposal === change.proposal);
-    if (voteToChange === undefined) {
-      const newVote: Vote = { id: 0,
-                              sender: '',
-                              proposal: change.proposal,
-                              amount: change.amount,
-                              date: '',
-                            };
+  function proposalReducer(proposals: any[], change: any) {
+    const proposalToChange: any | undefined = proposals.find(
+      proposal => proposal.id === change.id);
+    if (proposalToChange === undefined) {
+      const newProposal: any = change;
       setVotesCast(votesCast + Math.abs(change.amount));
-      return [...votes, newVote];
+      setCreditsSpent(creditsSpent + change.cost);
+      return [...proposals, newProposal];
     } else {
-      setVotesCast(votesCast - Math.abs(voteToChange.amount) + Math.abs(voteToChange.amount + change.amount));
-      voteToChange.amount = voteToChange.amount + change.amount;
-      return votes;
+      setVotesCast(votesCast - Math.abs(proposalToChange.amount) + Math.abs(proposalToChange.amount + change.amount));
+      setCreditsSpent(creditsSpent + change.cost);
+      proposalToChange.amount = proposalToChange.amount + change.amount;
+      return proposals;
     }
   };
 
@@ -42,11 +39,10 @@ function Election() {
   const { processId } = useParams<ProcessPageRouteParams>();
   const [election, setElection] = useState(standInElection);
   const [creditsSpent, setCreditsSpent] = useState(0);
-  const creditsRemaining = creditBalance ? (creditBalance! - creditsSpent) : 0
-  const [proposals, setProposals] = useState(new Array<Proposal>());
+  const [startingBalance, setStartingBalance] = useState(0);
+  const [proposals, proposalDispatch] = useReducer(proposalReducer, new Array<any>());
   const [ratProposal, setRatProposal] = useState({exists: false, index: 0});
-  const [votes, voteDispatch] = useReducer(voteReducer, new Array<Vote>());
-  const [viewResults, setViewResults] = useState(false);
+  const [alreadyVoted, setAlreadyVoted] = useState(false);
   const [resultData, setResultData] = useState(standInResultData);
   const [loading, setLoading] = useState(true);
 
@@ -58,38 +54,13 @@ function Election() {
       const thisElection = getElection(selectedProcess);
       if (thisElection) {
         if (election.id !== thisElection.id) {
-          setElection(election => thisElection!);
+          setElection(thisElection!);
           if (thisElection.show_results) {
-            setViewResults(true);
+            setAlreadyVoted(true);
           }
           WebService.fetchProposals(thisElection.id)
           .subscribe((data: Proposal[]) => {
-            var highestProposal = 0;
-            var lowestProposal = 0;
-            var ratificationIndex: number | undefined = undefined;
-            data.forEach((proposal, i) => {
-              if (proposal.ballot_ratification) {
-                ratificationIndex = i;
-              }
-              let votesReceived = Number(proposal.votes_received);
-              if (votesReceived > highestProposal) {
-                highestProposal = votesReceived;
-              } else if (votesReceived < lowestProposal) {
-                lowestProposal = votesReceived;
-              }
-              voteDispatch({ proposal: proposal.id, amount: 0, });
-            });
-            if (ratificationIndex) {
-              setRatProposal({exists: true, index: ratificationIndex});
-            } else {
-              setRatProposal({exists: false, index: 0});
-            }
-            setProposals(proposals => data);
-            setResultData({
-              proposals: data,
-              highestProposal: highestProposal,
-              lowestProposal: lowestProposal,
-            })
+            processProposalData(data);
           });
           setLoading(false);
         }
@@ -99,31 +70,70 @@ function Election() {
    // eslint-disable-next-line react-hooks/exhaustive-deps
  }, [processId, selectedProcess]);
 
-  const notRatProposal = (proposal: Proposal, index, array) => {
-   return !proposal.ballot_ratification;
+  const processProposalData = (data: any) => {
+    const proposalData = data.proposals;
+    const voteData = data.votes;
+    var highestProposal = 0;
+    var lowestProposal = 0;
+    var ratificationIndex: number | undefined = undefined;
+    var spentPreviously: number = 0;
+    proposalData.forEach((proposal, i) => {
+      if (proposal.ballot_ratification) {
+        ratificationIndex = i;
+      }
+      let votesReceived = Number(proposal.votes_received);
+      if (votesReceived > highestProposal) {
+        highestProposal = votesReceived;
+      } else if (votesReceived < lowestProposal) {
+        lowestProposal = votesReceived;
+      }
+      const vote: Vote | undefined = voteData.find(
+        vote => vote.proposal === proposal.id);
+      const amount = vote ? vote.amount : 0;
+      proposalDispatch({
+        id: proposal.id,
+        title: proposal.title,
+        description: proposal.description,
+        link: proposal.link,
+        ballot_ratification: proposal.ballot_ratification,
+        votes_received: proposal.votes_received,
+        amount: +amount,
+        cost: Math.pow(+amount, 2)
+      });
+      spentPreviously += Math.pow(+amount, 2);
+    });
+    setStartingBalance(creditBalance ? +creditBalance! + spentPreviously : 0)
+    if (ratificationIndex) {
+      setRatProposal({exists: true, index: ratificationIndex});
+    } else {
+      setRatProposal({exists: false, index: 0});
+    }
+    setResultData({
+      proposals: proposalData,
+      highestProposal: highestProposal,
+      lowestProposal: lowestProposal,
+    })
   };
 
-  const onChangeVoteCount = (change: any) => {
-    setCreditsSpent(creditsSpent =>
-      creditsSpent + Number(change.cost));
-    voteDispatch({ proposal: change.proposal, amount: change.amount, });
+  const notRatProposal = (proposal: Proposal, index, array) => {
+   return !proposal.ballot_ratification;
   };
 
   const submitVotes = () => {
     const postData = new Array<any>();
     const user = sessionStorage.getItem("user");
-    votes.forEach(vote => postData.push({
-      proposal: vote.proposal,
-      amount: vote.amount,
+    proposals.forEach(proposal => postData.push({
+      proposal: proposal.id,
+      amount: proposal.amount,
       date: moment().format('YYYY-MM-DDTHH:MM'),
       sender: user ? JSON.parse(user).id : '',
     }));
     WebService.postVotes(postData, election.id).subscribe(async (data) => {
                     if (data.ok) {
-                      setViewResults(true);
+                      setAlreadyVoted(true);
                       selectProcess(processId);
                       if (creditBalance !== null) {
-                        updateCreditBalance(creditsRemaining);
+                        updateCreditBalance(startingBalance - creditsSpent);
                       }
                     } else {
                       const error = await data.json();
@@ -161,29 +171,31 @@ function Election() {
         </div>
       </div>
     );
-  } else if (viewResults) {
-    return (
-      <div className="voting-page">
-        <ProcessMenu />
-        <div className="body">
-          <h1>Election</h1>
-          <h2>{getTitle(selectedProcess)}</h2>
-          <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-          <p>Thanks for voting! The results will
-            appear here when the election stage is over.
-          </p>
-        </div>
-      </div>
-    );
-  } else {
+  }
+  // else if (alreadyVoted) {
+  //   return (
+  //     <div className="voting-page">
+  //       <ProcessMenu />
+  //       <div className="body">
+  //         <h1>Election</h1>
+  //         <h2>{getTitle(selectedProcess)}</h2>
+  //         <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+  //         <p>Thanks for voting! The results will
+  //           appear here when the election stage is over.
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+  else {
     return (
         <div className="voting-page">
           <ProcessMenu />
-          {(creditBalance && (creditBalance! >= 25)) ? (
+          {((creditBalance && (creditBalance! >= 25)) || alreadyVoted) ? (
             <div className="button-container">
               <RemainingCredits
-                creditsRemaining={creditsRemaining}
-                creditBalance={creditBalance}
+                creditsRemaining={startingBalance - creditsSpent}
+                creditBalance={startingBalance}
               />
               <label className="votes-cast">Total votes cast: {votesCast}</label>
               <button
@@ -204,21 +216,21 @@ function Election() {
               <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
             </div>
             <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-            {(creditBalance && (creditBalance! >= 25)) ? (
+            {((creditBalance && (creditBalance! >= 25)) || alreadyVoted) ? (
             <ul className="proposal-list">
               {ratProposal.exists === true && proposals[ratProposal.index] ? (
                 <ProposalWidget key={ratProposal.index}
-                                creditsRemaining={creditsRemaining}
+                                creditsRemaining={startingBalance - creditsSpent}
                                 proposal={proposals[ratProposal.index]}
                                 negativeVotes={election.negative_votes}
-                                onChange={onChangeVoteCount} />
+                                onChange={proposalDispatch} />
               ) : null}
               {proposals.filter(notRatProposal).map((proposal: Proposal, i) => (
                 <ProposalWidget key={i}
-                                creditsRemaining={creditsRemaining}
+                                creditsRemaining={startingBalance - creditsSpent}
                                 proposal={proposal}
                                 negativeVotes={election.negative_votes}
-                                onChange={onChangeVoteCount} />
+                                onChange={proposalDispatch} />
               ))}
             </ul>
             ) : (

@@ -3,7 +3,7 @@ import { Election } from "../models/Election";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToProposals, mapToVotes, mapToProcess, Domain } from "../utils";
+import { mapToProcesses, mapToVotes, mapToProcess, Domain } from "../utils";
 
 const ROOT_URL = Domain.API;
 
@@ -191,7 +191,6 @@ export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
         },
         method: "GET",
       }).then((res) => res.json())
-        .then(mapToProposals),
     );
   });
 };
