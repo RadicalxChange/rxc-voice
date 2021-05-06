@@ -15,38 +15,12 @@ This repo also hosts RxC Conversations, a wrapper for Pol.is conversations held 
 git clone https://github.com/RadicalxChange/rxc-voice.git
 cd rxc-voice
 git checkout master
-cp .env-example .env
 ```
 
 4. Create .env file and fill up suitable environment variables
 
 ```
-touch .env
-```
-
-The variables needed are as follows:
-
-```
-# strictly necessary
-DJANGO_SECRET_KEY=
-
-# needed for database
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-POSTGRES_DB=rxcvoiceapi_db
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-
-# needed for Oauth2
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
-TWITTER_CONSUMER_KEY=
-TWITTER_CONSUMER_SECRET=
-
-# needed for email services
-MAILCHIMP_API_KEY=
-SENDGRID_API_KEY=
-TRANSACTION_EMAIL=
+cp .env-example .env
 ```
 
 5. Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
@@ -54,16 +28,16 @@ TRANSACTION_EMAIL=
 6. Build images and stand up containers (make sure docker is running first). Choose a docker-compose yaml file. Use `docker-compose-polis.yml` to run RxC Conversations, `docker-compose-voice.yml` to run RxC Voice, and `docker-compose-prod.yml` to run both apps at once in a production environment (not recommended for dev / testing).
 
 ```
+# build and stand up containers
 docker-compose -f docker-compose-<polis / voice / prod>.yml up --build
 ```
 
-For example, 
-```
- docker-compose -f docker-compose-polis.yml build
-```
+OR
 
-Note - If images are already present 
 ```
+# build containers
+docker-compose -f docker-compose-<polis / voice / prod>.yml build
+# then stand up containers
 docker-compose -f docker-compose-<polis / voice / prod>.yml up
 ```
 
