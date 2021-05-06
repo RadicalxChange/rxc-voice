@@ -41,6 +41,17 @@ docker-compose -f docker-compose-<polis / voice / prod>.yml build
 docker-compose -f docker-compose-<polis / voice / prod>.yml up
 ```
 
+**Example**
+If I want to test RxC Conversations only:
+```
+docker-compose -f docker-compose-polis.yml up --build
+```
+OR
+```
+docker-compose -f docker-compose-polis.yml build
+docker-compose -f docker-compose-polis.yml up
+```
+
 The project is now up and running -
 
 Backend API - http://127.0.0.1:8000
