@@ -43,6 +43,8 @@ function Election() {
   const [proposals, proposalDispatch] = useReducer(proposalReducer, new Array<any>());
   const [ratProposal, setRatProposal] = useState({exists: false, index: 0});
   const [alreadyVoted, setAlreadyVoted] = useState(false);
+  const [changingVotes, setChangingVotes] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [resultData, setResultData] = useState(standInResultData);
   const [loading, setLoading] = useState(true);
 
@@ -135,6 +137,8 @@ function Election() {
                       if (creditBalance !== null) {
                         updateCreditBalance(startingBalance - creditsSpent);
                       }
+                      setSuccess(true);
+                      setChangingVotes(false);
                     } else {
                       const error = await data.json();
                       Object.keys(error).forEach((key) => {
@@ -171,23 +175,47 @@ function Election() {
         </div>
       </div>
     );
-  }
-  // else if (alreadyVoted) {
-  //   return (
-  //     <div className="voting-page">
-  //       <ProcessMenu />
-  //       <div className="body">
-  //         <h1>Election</h1>
-  //         <h2>{getTitle(selectedProcess)}</h2>
-  //         <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-  //         <p>Thanks for voting! The results will
-  //           appear here when the election stage is over.
-  //         </p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-  else {
+  } else if (alreadyVoted && !changingVotes) {
+    return (
+      <div className="voting-page">
+        <ProcessMenu />
+        <div className="body">
+          <h1>Election</h1>
+          <h2>{getTitle(selectedProcess)}</h2>
+          <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+          <p>Thanks for voting! The results will
+            appear here when the election stage is over.
+          </p>
+          <button
+            type="button"
+            className="submit-button"
+            onClick={() => setChangingVotes(true)}
+            >
+            Change Your Votes
+          </button>
+          <div className="modal">
+            <div className={`success-modal ${!success ? "closed" : ""}`}>
+              <h2>Success!</h2>
+              <div className="explain-text">
+                  <p>Your votes are in.</p>
+              </div>
+              <button
+                type="button"
+                className="submit-button"
+                onClick={() => setSuccess(false)}
+                >
+                close
+              </button>
+            </div>
+            <div
+              className={`modal-overlay ${!success ? "closed" : ""}`}
+              onClick={() => setSuccess(false)}
+            ></div>
+          </div>
+        </div>
+      </div>
+    );
+  } else {
     return (
         <div className="voting-page">
           <ProcessMenu />
@@ -204,6 +232,13 @@ function Election() {
                 onClick={() => submitVotes()}
                 >
                 submit votes
+              </button>
+              <button
+                type="button"
+                className="submit-button"
+                onClick={() => setChangingVotes(false)}
+                >
+                Cancel
               </button>
             </div>
           ) : null}

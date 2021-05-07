@@ -28,7 +28,6 @@ function ProposalWidget(props: any) {
     }
   };
 
-
   return (
     <li
       id={`${props.proposal.ballot_ratification ? "ratification-proposal" : ""}`}
