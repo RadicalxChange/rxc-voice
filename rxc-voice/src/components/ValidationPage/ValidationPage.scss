@@ -59,6 +59,21 @@
     color: black;
   }
 
+  .text {
+    margin-bottom: 3vw;
+  }
+
+  .login-link {
+    text-decoration: underline;
+  }
+  .login-link:hover {
+    text-decoration: none;
+  }
+}
+
+.email-notice {
+  max-width: 400px;
+  margin: auto;
 }
 
 @media only screen and (min-width: 768px) {

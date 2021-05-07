@@ -74,7 +74,7 @@ function ResetPassword() {
     <div className="reset-password">
       {submitted ? (
         <>
-          <h2 className="header">Password Reset Complete</h2>
+          <h2>Password Reset Complete</h2>
           <p className="text">Your new password has been set. Click the link below to login.</p>
           <Link
             to={`/`}
@@ -85,7 +85,7 @@ function ResetPassword() {
         </>
       ) : (
         <form className="form" onSubmit={submitPassword}>
-          <h2 className="header">Reset Password</h2>
+          <h2>Reset Password</h2>
 
           <input
             type="password"

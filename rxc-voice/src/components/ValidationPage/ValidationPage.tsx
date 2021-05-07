@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { uuid } from "uuidv4";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
-import { OauthProvider } from "../../models/OauthProvider";
+import { VerificationMethod } from "../../models/VerificationMethod";
 import { WebService } from "../../services";
 import { getDelegateId, getUserId, validateEmail } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
@@ -26,7 +26,8 @@ function ValidationPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     // const [profilePic, setProfilePic] = useState("");
-    const [oauthProvider, setOauthProvider] = useState(OauthProvider.Github);
+    const [verificationMethod, setVerificationMethod] = useState(VerificationMethod.Github);
+    const [sentEmail, setSentEmail] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const alert = useAlert()
@@ -76,12 +77,12 @@ function ValidationPage() {
                         .subscribe(async (data) => {
                           if (data.ok) {
                             WebService.modifyDelegate({
-                              oauth_provider: oauthProvider,
+                              oauth_provider: verificationMethod,
                             }, getDelegateId(user))
                               .subscribe(async (data) => {
                                 if (data.ok) {
                                   // redirect to 3rd party oauth app
-                                  if (oauthProvider === OauthProvider.Github) {
+                                  if (verificationMethod === VerificationMethod.Github) {
                                     const stateUUID = uuid();
                                     sessionStorage.setItem("oauthState", stateUUID);
                                     window.location.href =
@@ -89,7 +90,7 @@ function ValidationPage() {
                                       + github_client_id
                                       + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
                                       + stateUUID;
-                                  } else if (oauthProvider === OauthProvider.Twitter) {
+                                  } else if (verificationMethod === VerificationMethod.Twitter) {
                                     WebService.getTwitterRequestToken()
                                       .subscribe(async (data) => {
                                           sessionStorage.setItem("oauthState", data.oauth_token);
@@ -99,6 +100,15 @@ function ValidationPage() {
                                             + data.oauth_token;
                                         }
                                       );
+                                  } else if (verificationMethod === VerificationMethod.Application) {
+                                    WebService.emailApplication()
+                                      .subscribe(async (data) => {
+                                        if (data.ok) {
+                                          setSentEmail(true);
+                                        } else {
+                                          console.error("Error", await data.json());
+                                        }
+                                      });
                                   }
                                 } else {
                                   console.error("Error", await data.json());
@@ -149,6 +159,18 @@ function ValidationPage() {
     return (
       <h2>Sorry! This activation link is invalid or expired.</h2>
     );
+  } else if (sentEmail) {
+    return (
+      <div className="email-notice">
+        <h2>Apply to verify your account</h2>
+        <p className="text">Follow the instructions in the email we just sent
+        you to apply to verify your account. If your application is
+        approved, you will receive a confirmation email. You will not be able
+        to log in to your account until{" "}<strong>after</strong> you have received
+        a confirmation email.
+        </p>
+      </div>
+    );
   } else {
     return (
       <form className="create-account" onSubmit={modify}>
@@ -198,22 +220,26 @@ function ValidationPage() {
         <select
           className="oauth-provider"
           id="select-oauth-provider"
-          onChange={(e) => setOauthProvider(oauthProvider => {
+          onChange={(e) => setVerificationMethod(verificationMethod => {
             switch (e.target.value) {
-              case OauthProvider.Github: {
-                return OauthProvider.Github;
+              case VerificationMethod.Github: {
+                return VerificationMethod.Github;
               }
-              case OauthProvider.Twitter: {
-                return OauthProvider.Twitter;
+              case VerificationMethod.Twitter: {
+                return VerificationMethod.Twitter;
+              }
+              case VerificationMethod.Application: {
+                return VerificationMethod.Application;
               }
               default: {
-                return OauthProvider.Github;
+                return VerificationMethod.Github;
               }
             }
           })}
         >
-          <option value={OauthProvider.Github}>Verify with Github</option>
-          <option value={OauthProvider.Twitter}>Verify with Twitter</option>
+          <option value={VerificationMethod.Github}>Verify with Github</option>
+          <option value={VerificationMethod.Twitter}>Verify with Twitter</option>
+          <option value={VerificationMethod.Application}>Verify by Email Application</option>
         </select>
 
         <button
