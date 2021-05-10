@@ -4,7 +4,7 @@ import { useLocation } from "react-router";
 import { uuid } from "uuidv4";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
-import { OauthProvider } from "../../models/OauthProvider";
+import { VerificationMethod } from "../../models/VerificationMethod";
 import { WebService } from "../../services";
 import { getDelegateId, getUserId, validateEmail } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
@@ -26,7 +26,9 @@ function ValidationPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     // const [profilePic, setProfilePic] = useState("");
-    const [oauthProvider, setOauthProvider] = useState(OauthProvider.Github);
+    const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
+    const [sentEmail, setSentEmail] = useState(false);
+    const [signedAgreement, setSignedAgreement] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const alert = useAlert()
@@ -60,11 +62,13 @@ function ValidationPage() {
       if (formIsComplete()) {
         if (validateEmail(email)) {
           if (password === passReEntry) {
-            // if (validatePasswordLength(password)) {
-            //   if (containsSpecialCharacters(password)) {
-            //     if (containsUpperCase(password)) {
-            //       if (containsLowerCase(password)) {
-            //         if (containsNumber(password)) {
+            if (verificationMethod) {
+              if (signedAgreement) {
+                // if (validatePasswordLength(password)) {
+                //   if (containsSpecialCharacters(password)) {
+                //     if (containsUpperCase(password)) {
+                //       if (containsLowerCase(password)) {
+                //         if (containsNumber(password)) {
                       const updatedUser = {
                         username: email,
                         email: email,
@@ -76,12 +80,12 @@ function ValidationPage() {
                         .subscribe(async (data) => {
                           if (data.ok) {
                             WebService.modifyDelegate({
-                              oauth_provider: oauthProvider,
+                              oauth_provider: verificationMethod,
                             }, getDelegateId(user))
                               .subscribe(async (data) => {
                                 if (data.ok) {
                                   // redirect to 3rd party oauth app
-                                  if (oauthProvider === OauthProvider.Github) {
+                                  if (verificationMethod === VerificationMethod.Github) {
                                     const stateUUID = uuid();
                                     sessionStorage.setItem("oauthState", stateUUID);
                                     window.location.href =
@@ -89,7 +93,7 @@ function ValidationPage() {
                                       + github_client_id
                                       + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
                                       + stateUUID;
-                                  } else if (oauthProvider === OauthProvider.Twitter) {
+                                  } else if (verificationMethod === VerificationMethod.Twitter) {
                                     WebService.getTwitterRequestToken()
                                       .subscribe(async (data) => {
                                           sessionStorage.setItem("oauthState", data.oauth_token);
@@ -99,6 +103,15 @@ function ValidationPage() {
                                             + data.oauth_token;
                                         }
                                       );
+                                  } else if (verificationMethod === VerificationMethod.Application) {
+                                    WebService.emailApplication()
+                                      .subscribe(async (data) => {
+                                        if (data.ok) {
+                                          setSentEmail(true);
+                                        } else {
+                                          console.error("Error", await data.json());
+                                        }
+                                      });
                                   }
                                 } else {
                                   console.error("Error", await data.json());
@@ -108,21 +121,27 @@ function ValidationPage() {
                             console.error("Error", await data.json());
                           }
                         });
-            //         } else {
-            //           alert.error("Password must contain at least one number")
-            //         }
-            //       } else {
-            //         alert.error("Password must contain at least one lower case character")
-            //       }
-            //     } else {
-            //       alert.error("Password must contain at least one upper case character")
-            //     }
-            //   } else {
-            //     alert.error("Password must contain at least 1 special character")
-            //   }
-            // } else {
-            //   alert.error("Password length must be at least 8 characters")
-            // }
+                //         } else {
+                //           alert.error("Password must contain at least one number")
+                //         }
+                //       } else {
+                //         alert.error("Password must contain at least one lower case character")
+                //       }
+                //     } else {
+                //       alert.error("Password must contain at least one upper case character")
+                //     }
+                //   } else {
+                //     alert.error("Password must contain at least 1 special character")
+                //   }
+                // } else {
+                //   alert.error("Password length must be at least 8 characters")
+                // }
+              } else {
+                alert.error("Please sign the user agreement")
+              }
+            } else {
+              alert.error("Please select a verification method")
+            }
           } else {
             alert.error("Re-entered password does not match")
           }
@@ -148,6 +167,18 @@ function ValidationPage() {
   } else if (!user) {
     return (
       <h2>Sorry! This activation link is invalid or expired.</h2>
+    );
+  } else if (sentEmail) {
+    return (
+      <div className="email-notice">
+        <h2>Apply to verify your account</h2>
+        <p className="text">Follow the instructions in the email we just sent
+        you to apply to verify your account. If your application is
+        approved, you will receive a confirmation email. You will not be able
+        to log in to your account until{" "}<strong>after</strong> you have received
+        a confirmation email.
+        </p>
+      </div>
     );
   } else {
     return (
@@ -198,23 +229,39 @@ function ValidationPage() {
         <select
           className="oauth-provider"
           id="select-oauth-provider"
-          onChange={(e) => setOauthProvider(oauthProvider => {
+          defaultValue=""
+          onChange={(e) => setVerificationMethod(() => {
             switch (e.target.value) {
-              case OauthProvider.Github: {
-                return OauthProvider.Github;
+              case VerificationMethod.Github: {
+                return VerificationMethod.Github;
               }
-              case OauthProvider.Twitter: {
-                return OauthProvider.Twitter;
+              case VerificationMethod.Twitter: {
+                return VerificationMethod.Twitter;
+              }
+              case VerificationMethod.Application: {
+                return VerificationMethod.Application;
               }
               default: {
-                return OauthProvider.Github;
+                return undefined;
               }
             }
           })}
         >
-          <option value={OauthProvider.Github}>Verify with Github</option>
-          <option value={OauthProvider.Twitter}>Verify with Twitter</option>
+          <option value="" disabled hidden>
+            Select a verification method
+          </option>
+          <option value={VerificationMethod.Github}>Verify with Github</option>
+          <option value={VerificationMethod.Twitter}>Verify with Twitter</option>
+          <option value={VerificationMethod.Application}>Verify by Email Application</option>
         </select>
+
+        <div className="attestation">
+          <h3>User Agreement</h3>
+          <p>I attest that I will be the sole owner of the RxC Voice account that I am about to create.</p>
+          <p>I will not attempt to create or control, either directly or by proxy, any other account on RxC Voice.</p>
+          <label>I agree</label>
+          <input type="checkbox" defaultChecked={signedAgreement} onChange={() => setSignedAgreement(!signedAgreement)} />
+        </div>
 
         <button
           type="submit"

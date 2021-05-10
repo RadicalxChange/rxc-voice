@@ -1,0 +1,32 @@
+{% extends 'emails/base.html' %}
+{% block content %}
+
+<div>
+    <h4>Hi, {{ delegate_first_name }}</h4>
+    <p>You're receiving this email because you opted to verify your account by email application.</p>
+    <p>To verify your account using this method, you must reply to this email with a photo of yourself so that we can identify you.</p>
+    <p>In the photo, you must hold up a sign with you this email address written on it: {{ delegate_email }}</p>
+    <p><strong>By submitting your application, you attest that:</strong></p>
+    <ol>
+      <li>
+        <p>You are the sole owner of this email address: {{ delegate_email }}, and the sole owner of the RxC Voice account associated with it.</p>
+      </li>
+      <li>
+        <p>You are the person in the picture you submitted.</p>
+      </li>
+      <li>
+        <p>You agree that you will not attempt to create or control, either directly or by proxy, any other account on RxC Voice.</p>
+      </li>
+    </ol>
+    <p>Please note that RadicalxChange Foundation will not allow users to hold multiple accounts on RxC Voice.</p>
+    <p>Should you decide that you would rather verify your account by logging into a Github or Twitter account that you own, you can always click the link in your invitation email and choose either of those options instead.</p>
+
+    <p>Thanks for using RxC Voice! </p>
+
+    <p>Best wishes,</p>
+    <p>The RxC Voice team</p>
+
+    <p>Next-Generation Political Economies at <a href="https://radicalxchange.org">RadicalxChange</a></p>
+</div>
+
+{% endblock %}

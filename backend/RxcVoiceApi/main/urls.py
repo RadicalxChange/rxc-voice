@@ -2,7 +2,7 @@ from django.urls import path, re_path
 
 from .rootview import RootView
 from .authviews import (DelegateList, DelegateDetail, UserDetail,
-                        CustomAuthToken, PermissionList,
+                        CustomAuthToken, PermissionList, EmailApplication,
                         GroupList, GetGithubUser, ValidateAuthToken,
                         GetTwitterToken, ForgotPassword, ResetPassword)
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
@@ -24,6 +24,7 @@ urlpatterns = [
     path('permissions/', PermissionList.as_view(), name='permission-list'),
     path('github/verify/', GetGithubUser.as_view()),
     path('twitter/token/', GetTwitterToken.as_view()),
+    path('email-application/', EmailApplication.as_view()),
     path('forgot-password/', ForgotPassword.as_view()),
     path('reset-password/', ResetPassword.as_view()),
     re_path(r'^api-token-auth/', CustomAuthToken.as_view()),

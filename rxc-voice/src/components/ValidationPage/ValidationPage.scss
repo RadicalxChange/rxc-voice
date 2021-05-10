@@ -31,6 +31,7 @@
   .oauth-message {
     font-size: 1rem;
     margin: 8vmin auto 0 auto;
+    text-align: left;
   }
 
   .oauth-provider {
@@ -39,6 +40,21 @@
     margin: 2vmin auto;
     font-size: 1rem;
     outline: none;
+  }
+
+  .attestation {
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 8vmin;
+  }
+
+  .attestation > h3 {
+    margin-top: 0;
+  }
+
+  .attestation > p {
+    text-align: left;
   }
 
   .create-account-button {
@@ -59,6 +75,21 @@
     color: black;
   }
 
+  .text {
+    margin-bottom: 3vw;
+  }
+
+  .login-link {
+    text-decoration: underline;
+  }
+  .login-link:hover {
+    text-decoration: none;
+  }
+}
+
+.email-notice {
+  max-width: 400px;
+  margin: auto;
 }
 
 @media only screen and (min-width: 768px) {

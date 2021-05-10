@@ -308,6 +308,23 @@ export const getTwitterRequestToken = (): Observable<any> => {
   });
 };
 
+export const emailApplication = (): Observable<any> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/email-application/`, {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Accept': 'application/json',
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify({}),
+      })
+    );
+  });
+};
+
 export const getTwitterAccessToken = (creds: any): Observable<any> => {
     return defer(() => {
       const user: string | null = sessionStorage.getItem("user");

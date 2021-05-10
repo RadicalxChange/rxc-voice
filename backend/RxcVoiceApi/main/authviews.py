@@ -193,7 +193,7 @@ class ForgotPassword(generics.GenericAPIView):
             uid = urlsafe_base64_encode(force_bytes(delegate.pk))
             token = account_activation_token.make_token(delegate)
             params = {
-                'delegate_email': delegate.user.email,
+                'delegate_first_name': delegate.user.first_name,
                 'uid': uid,
                 'token': token,
                 'delegate': delegate,
@@ -376,3 +376,29 @@ class GetTwitterToken(generics.GenericAPIView):
             twitter_data,
             status=resp['status']
         )
+
+
+class EmailApplication(generics.GenericAPIView):
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            delegate = Delegate.objects.get(user=request.user)
+        except(TypeError, ValueError, OverflowError, Delegate.DoesNotExist):
+            delegate = None
+        if delegate is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            params = {
+                'delegate_email': delegate.user.email,
+                'delegate_first_name': delegate.user.first_name,
+            }
+            subject = "Verify your Account"
+
+            try:
+                mail_body = get_mail_body('email_application', params)
+                send_mail(delegate.user.email, subject, mail_body)
+            except Exception as e:
+                print(e)
+
+            return Response(status=status.HTTP_200_OK)
