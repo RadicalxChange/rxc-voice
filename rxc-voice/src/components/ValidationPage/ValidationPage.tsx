@@ -26,8 +26,9 @@ function ValidationPage() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     // const [profilePic, setProfilePic] = useState("");
-    const [verificationMethod, setVerificationMethod] = useState(VerificationMethod.Github);
+    const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
     const [sentEmail, setSentEmail] = useState(false);
+    const [signedAgreement, setSignedAgreement] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const alert = useAlert()
@@ -61,11 +62,13 @@ function ValidationPage() {
       if (formIsComplete()) {
         if (validateEmail(email)) {
           if (password === passReEntry) {
-            // if (validatePasswordLength(password)) {
-            //   if (containsSpecialCharacters(password)) {
-            //     if (containsUpperCase(password)) {
-            //       if (containsLowerCase(password)) {
-            //         if (containsNumber(password)) {
+            if (verificationMethod) {
+              if (signedAgreement) {
+                // if (validatePasswordLength(password)) {
+                //   if (containsSpecialCharacters(password)) {
+                //     if (containsUpperCase(password)) {
+                //       if (containsLowerCase(password)) {
+                //         if (containsNumber(password)) {
                       const updatedUser = {
                         username: email,
                         email: email,
@@ -118,21 +121,27 @@ function ValidationPage() {
                             console.error("Error", await data.json());
                           }
                         });
-            //         } else {
-            //           alert.error("Password must contain at least one number")
-            //         }
-            //       } else {
-            //         alert.error("Password must contain at least one lower case character")
-            //       }
-            //     } else {
-            //       alert.error("Password must contain at least one upper case character")
-            //     }
-            //   } else {
-            //     alert.error("Password must contain at least 1 special character")
-            //   }
-            // } else {
-            //   alert.error("Password length must be at least 8 characters")
-            // }
+                //         } else {
+                //           alert.error("Password must contain at least one number")
+                //         }
+                //       } else {
+                //         alert.error("Password must contain at least one lower case character")
+                //       }
+                //     } else {
+                //       alert.error("Password must contain at least one upper case character")
+                //     }
+                //   } else {
+                //     alert.error("Password must contain at least 1 special character")
+                //   }
+                // } else {
+                //   alert.error("Password length must be at least 8 characters")
+                // }
+              } else {
+                alert.error("Please sign the user agreement")
+              }
+            } else {
+              alert.error("Please select a verification method")
+            }
           } else {
             alert.error("Re-entered password does not match")
           }
@@ -220,7 +229,8 @@ function ValidationPage() {
         <select
           className="oauth-provider"
           id="select-oauth-provider"
-          onChange={(e) => setVerificationMethod(verificationMethod => {
+          defaultValue=""
+          onChange={(e) => setVerificationMethod(() => {
             switch (e.target.value) {
               case VerificationMethod.Github: {
                 return VerificationMethod.Github;
@@ -232,15 +242,26 @@ function ValidationPage() {
                 return VerificationMethod.Application;
               }
               default: {
-                return VerificationMethod.Github;
+                return undefined;
               }
             }
           })}
         >
+          <option value="" disabled hidden>
+            Select a verification method
+          </option>
           <option value={VerificationMethod.Github}>Verify with Github</option>
           <option value={VerificationMethod.Twitter}>Verify with Twitter</option>
           <option value={VerificationMethod.Application}>Verify by Email Application</option>
         </select>
+
+        <div className="attestation">
+          <h3>User Agreement</h3>
+          <p>I attest that I will be the sole owner of the RxC Voice account that I am about to create.</p>
+          <p>I will not attempt to create or control, either directly or by proxy, any other account on RxC Voice.</p>
+          <label>I agree</label>
+          <input type="checkbox" defaultChecked={signedAgreement} onChange={() => setSignedAgreement(!signedAgreement)} />
+        </div>
 
         <button
           type="submit"
