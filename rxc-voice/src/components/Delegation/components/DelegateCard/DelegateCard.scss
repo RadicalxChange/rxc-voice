@@ -25,6 +25,13 @@
     }
   }
 
+  .info > a {
+    text-decoration: underline;
+  }
+  .info > a:hover {
+    text-decoration: none;
+  }
+
   .give-credits {
     grid-column: 2;
     grid-row: 1 / 3;
