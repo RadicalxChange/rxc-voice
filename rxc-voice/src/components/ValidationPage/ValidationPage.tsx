@@ -252,7 +252,7 @@ function ValidationPage() {
           </option>
           <option value={VerificationMethod.Github}>Verify with Github</option>
           <option value={VerificationMethod.Twitter}>Verify with Twitter</option>
-          <option value={VerificationMethod.Application}>Verify by Email Application</option>
+          <option value={VerificationMethod.Application}>Verify by Video Application</option>
         </select>
 
         <div className="attestation">
