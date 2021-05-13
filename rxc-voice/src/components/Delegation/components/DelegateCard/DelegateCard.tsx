@@ -29,7 +29,7 @@ function DelegateCard(props: any) {
         >{props.delegate.public_username}
         </a>
         <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
-        <h3 className="info-text">Received via transfer: {props.delegate.pending_credits}</h3>
+        <h3 className="info-text">Pending Voice Credits: {props.delegate.pending_credits}</h3>
       </div>
       {(delegationOngoing && (props.delegate.public_username !== (user ? user.public_username : null))) ? (
         <button
