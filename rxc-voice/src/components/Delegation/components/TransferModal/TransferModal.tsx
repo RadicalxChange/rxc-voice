@@ -3,9 +3,10 @@ import { useParams } from "react-router";
 import { WebService } from "../../../../services";
 import moment from "moment";
 import { ActionContext, StateContext } from "../../../../hooks";
+import { userobj } from "../../../../utils";
+import { useAlert } from "react-alert";
 
 import "./TransferModal.scss";
-import { userobj } from "../../../../utils";
 
 function TransferModal(props: any) {
     const { processId } = useParams<any>();
@@ -17,32 +18,38 @@ function TransferModal(props: any) {
     const [thresholdWarning, setThresholdWarning] = useState(false);
     const [transferSuccess, setTransferSuccess] = useState(false);
 
+    const alert = useAlert()
+
     const submit = () => {
       setThresholdWarning(false);
       const recipient = props.recipient ? props.recipient : recipientEmail;
-      if (recipient && amount) {
-        WebService.postTransfer({
-          sender: userobj().id,
-          recipient: recipient,
-          amount: amount,
-          date: moment().toISOString(),
-          process: processId,
-        }).subscribe(async (data) => {
-          if (data.ok) {
-            setTransferSuccess(true);
-            setRecipientEmail("");
-            setAmount("");
-            setEstMatch(0);
-          } else {
-            const error = await data.json();
-            console.log(error);
-          }
-        });
-      }
+      WebService.postTransfer({
+        sender: userobj().id,
+        recipient: recipient,
+        amount: amount,
+        date: moment().toISOString(),
+        process: processId,
+      }).subscribe(async (data) => {
+        if (data.ok) {
+          setTransferSuccess(true);
+        } else {
+          const error = await data.json();
+          alert.error(error.non_field_errors[0]);
+        }
+      });
     };
 
     const maybeSubmit = () => {
-      if (creditBalance! - (+amount) < 25) {
+      const recipient = props.recipient ? props.recipient : recipientEmail;
+      if (!recipient || !amount) {
+        alert.error("Incomplete form");
+      } else if (recipient === userobj().public_username || recipient === userobj().email) {
+        alert.error("You cannot send credits to yourself");
+      } else if (+amount > creditBalance!) {
+        alert.error("Insufficient credits");
+      } else if (+amount < 0) {
+        alert.error("Invalid amount")
+      } else if (creditBalance! - (+amount) < 25) {
         setThresholdWarning(true);
       } else {
         submit();
@@ -61,6 +68,7 @@ function TransferModal(props: any) {
         }
       }
       setTransferSuccess(false);
+      setThresholdWarning(false);
     };
 
     const onChangeAmount = (new_amt) => {
@@ -88,14 +96,14 @@ function TransferModal(props: any) {
           <div className={`transfer-modal ${!props.recipient && !props.invite ? "closed" : ""}`}>
             <h2>Transfer successful!</h2>
             <div className="explain-text">
-                <p>Note that the voice credits you sent will be withheld from the recipient until the end of the Delegation stage.</p>   
+                <p>Note that the voice credits you sent will be withheld from the recipient until the end of the Delegation stage.</p>
             </div>
             <button
               type="button"
               className="submit-button"
               onClick={() => reset()}
               >
-              close
+              Close
             </button>
           </div>
         ) : (
@@ -114,14 +122,14 @@ function TransferModal(props: any) {
                     className="submit-button"
                     onClick={() => submit()}
                     >
-                    submit
+                    Submit
                   </button>
                   <button
                     type="button"
                     className="cancel-button"
                     onClick={() => reset()}
                     >
-                    cancel
+                    Cancel
                   </button>
                 </div>
               </div>
@@ -166,14 +174,14 @@ function TransferModal(props: any) {
                     className="submit-button"
                     onClick={() => maybeSubmit()}
                     >
-                    submit
+                    Submit
                   </button>
                   <button
                     type="button"
                     className="cancel-button"
                     onClick={() => reset()}
                     >
-                    cancel
+                    Cancel
                   </button>
                 </div>
               </div>

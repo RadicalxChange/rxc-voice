@@ -5,7 +5,7 @@ from rest_framework import generics, mixins, status
 from django.db.models import Q
 from .serializers import ProcessSerializer, TransferSerializer
 from .permissions import ProcessPermission, TransferPermission
-from .models import Process, Transfer, Delegate, MatchPayment
+from .models import Process, Transfer, MatchPayment
 from guardian.shortcuts import assign_perm
 from django.utils import timezone
 from .services import match_transfers, estimate_match

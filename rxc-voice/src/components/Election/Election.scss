@@ -1,7 +1,6 @@
 .voting-page {
   text-align: left;
   margin-top: 5vw;
-  font-size: .8rem;
 
   .nav {
     grid-column: 1;
@@ -54,6 +53,10 @@
     }
   }
 
+  .body > h1 {
+    font-size: 1.6rem;
+  }
+
   .button-container {
     text-align: center;
     padding: 1vw 2vw;
@@ -99,7 +102,6 @@
     display: grid;
     grid-template-columns: 8rem 1fr 20vw;
     column-gap: 4vw;
-    font-size: 1rem;
 
     .body {
 

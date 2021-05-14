@@ -197,14 +197,14 @@ function Election() {
             <div className={`success-modal ${!success ? "closed" : ""}`}>
               <h2>Success!</h2>
               <div className="explain-text">
-                  <p>Your votes are in.</p>
+                  <p>Your votes are in. You'll be able to change your votes up until the Election Stage closes.</p>
               </div>
               <button
                 type="button"
                 className="submit-button"
                 onClick={() => setSuccess(false)}
                 >
-                close
+                Close
               </button>
             </div>
             <div
@@ -231,15 +231,17 @@ function Election() {
                 className="submit-button"
                 onClick={() => submitVotes()}
                 >
-                submit votes
+                Save Votes
               </button>
-              <button
-                type="button"
-                className="submit-button"
-                onClick={() => setChangingVotes(false)}
-                >
-                Cancel
-              </button>
+              {alreadyVoted ? (
+                <button
+                  type="button"
+                  className="submit-button"
+                  onClick={() => setChangingVotes(false)}
+                  >
+                  Cancel
+                </button>
+              ) : null}
             </div>
           ) : null}
           <div className="body">
@@ -260,7 +262,12 @@ function Election() {
                                 negativeVotes={election.negative_votes}
                                 onChange={proposalDispatch} />
               ) : null}
-              {proposals.filter(notRatProposal).map((proposal: Proposal, i) => (
+              {proposals
+                .filter(notRatProposal)
+                .sort((a: Proposal, b: Proposal) => {
+                  return a.title.localeCompare(b.title);
+                })
+                .map((proposal: Proposal, i) => (
                 <ProposalWidget key={i}
                                 creditsRemaining={startingBalance - creditsSpent}
                                 proposal={proposal}

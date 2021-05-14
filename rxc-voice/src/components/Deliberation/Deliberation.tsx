@@ -63,16 +63,6 @@ function Deliberation() {
         <div className="explain-text">
           <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
           <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>
-          {getConversation(selectedProcess) ? (
-          <p className="notice"><strong>Ballot Curation: </strong>we curated the final ballot from the pol.is report below. Find out more about the curation process in{" "}
-            <a
-              className="inline-link"
-              href="https://docs.google.com/document/d/1tSr5ceeMql4wtf-4WRmbjJhvIR11zCP25T5po379nyg/edit?usp=sharing"
-              target="_blank"
-              rel="noopener nofollow noreferrer"
-            >this document.
-            </a></p>
-          ) : null}
         </div>
         {(getConversation(selectedProcess) && user && creditBalance) ? (
             (moment() < moment(getConversation(selectedProcess)!.end_date)) ? (
