@@ -1,0 +1,109 @@
+{% extends 'emails/base.html' %}
+{% block content %}
+
+<div>
+    <h4>Hi, {{ delegate_email }}</h4>
+    <p>Welcome to RxC Voice! We want to invite you to participate in a collective decision about the priorities for RxC Foundation: "What activities should the RadicalxChange Foundation prioritize in 2021-2022?"</p>
+    <p>Please use the link below to create an account and participate.</p>
+
+    <a href="https://voice.radicalxchange.org/verify?uidb64={{ uid }}&token={{ token }}">Create Account</a>
+
+    <p>Already have an account?</p>
+    <a href="https://voice.radicalxchange.org?uidb64={{ uid }}&token={{ token }}">Sign in</a>
+
+    <p>By way of background, the RxC Voice procedure includes three democratic steps: 1) voice credit delegation, 2) deliberation, and 3) election.</p>
+    <ol>
+      <li>
+        <h3 class="stage-header">Delegation from May 17th to 21st</h3>
+        <ul>
+          <li>
+            <span>Like you, each participant (henceforth called “delegate”) receives 99 voice credits upon initializing the process. You will use these voice credits to vote in the Election stage--but that comes later on.</span>
+          </li>
+          <li>
+            <span>During the Delegation Stage, you have the option to transfer any number of your voice credits to other delegates.</span>
+          </li>
+          <li>
+            <span>You also have the option to send voice credits by email to someone who is not yet on the delegates’ list.</span>
+          </li>
+          <li>
+            <span>There are two crucial “twists” to the Delegation Stage--it’s essential to keep both in mind as you consider your decisions about transferring credits:</span>
+            <ul>
+              <li>
+                <span>To participate in subsequent stages (including voting in the Election Stage), a delegate must have at least 25 voice credits. Don’t give away too many!</span>
+              </li>
+              <li>
+                <span>A pool of 15,000 voice credits will match your transfers according to the
+                  <a href="https://www.radicalxchange.org/concepts/quadratic-funding/"
+                  >Quadratic Funding
+                  </a> formula.
+                </span>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <h3 class="stage-header">Deliberation from May 21st to 31st</h3>
+        <ul>
+          <li>
+            <span>The Deliberation Stage helps design the final election ballot.</span>
+          </li>
+          <li>
+            <span>The delegates will all participate in a
+              <a href="https://pol.is/home"
+              >Polis conversation
+              </a> about the strategic priorities of the RxC Foundation.
+            </span>
+          </li>
+          <li>
+            <span>This is your opportunity to directly contribute items to the ballot by submitting “comments.” You may also submit comments that express any ideas, feelings, or principles that you feel are relevant to the conversation.</span>
+          </li>
+          <li>
+            <span>You also have the opportunity to “agree” or “disagree” with other delegates’ comments. This gives us detailed information about where there is consensus and where there is disagreement.</span>
+          </li>
+          <li>
+            <span>At the end of the Deliberation Stage, the Foundation will analyze the results of the conversation and curate the delegates’ suggestions into a coherent list of voting items for the election. The Foundation will publish a statement explaining how that list reflects the delegates’ contributions in the Deliberation Stage.</span>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <h3 class="stage-header">Election from June 1st to 6th</h3>
+        <ul>
+          <li>
+            <span>In this stage, the delegates express which ballot options they like best using
+              <a href="https://www.radicalxchange.org/concepts/quadratic-voting/"
+              >Quadratic Voting
+              </a>.
+            </span>
+          </li>
+          <li>
+            <span>An essential option on the ballot will be "Ballot Ratification."</span>
+            <ul>
+              <li>
+                <span>With this particular ballot item, you can express whether or not you feel that the ballot fairly and accurately represents the delegates’ contributions in the Deliberation Stage.</span>
+              </li>
+              <li>
+                <span>At the end of the Election, if the sum of effective votes for the Ballot Ratification option is less than zero, the results of the Election are nullified and a new ballot must be curated and voted on--so make sure you place a couple of voice credits toward supporting or opposing the Ballot Ratification option, depending on your satisfaction with the ballot curation.</span>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <span>If the ballot gets approved, we publish the Quadratic Voting results ranking the priorities by the sum of their effective votes.</span>
+          </li>
+        </ul>
+      </li>
+    </ol>
+    <p>We're very excited to pilot this new democratic process with you! Please contact us at voice@radicalxchange.org if you have any questions.</p>
+
+    <a href="https://voice.radicalxchange.org/verify?uidb64={{ uid }}&token={{ token }}">Create Account</a>
+
+    <p>Already have an account?</p>
+    <a href="https://voice.radicalxchange.org?uidb64={{ uid }}&token={{ token }}">Sign in</a>
+
+    <p>Best wishes,</p>
+    <p>The RxC Voice team</p>
+
+    <p>Next-Generation Political Economies at <a href="https://radicalxchange.org">RadicalxChange</a></p>
+</div>
+
+{% endblock %}
