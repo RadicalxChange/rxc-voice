@@ -38,12 +38,10 @@ class DelegateList(mixins.CreateModelMixin,
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED,
-            headers=headers)
+        serializer.create(serializer.validated_data, set_unusable_password=True)
+        # serializer.save()
+        # headers = self.get_success_headers(serializer.data)
+        return Response(status=status.HTTP_201_CREATED)
 
     # Deletes ALL users. For testing only.
     def delete(self, request, *args, **kwargs):

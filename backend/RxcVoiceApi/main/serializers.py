@@ -178,7 +178,7 @@ class DelegateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Delegate
         fields = '__all__'
-        read_only_fields = ('pending_credits', 'is_verified', 'credit_balance', 'user', 'public_username', 'oauth_provider', 'oauth_token', 'oauth_token_secret', 'invited_by')
+        read_only_fields = ('pending_credits', 'is_verified', 'user', 'public_username', 'oauth_provider', 'oauth_token', 'oauth_token_secret', 'invited_by')
 
     def get_pending_credits(self, obj):
         pending_transfers = Transfer.objects.all().filter(Q(recipient_object=obj), Q(status='P'))
