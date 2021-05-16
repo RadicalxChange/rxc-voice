@@ -36,15 +36,6 @@ function Home() {
           ) : (
             <></>
           )}
-          {pastProcesses.length ? (
-            <ul className="process-list">
-              {pastProcesses.map((process: Process) => (
-                <ProcessCard key={process.id} process={process} active={false} />
-              ))}
-            </ul>
-          ) : (
-            <></>
-          )}
       </div>
     </div>
   );
