@@ -57,10 +57,22 @@ function Login() {
 
   if (unverifiedLogin) {
     return (
-      <div className="login">
+      <div className="login-unverified">
         <h2>Unverified account</h2>
         <p>Sorry, but you can't access the site until you verify your account.</p>
-        <p>You can do that by clicking the link in your invitation email, creating an account, and logging into a valid Github or Twitter account to verify.</p>
+        <p>You are probably here because you selected "Video application" as your verification method when you created your account. If this is the case, you will not be able to log into the site until are verified by a site administrator.</p>
+        <p>If you decide that you would rather verify your account by logging into a Github or Twitter account that you own, you can always click the link in your invitation email and choose either of those options instead.</p>
+        <p>If you would like to be verified by video application, you must set up a 5 min video call with a member of the RadicalxChange team. Your camera must be on and your face must be visible so that we can visually identify you.</p>
+        <p><strong>On the video call, you will attest that:</strong></p>
+        <ul className="list">
+          <li>
+            <p>You are the sole owner of this RxC Voice account and the email address associated with it.</p>
+          </li>
+          <li>
+            <p>You agree that you will not attempt to create or control, either directly or by proxy, any other account on RxC Voice.</p>
+          </li>
+        </ul>
+        <p>Please note that RadicalxChange Foundation will not allow users to hold multiple accounts on RxC Voice.</p>
       </div>
     );
   }

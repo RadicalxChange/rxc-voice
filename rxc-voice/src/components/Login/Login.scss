@@ -1,3 +1,16 @@
+.login-unverified {
+  padding: 4.5vmin;
+  text-align: left;
+
+  .list {
+    list-style: decimal;
+  }
+}
+
+.login-unverified > h2 {
+  text-align: center;
+}
+
 .login {
   padding: 4.5vmin;
 
@@ -56,6 +69,10 @@
 }
 
 @media only screen and (min-width: 768px) {
+  .login-unverified {
+    padding: 2vw 30vw;
+  }
+
   .login {
     padding: 10vw 30vw;
 
