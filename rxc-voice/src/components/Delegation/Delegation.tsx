@@ -100,7 +100,7 @@ function Delegation() {
               {conversation && delegationOngoing ? (
                 <>
                 <p className="explain-text"><strong>The Delegation Stage closes on {moment(conversation.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-                <h3 className="matching-pool">Matching Pool: {getMatchingPool(selectedProcess)} voice credits.</h3>
+                <h3 className="matching-pool">The size of the matching pool will be 100 times the final number of delegates.</h3>
                 <button
                   type="button"
                   className="submit-button"
