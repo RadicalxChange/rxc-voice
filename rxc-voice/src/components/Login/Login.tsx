@@ -5,7 +5,7 @@ import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
 import { useAlert } from 'react-alert'
 import { Link } from "react-router-dom";
-import { userIsVerified } from "../../utils";
+import { Domain, userIsVerified } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
 
 import "./Login.scss";
@@ -45,6 +45,9 @@ function Login() {
           setUserData(user);
           if (!userIsVerified(user)) {
             setUnverifiedLogin(true);
+          }
+          if (linkToken) {
+            window.location.href = Domain.WEB;
           }
         } else {
           const error = await data.json();
