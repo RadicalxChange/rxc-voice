@@ -297,10 +297,6 @@ class GetGithubUser(generics.GenericAPIView):
                     delegate.oauth_token = token_data['access_token']
                     # profile pic available at github_data['avatar_url']
                     delegate.is_verified = True
-                    pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
-                    for t in pending_transfers:
-                        t.status='A'
-                        t.save()
                     delegate.save()
                     cors_header = {
                         'Access-Control-Allow-Origin': '*',
@@ -365,10 +361,6 @@ class GetTwitterToken(generics.GenericAPIView):
                 delegate.oauth_token = twitter_data["oauth_token"]
                 delegate.oauth_token_secret = twitter_data["oauth_token_secret"]
                 delegate.is_verified = True
-                pending_transfers = Transfer.objects.filter(recipient_object=delegate).filter(status='P')
-                for t in pending_transfers:
-                    t.status='A'
-                    t.save()
                 # get profile pic
                 delegate.save()
 
