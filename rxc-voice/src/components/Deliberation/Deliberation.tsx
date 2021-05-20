@@ -71,22 +71,15 @@ function Deliberation() {
                 <p className="explain-text"><strong>The Deliberation Stage closes on {moment(getConversation(selectedProcess)!.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
                 {(creditBalance! >= 25) ? (
                   <>
-                  <div
-                    id="polis-iframe"
-                    className='polis'
-                    data-page_id={getConversation(selectedProcess)!.uuid}
-                    data-site_id={POLIS_SITE_ID}
-                    data-topic={getConversation(selectedProcess)!.title}
-                    data-ucv={moment(getConversation(selectedProcess)!.start_date) < moment()}
-                    data-ucw={moment(getConversation(selectedProcess)!.start_date) < moment()}
-                    data-ucsd='false'
-                    data-xid={userobj().token}
-                    data-auth_needed_to_vote='false'
-                    data-auth_needed_to_write='false'
-                    data-auth_opt_fb='false'
-                    data-auth_opt_tw='false'
-                  >
-                  </div>
+                  <p className="notice">
+                    <a
+                      className="polis-link"
+                      href="https://pol.is/67ab5cbwpc"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >Click here to open the deliberation window
+                    </a>
+                    </p>
                   {getConversation(selectedProcess)!.show_report ? (
                     <iframe
                       title="conversation-results"
