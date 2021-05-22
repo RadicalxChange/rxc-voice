@@ -6,6 +6,7 @@ from .models import (Election, Proposal, Delegate, Process, Conversation, Transf
 from .signals import send_register_mail
 
 class ElectionAdmin(admin.ModelAdmin):
+    list_display = ['id','title','num_tokens','start_date','end_date']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -17,6 +18,7 @@ class ElectionAdmin(admin.ModelAdmin):
 
 
 class ConversationAdmin(admin.ModelAdmin):
+    list_display = ['id','title','start_date','end_date']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -26,6 +28,7 @@ class ConversationAdmin(admin.ModelAdmin):
 
 
 class DelegateAdmin(admin.ModelAdmin):
+    list_display = ['id','user','public_username','is_verified','credit_balance','invited_by']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
