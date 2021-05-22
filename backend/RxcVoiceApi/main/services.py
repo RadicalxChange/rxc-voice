@@ -35,10 +35,11 @@ def match_transfers(process):
     for transfer in transfers:
         if transfer.recipient_object and transfer.sender:
             if transfer.recipient_object.is_verified:
-                transfer.status = 'A'
-                transfer.save()
-                transfer.recipient_object.credit_balance += transfer.amount
-                transfer.recipient_object.save()
+                if transfer.status == 'P':
+                    transfer.status = 'A'
+                    transfer.save()
+                    transfer.recipient_object.credit_balance += transfer.amount
+                    transfer.recipient_object.save()
                 if transfer.recipient_object.id in distinct_contributions and transfer.recipient_object.id in pledged_totals and transfer.recipient_object.id in sum_of_roots:
                     if transfer.sender.id in distinct_contributions[transfer.recipient_object.id]:
                         sum_of_roots[transfer.recipient_object.id] -= math.sqrt(distinct_contributions[transfer.recipient_object.id][transfer.sender.id])
@@ -52,10 +53,11 @@ def match_transfers(process):
                     pledged_totals[transfer.recipient_object.id] = transfer.amount
                     sum_of_roots[transfer.recipient_object.id] = math.sqrt(transfer.amount)
             else:
-                transfer.status = 'C'
-                transfer.save()
-                transfer.sender.credit_balance += transfer.amount
-                transfer.sender.save()
+                if transfer.status == 'P':
+                    transfer.status = 'C'
+                    transfer.save()
+                    transfer.sender.credit_balance += transfer.amount
+                    transfer.sender.save()
     raw_matches = {}
     raw_match_total = 0
     for recipient_id, sum in sum_of_roots.items():
