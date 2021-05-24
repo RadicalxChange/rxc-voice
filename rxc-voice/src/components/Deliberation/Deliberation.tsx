@@ -71,15 +71,14 @@ function Deliberation() {
                 <p className="explain-text"><strong>The Deliberation Stage closes on {moment(getConversation(selectedProcess)!.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
                 {(creditBalance! >= 25) ? (
                   <>
-                  <p className="notice">
-                    <a
-                      className="polis-link"
-                      href="https://pol.is/67ab5cbwpc"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >Click here to open the deliberation window
-                    </a>
-                    </p>
+                  <a
+                    className="polis-link"
+                    href="https://pol.is/67ab5cbwpc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <p className="notice">Click here to open the deliberation window</p>
+                  </a>
                   {getConversation(selectedProcess)!.show_report ? (
                     <iframe
                       title="conversation-results"

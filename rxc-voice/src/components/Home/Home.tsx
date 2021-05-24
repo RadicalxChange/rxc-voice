@@ -9,7 +9,7 @@ import "./Home.scss";
 
 function Home() {
   const { setColor, fetchProcesses } = useContext(ActionContext);
-  const { processes, activeProcesses, pastProcesses } = useContext(StateContext);
+  const { processes, activeProcesses } = useContext(StateContext);
 
   useEffect(() => {
     setColor(BgColor.Yellow);

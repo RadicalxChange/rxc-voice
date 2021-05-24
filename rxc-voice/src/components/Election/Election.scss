@@ -1,6 +1,7 @@
 .voting-page {
   text-align: left;
   margin-top: 5vw;
+  padding-bottom: 18vh;
 
   .nav {
     grid-column: 1;
@@ -94,6 +95,7 @@
   text-align: left;
   margin-top: 5vw;
   font-size: .8rem;
+  padding-bottom: 18vh;
 }
 
 @media only screen and (min-width: 768px) {
@@ -130,7 +132,7 @@
 
   .results-page {
     display: grid;
-    grid-template-columns: 15vw 1fr 5vw;
+    grid-template-columns: 8rem 1fr 20vw;
     column-gap: 4vw;
   }
 }

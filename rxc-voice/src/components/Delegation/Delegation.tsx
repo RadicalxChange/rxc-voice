@@ -5,7 +5,7 @@ import { BgColor } from "../../models/BgColor";
 import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
 import DelegateCard from "./components/DelegateCard";
 import { Delegate } from "../../models/Delegate";
-import { getConversation, getDelegates, getId, getMatchingPool, getTitle } from "../../utils";
+import { getConversation, getDelegates, getId, getTitle } from "../../utils";
 import moment from "moment";
 import { WebService } from "../../services";
 import { Transfer } from "../../models/Transfer";
