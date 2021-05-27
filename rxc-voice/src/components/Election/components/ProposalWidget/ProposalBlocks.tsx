@@ -34,12 +34,12 @@ function ProposalBlocks(props: any) {
     canvas.height = canvas.clientHeight;
     var w = canvas.width, h = canvas.height;
 
+    // set the scale of the context
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
     // scale the canvas by window.devicePixelRatio
     canvas.width = w*window.devicePixelRatio;
     canvas.height = h*window.devicePixelRatio;
-
-    // set the scale of the context
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
   };
 
   // draw

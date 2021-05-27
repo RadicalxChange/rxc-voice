@@ -35,15 +35,15 @@ function ProposalResults(props: any) {
     canvas.height = (barHeight + newGutterHeight) * proposals.length + 10;
     var w = canvas.width, h = canvas.height;
 
-    // scale the canvas by window.devicePixelRatio
-    canvas.width = w*window.devicePixelRatio;
-    canvas.height = h*window.devicePixelRatio;
-
     const ctx = canvas.getContext('2d');
     if (ctx) {
       // set the scale of the context
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
+
+    // scale the canvas by window.devicePixelRatio
+    canvas.width = w*window.devicePixelRatio;
+    // canvas.height = h*window.devicePixelRatio;
   };
 
   // draw
