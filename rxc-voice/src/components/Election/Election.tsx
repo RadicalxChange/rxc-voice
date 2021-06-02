@@ -148,6 +148,24 @@ function Election() {
                   });
   };
 
+  const shuffle = (array) => {
+    var currentIndex = array.length,  randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+  }
+
   if (loading) {
     return (
       <h2>loading...</h2>
@@ -249,7 +267,7 @@ function Election() {
             <h2>{getTitle(selectedProcess)}</h2>
             <div className="explain-text">
               <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
-              <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. The order of the proposals reflects the degree of "group-informed consensus" each one achieved according to Pol.is, with proposals that achieved greater consensus appearing first. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
+              <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. The proposals are shuffled on each load to mitigate possible effects of list order on the Election results. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
               <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
             </div>
             <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
@@ -262,9 +280,7 @@ function Election() {
                                 negativeVotes={election.negative_votes}
                                 onChange={proposalDispatch} />
               ) : null}
-              {proposals
-                .filter(notRatProposal)
-                .reverse()
+              {shuffle(proposals.filter(notRatProposal))
                 .map((proposal: Proposal, i) => (
                 <ProposalWidget key={i}
                                 creditsRemaining={startingBalance - creditsSpent}
