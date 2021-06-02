@@ -249,7 +249,7 @@ function Election() {
             <h2>{getTitle(selectedProcess)}</h2>
             <div className="explain-text">
               <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
-              <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
+              <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. The order of the proposals reflects the degree of "group-informed consensus" each one achieved according to Pol.is, with proposals that achieved greater consensus appearing first. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
               <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
             </div>
             <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
@@ -264,9 +264,7 @@ function Election() {
               ) : null}
               {proposals
                 .filter(notRatProposal)
-                .sort((a: Proposal, b: Proposal) => {
-                  return a.title.localeCompare(b.title);
-                })
+                .reverse()
                 .map((proposal: Proposal, i) => (
                 <ProposalWidget key={i}
                                 creditsRemaining={startingBalance - creditsSpent}
