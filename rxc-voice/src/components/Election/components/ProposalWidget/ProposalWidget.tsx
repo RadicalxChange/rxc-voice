@@ -37,6 +37,8 @@ function ProposalWidget(props: any) {
       <a
         className="proposal-link"
         href={props.proposal.link}
+        target="_blank"
+        rel="noopener noreferrer"
       >{props.proposal.link}
       </a>
       <div className="widget">
