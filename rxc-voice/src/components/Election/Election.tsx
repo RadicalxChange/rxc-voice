@@ -73,7 +73,7 @@ function Election() {
  }, [processId, selectedProcess]);
 
   const processProposalData = (data: any) => {
-    const proposalData = data.proposals;
+    const proposalData = shuffle(data.proposals);
     const voteData = data.votes;
     var highestProposal = 0;
     var lowestProposal = 0;
@@ -148,7 +148,7 @@ function Election() {
                   });
   };
 
-  const shuffle = (array) => {
+  const shuffle = (array: any[]) => {
     var currentIndex = array.length,  randomIndex;
 
     // While there remain elements to shuffle...
@@ -280,7 +280,8 @@ function Election() {
                                 negativeVotes={election.negative_votes}
                                 onChange={proposalDispatch} />
               ) : null}
-              {shuffle(proposals.filter(notRatProposal))
+              {proposals
+                .filter(notRatProposal)
                 .map((proposal: Proposal, i) => (
                 <ProposalWidget key={i}
                                 creditsRemaining={startingBalance - creditsSpent}
