@@ -269,11 +269,12 @@ export const fetchTransfers = (process_id: string): Observable<any> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/processes/${process_id}/transfers`, {
+      fetch(`${ROOT_URL}/processes/${process_id}/transfers/`, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
-        }
+        },
+        method: "GET",
       }).then((res) => res.json())
     );
   });
@@ -302,7 +303,7 @@ export const verifyGithub = (creds: any): Observable<any> => {
 export const getTwitterRequestToken = (): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/twitter/token`)
+      fetch(`${ROOT_URL}/twitter/token/`)
         .then((res) => res.json())
     );
   });
