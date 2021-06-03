@@ -35,7 +35,11 @@ function Delegation() {
 
     if (!delegationOngoing) {
         WebService.fetchTransfers(processId).subscribe((data: any) => {
-        processTransferData(data);
+        if (data.transfers !== undefined) {
+          processTransferData(data);
+        } else {
+          console.error(data.detail)
+        }
       });
     }
 
