@@ -5,4 +5,5 @@ export interface Proposal {
   link: string,
   ballot_ratification: boolean,
   votes_received: number,
+  credits_received: number,
 }

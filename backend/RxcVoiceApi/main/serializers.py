@@ -73,6 +73,7 @@ class ProposalSerializer(serializers.ModelSerializer):
         election = Election.objects.get(id=self.context.get('election_id'))
         if timezone.now() < election.end_date:
             self.fields.pop('votes_received')
+            self.fields.pop('credits_received')
 
     class Meta:
         model = Proposal

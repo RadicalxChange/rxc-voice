@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useReducer, useContext } from "react";
 import { useParams } from "react-router-dom";
 import moment from 'moment';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
 import { Proposal } from "../../models/Proposal";
 import { getElection, getId, getTitle, standInElection, standInResultData } from "../../utils";
@@ -99,6 +101,7 @@ function Election() {
         link: proposal.link,
         ballot_ratification: proposal.ballot_ratification,
         votes_received: proposal.votes_received,
+        credits_received: proposal.credits_received,
         amount: +amount,
         cost: Math.pow(+amount, 2)
       });
@@ -166,6 +169,26 @@ function Election() {
     return array;
   }
 
+  const downloadXLSX = () => {
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+    var rows = new Array<any>();
+    proposals.forEach((proposal: Proposal) => {
+      rows.push({
+        title: proposal.title,
+        description: proposal.description,
+        link: proposal.link,
+        effective_votes: proposal.votes_received,
+        credits_received: proposal.credits_received,
+      })
+    });
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const fileData = new Blob([excelBuffer], {type: fileType});
+    FileSaver.saveAs(fileData, 'rxc-voice-results' + fileExtension);
+  };
+
   if (loading) {
     return (
       <h2>loading...</h2>
@@ -189,6 +212,9 @@ function Election() {
           <h1>Election Results</h1>
           <h2>{getTitle(selectedProcess)}</h2>
           <p className="explain-text"><strong>The Election Stage has concluded. You can see the results below!</strong></p>
+          <button onClick={downloadXLSX} id="download" className="submit-button">
+            Download spreadsheet
+          </button>
           <ProposalResults resultData={resultData} />
         </div>
       </div>

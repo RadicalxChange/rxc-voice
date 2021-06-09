@@ -77,6 +77,7 @@ export const mapToProposal = (proposal: Proposal): Proposal => {
     link: proposal.link,
     ballot_ratification: proposal.ballot_ratification,
     votes_received: proposal.votes_received,
+    credits_received: proposal.credits_received,
   };
 };
 
