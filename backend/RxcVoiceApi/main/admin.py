@@ -6,6 +6,7 @@ from .models import (Election, Proposal, Delegate, Process, Conversation, Transf
 from .signals import send_register_mail
 
 class ElectionAdmin(admin.ModelAdmin):
+    list_display = ['id','title','start_date','end_date']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -17,6 +18,7 @@ class ElectionAdmin(admin.ModelAdmin):
 
 
 class ConversationAdmin(admin.ModelAdmin):
+    list_display = ['id','title','start_date','end_date']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -26,15 +28,29 @@ class ConversationAdmin(admin.ModelAdmin):
 
 
 class DelegateAdmin(admin.ModelAdmin):
+    list_display = ['id','user','public_username','is_verified','credit_balance','invited_by']
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
+
+class TransferAdmin(admin.ModelAdmin):
+    list_display = ['id','sender','recipient','amount','date','status','process']
+
+
+class ProcessAdmin(admin.ModelAdmin):
+    list_display = ['id','title','start_date','end_date','matching_pool','status']
+
+
+class ProposalAdmin(admin.ModelAdmin):
+    list_display = ['id','title','ballot_ratification','election']
+
+
+class MatchPaymentAdmin(admin.ModelAdmin):
+    list_display = ['id','recipient','amount','date','process']
 
 
 admin.site.register(Election, ElectionAdmin)
-admin.site.register(Proposal)
+admin.site.register(Proposal, ProposalAdmin)
 admin.site.register(Delegate, DelegateAdmin)
-admin.site.register(Process)
+admin.site.register(Process, ProcessAdmin)
 admin.site.register(Conversation, ConversationAdmin)
-admin.site.register(Transfer)
-admin.site.register(MatchPayment)
+admin.site.register(Transfer, TransferAdmin)
+admin.site.register(MatchPayment, MatchPaymentAdmin)
