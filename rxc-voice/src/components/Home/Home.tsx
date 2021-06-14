@@ -9,7 +9,7 @@ import "./Home.scss";
 
 function Home() {
   const { setColor, fetchProcesses } = useContext(ActionContext);
-  const { processes, activeProcesses } = useContext(StateContext);
+  const { processes, activeProcesses, pastProcesses } = useContext(StateContext);
 
   useEffect(() => {
     setColor(BgColor.Yellow);
@@ -31,6 +31,19 @@ function Home() {
             <ul className="process-list">
               {activeProcesses.map((process: Process) => (
                 <ProcessCard process={process} key={process.id} active={true} />
+              ))}
+            </ul>
+          ) : (
+            <></>
+          )}
+          {pastProcesses.length ? (
+            <ul className="process-list">
+              {pastProcesses
+                .filter((process: Process) => (
+                  process.title==="RadicalxChange Agenda 2021-2022"
+                ))
+                .map((process: Process) => (
+                <ProcessCard key={process.id} process={process} active={false} />
               ))}
             </ul>
           ) : (
