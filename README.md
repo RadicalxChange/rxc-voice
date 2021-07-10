@@ -100,3 +100,7 @@ docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
 ## Contribute
 
 For questions, comments, or troubleshooting, please feel free to open an issue on this repo. Our team currently includes only one developer--any kind of contribution from the community is greatly appreciated!
+
+## Troubleshoot
+
+Ask on Discord: https://discord.gg/  TcE9FKQb
