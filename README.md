@@ -4,7 +4,7 @@ RxC Voice is an app for decentralized democratic governance. It is developed by 
 
 This repo also hosts RxC Conversations, a wrapper for Pol.is conversations held in the RadicalxChange community.
 
-## Deploy Instructions
+## Local Setup
 
 1. Install Docker
 
@@ -17,10 +17,21 @@ cd rxc-voice
 git checkout master
 ```
 
-4. Create .env file and fill up suitable environment variables
+4. Create .env file and fill up suitable environment variables.
 
 ```
 cp .env-example .env
+```
+
+For best results, fill in at least the following:
+
+```
+DJANGO_SECRET_KEY=
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+POSTGRES_DB=rxcvoiceapi_db
+POSTGRES_USER=
+POSTGRES_PASSWORD=
 ```
 
 5. Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
