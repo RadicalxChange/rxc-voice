@@ -62,8 +62,21 @@ class VoteSerializer(serializers.ModelSerializer):
             return vote
 
     def update(self, instance, validated_data):
-        instance.amount = validated_data.get('amount', instance.amount)
+        # update Vote object
+        old_amount = instance.amount
+        new_amount = validated_data.get('amount', instance.amount)
+        instance.amount = new_amount
         instance.save()
+
+        # update Delegate and Proposal objects
+        sender = Delegate.objects.get(pk=validated_data['sender'].id)
+        proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
+        proposal.votes_received = proposal.votes_received - old_amount + new_amount
+        proposal.credits_received = proposal.credits_received - (old_amount * old_amount) + (new_amount * new_amount)
+        proposal.save()
+        sender.credit_balance += (old_amount * old_amount)
+        sender.credit_balance -= (new_amount * new_amount)
+        sender.save()
         return instance
 
 
