@@ -13,7 +13,7 @@ production containers.
 
 1. Install Docker
 
-2. Install docker-compose
+2. Install docker-compose (included in Docker Desktop for Mac and Windows)
 
 3. Clone project -
 ```
