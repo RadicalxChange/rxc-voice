@@ -10,3 +10,4 @@ psycopg2-binary==2.8.6
 sendgrid==6.3.1
 six==1.15.0
 whitenoise==5.2.0
+python-dotenv==0.15.0
