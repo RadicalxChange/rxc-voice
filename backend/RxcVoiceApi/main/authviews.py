@@ -167,6 +167,7 @@ class CustomAuthToken(ObtainAuthToken):
             return Response({
                 'token': token.key,
                 'id': delegate.pk,
+                'user_id': delegate.user.id,
                 'is_verified': delegate.is_verified,
                 'username': token.user.username,
                 'email': token.user.email,
