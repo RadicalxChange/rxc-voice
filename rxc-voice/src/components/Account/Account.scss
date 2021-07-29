@@ -4,15 +4,95 @@
   .title {
     font-size: 1.5em;
   }
-
-  .logout-button {
+  .delegate-card {
+    margin: 2rem auto;
+    grid-template-rows: auto auto;
+    grid-template-columns: none;
+  }
+  .account-button {
     border: none;
     outline: none;
     background: inherit;
     cursor: pointer;
   }
-  .logout-button:hover {
+  .account-button:hover {
     text-decoration: underline;
+  }
+  .info {
+    text-align: left;
+  }
+  .edit-account {
+    // padding: 4.5vmin;
+    text-align: left;
+
+    .login-input {
+      text-align: left;
+      display: block;
+      width: 90%;
+      margin-bottom: 2vh;
+      background: inherit;
+      color: inherit;
+      border: none;
+      outline: none;
+      border-bottom: 1px solid black;
+      font-size: 1rem;
+    }
+
+    .oauth-message {
+      font-size: 1rem;
+      margin: 8vmin auto 0 auto;
+      text-align: left;
+    }
+
+    .oauth-provider {
+      display: block;
+      width: 80%;
+      margin: 2vmin auto;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .buttons {
+      text-align: right;
+      width: 90%;
+      margin-top: 2rem;
+
+      .submit-button {
+        display: inline-block;
+        text-align: center;
+        padding: 1vmin 4vmin;
+        background: var(--blackColor);
+        color: var(--yellowColor);
+        border: 1px solid black;
+        border-radius: 15px;
+        outline: none;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-left: 30px;
+      }
+      .submit-button:hover {
+        background: var(--yellowColor);
+        color: black;
+      }
+    }
+
+    .text {
+      margin-bottom: 3vw;
+    }
+
+    .login-link {
+      text-decoration: underline;
+    }
+    .login-link:hover {
+      text-decoration: none;
+    }
+  }
+  .option-buttons {
+    text-align: left;
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 190px;
   }
 }
 
@@ -22,6 +102,17 @@
 
     .title {
       font-size: 2em;
+    }
+    .delegate-card {
+      grid-template-columns: auto 1fr;
+    }
+    .edit-account {
+      max-width: 300px;
+
+      .login-input {
+      }
+      .buttons {
+      }
     }
   }
 }
