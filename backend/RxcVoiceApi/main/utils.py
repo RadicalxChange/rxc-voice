@@ -3,7 +3,7 @@ import premailer
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
-from main.models import Delegate
+from main.models import Delegate, Process
 
 def delegate_is_verified(user_id):
     try:
@@ -14,6 +14,13 @@ def delegate_is_verified(user_id):
         return delegate.is_verified
     else:
         return False
+
+def add_to_delegation(delegate):
+    delegate_groups = map(lambda x: x.name, delegate.user.groups.all())
+    processes = Process.objects.filter(groups__name__in=delegate_groups)
+    for process in processes:
+        process.delegates.add(delegate)
+
 
 def premailer_transform(html):
     p = premailer.Premailer(html)

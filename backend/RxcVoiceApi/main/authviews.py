@@ -19,7 +19,7 @@ from django.conf import settings
 import json
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from .utils import get_mail_body, account_activation_token
+from .utils import get_mail_body, account_activation_token, add_to_delegation
 from .services import send_mail
 
 
@@ -299,6 +299,7 @@ class GetGithubUser(generics.GenericAPIView):
                     # profile pic available at github_data['avatar_url']
                     delegate.is_verified = True
                     delegate.save()
+                    add_to_delegation(delegate)
                     cors_header = {
                         'Access-Control-Allow-Origin': '*',
                     }
@@ -364,6 +365,7 @@ class GetTwitterToken(generics.GenericAPIView):
                 delegate.is_verified = True
                 # get profile pic
                 delegate.save()
+                add_to_delegation(delegate)
 
         return Response(
             twitter_data,
