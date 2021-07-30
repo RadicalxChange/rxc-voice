@@ -300,7 +300,10 @@ class GetGithubUser(generics.GenericAPIView):
                     # profile pic available at github_data['avatar_url']
                     delegate.is_verified = True
                     delegate.save()
-                    add_to_delegation(delegate)
+                    try:
+                        add_to_delegation(delegate)
+                    except:
+                        print(traceback.format_exc())
                     cors_header = {
                         'Access-Control-Allow-Origin': '*',
                     }
