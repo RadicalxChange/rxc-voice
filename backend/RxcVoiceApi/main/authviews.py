@@ -1,3 +1,4 @@
+import traceback
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -365,7 +366,10 @@ class GetTwitterToken(generics.GenericAPIView):
                 delegate.is_verified = True
                 # get profile pic
                 delegate.save()
-                add_to_delegation(delegate)
+                try:
+                    add_to_delegation(delegate)
+                except:
+                    print(traceback.format_exc())
 
         return Response(
             twitter_data,
