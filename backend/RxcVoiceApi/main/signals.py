@@ -24,7 +24,7 @@ def send_register_mail(sender, instance, **kwargs):
         subject = "Invitation to participate on RxC Voice"
 
         try:
-            mail_body = get_mail_body('beta_launch_invite', params)
+            mail_body = get_mail_body('0L_pilot_invite', params)
             send_mail(instance.user.email, subject, mail_body)
         except Exception as e:
             print(e)
