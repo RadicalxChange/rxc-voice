@@ -263,8 +263,9 @@ class TransferSerializer(serializers.ModelSerializer):
                 'invited_by': sender,
                 },
                 set_unusable_password=True)
-            rxc_voice = Group.objects.get(name="RxC Voice")
-            new_delegate.user.groups.add(rxc_voice)
+            group = process.groups.first()
+            if group is not None:
+                new_delegate.user.groups.add(group)
             recipient_object = new_delegate
         elif recipient_object.id == sender.id or self.context.get('request').user.id == recipient_object.id:
             raise ValidationError("Invalid transfer.")
