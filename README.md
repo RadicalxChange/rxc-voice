@@ -1,4 +1,4 @@
-## RadicalxChange Voice
+# RadicalxChange Voice
 
 RxC Voice is an app for decentralized democratic governance. It is developed by RadicalxChange to model and experiment with a new democratic process for decentralized democracy that leverages Quadratic Funding, pol.is, and Quadratic Voting.
 
@@ -101,6 +101,24 @@ docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
 
 For questions, comments, or troubleshooting, please feel free to open an issue on this repo. Our team currently includes only one developer--any kind of contribution from the community is greatly appreciated!
 
-## Troubleshoot
+## Troubleshooting
+
+### database "DATABASE_NAME" does not exist
+
+If you are building your Docker containers, and the rxc-voice_api_1 throws this
+error, you probably have already initialized a database with another name.
+
+- connect to rxc-voice_db_1 and open shell
+
+`docker exec -it rxc-voice_db_1 bash`
+
+- open psql shell and list databases
+
+`psql -U POSTGRES_USER
+postgres-# \l`
+
+- copy the name of the correct database and update the value of POSTGRES_DB in your .env file
+
+## Chat with us
 
 Ask on Discord: https://discord.gg/  TcE9FKQb
