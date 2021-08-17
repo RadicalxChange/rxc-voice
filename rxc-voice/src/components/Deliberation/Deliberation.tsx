@@ -73,7 +73,7 @@ function Deliberation() {
                   <>
                   <a
                     className="polis-link"
-                    href="https://pol.is/67ab5cbwpc"
+                    href="https://pol.is/32vmaac2f2"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
