@@ -49,8 +49,6 @@ The project is now up and running -
 
 Backend API - http://127.0.0.1:8000
 
-RxC Conversations - http://localhost:3000
-
 RxC Voice - http://localhost:4000
 
 ## Deploy Instructions - virtual environment
