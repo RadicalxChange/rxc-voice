@@ -98,7 +98,7 @@ python manage.py makemigrations main
 
 - Apply migrations
 ```
-python manage.py migrate main
+python manage.py migrate
 ```
 
 - Start backend server
