@@ -51,6 +51,12 @@ Backend API - http://127.0.0.1:8000
 
 RxC Voice - http://localhost:4000
 
+- Create a superuser to access the admin site
+
+```
+docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
+```
+
 ## Deploy Instructions - virtual environment
 
 The virtual environment method takes a few extra steps to set up, but is great for lightweight, fast development. This is recommended for developers who are spending a non-trivial amount of time working on the project.
@@ -99,6 +105,12 @@ python manage.py makemigrations main
 python manage.py migrate
 ```
 
+- Create a superuser to access the admin site
+
+```
+python manage.py createsuperuser
+```
+
 - Start backend server
 ```
 python manage.py runserver
@@ -123,21 +135,15 @@ RxC Voice - http://localhost:4000
 
 ## Creating users and accessing the site for testing
 
-1. Create a superuser to access the admin site
+- Log in to the admin site at http://127.0.0.1:8000/admin
 
-```
-docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
-```
+- Create a Group named "RxC Voice" -- any objects you create for RxC Voice must be added to this group.
 
-2. Log in to the admin site at http://127.0.0.1:8000/admin
+- Create a User. It is recommended that you use the same email address for both the "Email address" field and the "Username" field. Add the user to the "RxC Voice" group you created in step 3.
 
-3. Create a Group named "RxC Voice" -- any objects you create for RxC Voice must be added to this group.
+- Now create a Delegate for the User you just created (The Delegate class is an extension/wrapper of the User class). If you have not set up email services, you can bypass the user verification process by checking "Is verified" and entering something into the "Public username" field.
 
-4. Create a User. It is recommended that you use the same email address for both the "Email address" field and the "Username" field. Add the user to the "RxC Voice" group you created in step 3.
-
-5. Now create a Delegate for the User you just created (The Delegate class is an extension/wrapper of the User class). If you have not set up email services, you can bypass the user verification process by checking "Is verified" and entering something into the "Public username" field.
-
-6. You should now be able to log in to the site with the test user's email and password.
+- You should now be able to log in to the site with the test user's email and password.
 
 ## Contribute
 
