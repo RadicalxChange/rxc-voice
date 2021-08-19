@@ -30,6 +30,15 @@ cp .env-example .env
 
 5. Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
 
+> <details>
+>   <summary>Optional GIT step</summary>
+>  
+>   After step 5, GIT will detect a change in `url.ts` that you don't want to commit to the remote repository. For simplicity, you can run the following line to tell GIT you want to have your own local version of `urls.ts` and don't want to overwrite what's in the repository.
+> ```
+> git update-index --skip-worktree ./rxc-voice/src/utils/urls.ts
+> ```
+> </details>
+
 6. Build images and stand up containers (make sure docker is running first).
 ```
 # build and stand up containers
