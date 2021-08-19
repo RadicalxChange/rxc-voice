@@ -1,0 +1,2 @@
+# Make sure that GIT auto-detects text files to apply CRLF to LF conversion on all text files
+* text=auto
