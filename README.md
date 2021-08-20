@@ -17,7 +17,7 @@ production containers.
 
 3. Clone project -
 ```
-git clone https://github.com/RadicalxChange/rxc-voice.git
+git clone --config core.autocrlf=input https://github.com/RadicalxChange/rxc-voice.git
 cd rxc-voice
 git checkout master
 ```
