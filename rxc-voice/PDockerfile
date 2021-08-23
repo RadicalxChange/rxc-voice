@@ -1,13 +1,25 @@
-FROM node:15.14 as builder
+# Install dependencies only when needed
+FROM node:15.14-alpine as deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
+WORKDIR /rxc-voice
+COPY rxc-voice/package.json rxc-voice/package-lock.json ./
+RUN npm ci
 
-RUN mkdir /rxc-voice
+# Rebuild the source code only when needed
+FROM node:15.14-alpine as builder
+WORKDIR /rxc-voice
 COPY rxc-voice/ /rxc-voice
-COPY scripts/ /scripts
+COPY --from=deps /rxc-voice/node_modules ./node_modules
+RUN npm run build
 
+# Production image, copy all the files and run next
+FROM node:15.14-alpine AS runner
 WORKDIR /rxc-voice
 
-EXPOSE 4000
-
-RUN npm install
-RUN npm run build
+COPY --from=builder /rxc-voice/public ./public
+COPY --from=builder /rxc-voice/node_modules ./node_modules
+COPY --from=builder /rxc-voice/package.json ./package.json
 RUN npm install -g serve
+
+EXPOSE 4000
