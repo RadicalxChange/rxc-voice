@@ -10,7 +10,7 @@ import ProcessMenu from "../ProcessMenu";
 import "./Deliberation.scss";
 
 function Deliberation() {
-  const POLIS_SITE_ID = 'polis_site_id_cG2opQF5hsqj9jGCsr';
+  // const POLIS_SITE_ID = 'polis_site_id_cG2opQF5hsqj9jGCsr';
   const { processId } = useParams<ProcessPageRouteParams>();
   const { user, selectedProcess, creditBalance, loading } = useContext(StateContext);
   const { selectProcess, setUserData, setColor } = useContext(ActionContext);
