@@ -1,36 +1,36 @@
-## RadicalxChange Voice
+# RadicalxChange Voice
 
 RxC Voice is an app for decentralized democratic governance. It is developed by RadicalxChange to model and experiment with a new democratic process for decentralized democracy that leverages Quadratic Funding, pol.is, and Quadratic Voting.
 
 This repo also hosts RxC Conversations, a wrapper for Pol.is conversations held in the RadicalxChange community.
 
-## Deploy Instructions - Docker
+## Local Setup - Docker
 
 The Docker method is recommended for non-developers or anyone who wants to
 quickly get the project running off-the-shelf. The Docker method is also
 recommended for production. docker-compose-prod.yml can be used to spin up
 production containers.
 
-1. Install Docker
+- Install Docker
 
-2. Install docker-compose (included in Docker Desktop for Mac and Windows)
+- Install docker-compose (included in Docker Desktop for Mac and Windows)
 
-3. Clone project -
+- Clone project -
 ```
 git clone https://github.com/RadicalxChange/rxc-voice.git
 cd rxc-voice
 git checkout master
 ```
 
-4. Create .env file and fill up suitable environment variables
+- Create .env file and fill up suitable environment variables.
 
 ```
 cp .env-example .env
 ```
 
-5. Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
+- Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
 
-6. Build images and stand up containers (make sure docker is running first).
+- Build images and stand up containers (make sure docker is running first).
 ```
 # build and stand up containers
 docker-compose -f docker-compose-voice.yml up --build
@@ -139,7 +139,7 @@ RxC Voice - http://localhost:4000
 
 - Create a Group named "RxC Voice" -- any objects you create for RxC Voice must be added to this group.
 
-- Create a User. It is recommended that you use the same email address for both the "Email address" field and the "Username" field. Add the user to the "RxC Voice" group you created in step 3.
+- Create a User. The login UI uses `username` but has the label `email` - to prevent confusion you should use the same email address for both the "Email address" field and the "Username" field. Add the user to the "RxC Voice" group you created in step 3.
 
 - Now create a Delegate for the User you just created (The Delegate class is an extension/wrapper of the User class). If you have not set up email services, you can bypass the user verification process by checking "Is verified" and entering something into the "Public username" field.
 
@@ -147,4 +147,26 @@ RxC Voice - http://localhost:4000
 
 ## Contribute
 
-For questions, comments, or troubleshooting, please feel free to open an issue on this repo. Our team currently includes only one developer--any kind of contribution from the community is greatly appreciated!
+For questions, comments, or troubleshooting, please feel free to open an issue on this repo. Our team currently includes only one full-time developer--any kind of contribution from the community is greatly appreciated!
+
+## Troubleshooting
+
+### database "DATABASE_NAME" does not exist
+
+If you are building your Docker containers, and the rxc-voice_api_1 throws this
+error, you probably have already initialized a database with another name.
+
+- connect to rxc-voice_db_1 and open shell
+
+`docker exec -it rxc-voice_db_1 bash`
+
+- open psql shell and list databases
+
+`psql -U POSTGRES_USER
+postgres-# \l`
+
+- copy the name of the correct database and update the value of POSTGRES_DB in your .env file
+
+## Chat with us
+
+Ask on Discord: https://discord.gg/  TcE9FKQb
