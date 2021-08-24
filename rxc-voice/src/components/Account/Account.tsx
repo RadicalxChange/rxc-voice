@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useAlert } from "react-alert";
-import { uuid } from "uuidv4";
+// import { uuid } from "uuidv4";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
-import { VerificationMethod } from "../../models/VerificationMethod";
+// import { VerificationMethod } from "../../models/VerificationMethod";
 import { WebService } from "../../services";
-import { getDelegateId, getUserId, userobj, validateEmail } from "../../utils";
+import { getUserId, userobj, validateEmail } from "../../utils";
 import ProfileIcon from "../Delegation/components/ProfileIcon";
 
 import "./Account.scss";
 
 function Account() {
-  const github_client_id = 'f9be73dc7af4857809e0';
+  // const github_client_id = 'f9be73dc7af4857809e0';
   const { setColor, logoutUser, updateCreditBalance, setUserData } = useContext(ActionContext);
   const { creditBalance } = useContext(StateContext);
   const [user, setUser] = useState(userobj());
@@ -20,7 +20,7 @@ function Account() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
+  // const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
 
   const alert = useAlert()
 
