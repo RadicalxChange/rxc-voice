@@ -33,7 +33,7 @@ function ProposalResults(props: any) {
   const setUpCanvas = (canvas: HTMLCanvasElement, newGutterHeight: number) => {
     canvas.width = canvas.clientWidth;
     canvas.height = (barHeight + newGutterHeight) * proposals.length + 10;
-    var w = canvas.width, h = canvas.height;
+    var w = canvas.width;
 
     const ctx = canvas.getContext('2d');
     if (ctx) {
