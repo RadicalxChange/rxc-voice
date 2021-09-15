@@ -11,26 +11,26 @@ quickly get the project running off-the-shelf. The Docker method is also
 recommended for production. docker-compose-prod.yml can be used to spin up
 production containers.
 
-1. Install Docker
+- Install Docker
 
-2. Install docker-compose (included in Docker Desktop for Mac and Windows)
+- Install docker-compose (included in Docker Desktop for Mac and Windows)
 
-3. Clone project -
+- Clone project -
 ```
 git clone https://github.com/RadicalxChange/rxc-voice.git
 cd rxc-voice
 git checkout master
 ```
 
-4. Create .env file and fill up suitable environment variables
+- Create .env file and fill up suitable environment variables
 
 ```
 cp .env-example .env
 ```
 
-5. Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
+- Configure urls in `rxc-voice/src/utils/urls.ts` -- comment out the production urls and uncomment the local urls.
 
-6. Build images and stand up containers (make sure docker is running first).
+- Build images and stand up containers (make sure docker is running first).
 ```
 # build and stand up containers
 docker-compose -f docker-compose-voice.yml up --build
@@ -45,16 +45,17 @@ docker-compose -f docker-compose-voice.yml build
 docker-compose -f docker-compose-voice.yml up
 ```
 
+- Create a superuser to access the admin site
+
+```
+docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
+
+
 The project is now up and running -
 
 Backend API - http://127.0.0.1:8000
 
 RxC Voice - http://localhost:4000
-
-- Create a superuser to access the admin site
-
-```
-docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
 ```
 
 ## Deploy Instructions - virtual environment
