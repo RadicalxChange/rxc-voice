@@ -45,16 +45,17 @@ docker-compose -f docker-compose-voice.yml build
 docker-compose -f docker-compose-voice.yml up
 ```
 
+- Create a superuser to access the admin site
+
+```
+docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
+
+
 The project is now up and running -
 
 Backend API - http://127.0.0.1:8000
 
 RxC Voice - http://localhost:4000
-
-- Create a superuser to access the admin site
-
-```
-docker exec -it rxc-voice_api_1 ./manage.py createsuperuser
 ```
 
 ## Deploy Instructions - virtual environment
