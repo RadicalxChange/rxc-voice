@@ -23,7 +23,7 @@ function Delegation() {
   const [transfers, setTransfers] = useState(new Array<Transfer>());
   const [subtotal, setSubtotal] = useState(0);
   const [match, setMatch] = useState(0);
-  const delegationOngoing = conversation && moment() < moment(conversation.end_date);
+  const delegationOngoing = conversation && moment() < moment(conversation.start_date);
   const [stagedTransfer, setStagedTransfer] = useState("");
   const [inviteModal, setInviteModal] = useState(false);
 
@@ -103,7 +103,7 @@ function Delegation() {
               </div>
               {conversation && delegationOngoing ? (
                 <>
-                <p className="explain-text"><strong>The Delegation Stage closes on {moment(conversation.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+                <p className="explain-text"><strong>The Delegation Stage closes on {moment(conversation.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
                 <h3 className="matching-pool">The size of the matching pool will be 100 times the final number of delegates.</h3>
                 <button
                   type="button"

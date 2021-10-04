@@ -7,7 +7,7 @@ import "./DelegateCard.scss";
 
 function DelegateCard(props: any) {
   const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
-  const delegationOngoing = moment() < moment(props.process.conversation.end_date);
+  const delegationOngoing = moment() < moment(props.process.conversation.start_date);
   const oauthDomain: string =
     (props.delegate.oauth_provider === VerificationMethod.Github)
     ? "https://github.com/" : "https://twitter.com/";
