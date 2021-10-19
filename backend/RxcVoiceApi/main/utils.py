@@ -5,13 +5,23 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
 from main.models import Delegate, Process
 
-def delegate_is_verified(user_id):
+def is_verified(user_id):
     try:
         delegate = Delegate.objects.filter(user__id=user_id).first()
     except(Delegate.DoesNotExist):
         delegate = None
     if delegate is not None:
         return delegate.is_verified
+    else:
+        return False
+
+def is_group_admin(user_id, process_groups):
+    try:
+        delegate = Delegate.objects.filter(user__id=user_id).first()
+    except(Delegate.DoesNotExist):
+        delegate = None
+    if delegate is not None:
+        return not set(process_groups).isdisjoint(delegate.groups_managed)
     else:
         return False
 

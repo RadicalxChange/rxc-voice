@@ -33,6 +33,7 @@ class Delegate(models.Model):
         'self', blank=True, null=True, on_delete=models.SET_NULL)
     credit_balance = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
+    groups_managed = models.ManyToManyField(Group, blank=True, default=[])
 
     def __str__(self):
         return self.user.email
