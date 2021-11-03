@@ -153,6 +153,22 @@ export const fetchSingleProcess = (id: string): Observable<Process> => {
   });
 };
 
+export const postProcess = (process: any): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/processes/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify(process),
+      }),
+    );
+  });
+};
+
 export const fetchElection = (id: string): Observable<Election> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");
@@ -168,18 +184,6 @@ export const fetchElection = (id: string): Observable<Election> => {
   });
 };
 
-// export const postElection = (election: any): Observable<any> => {
-//   return defer(() => {
-//     return from<Promise<any>>(
-//       fetch(`${ROOT_URL}/elections/`, {
-//         headers: { "Content-Type": "application/json; charset=utf-8" },
-//         method: "POST",
-//         body: JSON.stringify(election),
-//       }),
-//     );
-//   });
-// };
-
 export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");
@@ -194,18 +198,6 @@ export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
     );
   });
 };
-
-// export const postProposals = (proposals: any, election_id: number): Observable<any> => {
-//   return defer(() => {
-//     return from<Promise<any>>(
-//       fetch(`${ROOT_URL}/elections/${election_id}/proposals/`, {
-//         headers: { "Content-Type": "application/json; charset=utf-8" },
-//         method: "POST",
-//         body: JSON.stringify(proposals),
-//       }),
-//     );
-//   });
-// };
 
 export const fetchVotes = (election_id: number): Observable<Vote[]> => {
   return defer(() => {
