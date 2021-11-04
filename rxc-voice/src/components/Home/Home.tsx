@@ -26,6 +26,9 @@ function Home() {
       <h1 className="title">Welcome to RxC Voice</h1>
       <p>RadicalxChange's platform for collective decision making!<br></br>
       Click on a decision below to participate or see results.</p>
+      <div className="create-button">
+        <a href="/create-event">+ Create a new Event</a>
+      </div>
       <div className="content">
           {activeProcesses.length ? (
             <ul className="process-list">
