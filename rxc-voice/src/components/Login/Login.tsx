@@ -45,8 +45,7 @@ function Login() {
           setUserData(user);
           if (!userIsVerified(user)) {
             setUnverifiedLogin(true);
-          }
-          if (linkToken) {
+          } else {
             window.location.href = Domain.WEB;
           }
         } else {
