@@ -12,7 +12,7 @@ from .serializers import (ElectionSerializer,
                           VoteSerializer,
                           ProposalSerializer
                           )
-from .models import Election, Vote, Proposal, Group, Delegate
+from .models import Election, Vote, Proposal, Group
 
 
 class ElectionList(mixins.CreateModelMixin,

@@ -3,33 +3,35 @@ import premailer
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
-from main.models import Delegate, Process
+from main.models import Delegate, Profile, Process
 
 def is_verified(user_id):
     try:
-        delegate = Delegate.objects.filter(user__id=user_id).first()
-    except(Delegate.DoesNotExist):
-        delegate = None
-    if delegate is not None:
-        return delegate.is_verified
+        profile = Profile.objects.filter(user__id=user_id).first()
+    except(Profile.DoesNotExist):
+        profile = None
+    if profile is not None:
+        return profile.is_verified
     else:
         return False
 
 def is_group_admin(user_id, process_groups):
     try:
-        delegate = Delegate.objects.filter(user__id=user_id).first()
-    except(Delegate.DoesNotExist):
-        delegate = None
-    if delegate is not None:
-        return not set(process_groups).isdisjoint(delegate.groups_managed)
+        profile = Profile.objects.filter(user__id=user_id).first()
+    except(Profile.DoesNotExist):
+        profile = None
+    if profile is not None:
+        return not set(process_groups).isdisjoint(profile.groups_managed)
     else:
         return False
 
-def add_to_delegation(delegate):
-    delegate_groups = map(lambda x: x.name, delegate.user.groups.all())
-    processes = Process.objects.filter(groups__name__in=delegate_groups)
+def add_to_delegation(profile):
+    profile_groups = map(lambda x: x.name, profile.user.groups.all())
+    processes = Process.objects.filter(groups__name__in=profile_groups)
     for process in processes:
-        process.delegates.add(delegate)
+        delegate = profile.delegates.get(process=process)
+        if delegate is not None:
+            process.delegates.add(delegate)
 
 
 def premailer_transform(html):
@@ -43,10 +45,10 @@ def get_mail_body(mail_name, mail_params):
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
-    def _make_hash_value(self, delegate, timestamp):
+    def _make_hash_value(self, profile, timestamp):
         return (
-            six.text_type(delegate.user.pk) + six.text_type(timestamp) +
-            six.text_type(delegate.user.is_active)
+            six.text_type(profile.user.pk) + six.text_type(timestamp) +
+            six.text_type(profile.user.is_active)
         )
 
 account_activation_token = TokenGenerator()

@@ -27,8 +27,12 @@ class ConversationAdmin(admin.ModelAdmin):
         form.instance.save()
 
 
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['id','user','public_username','is_verified']
+
+
 class DelegateAdmin(admin.ModelAdmin):
-    list_display = ['id','user','public_username','is_verified','credit_balance','invited_by']
+    list_display = ['id','profile','credit_balance','invited_by']
 
 
 class TransferAdmin(admin.ModelAdmin):
@@ -49,6 +53,7 @@ class MatchPaymentAdmin(admin.ModelAdmin):
 
 admin.site.register(Election, ElectionAdmin)
 admin.site.register(Proposal, ProposalAdmin)
+admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Delegate, DelegateAdmin)
 admin.site.register(Process, ProcessAdmin)
 admin.site.register(Conversation, ConversationAdmin)

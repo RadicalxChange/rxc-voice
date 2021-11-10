@@ -117,9 +117,9 @@ def estimate_match(new_transfer):
                 sum_of_roots[transfer.recipient_object.id] = math.sqrt(transfer.amount)
     # calculate change the new transfer would cause
     sender = new_transfer['sender']
-    recipient_object = Delegate.objects.filter(user__email=new_transfer['recipient']).first()
+    recipient_object = Delegate.objects.filter(profile__user__email=new_transfer['recipient']).first()
     if not recipient_object:
-        recipient_object = Delegate.objects.filter(public_username=new_transfer['recipient']).first()
+        recipient_object = Delegate.objects.filter(profile__public_username=new_transfer['recipient']).first()
     adjusted_pledged_total = 0
     adjusted_sum_roots = 0
     if recipient_object:

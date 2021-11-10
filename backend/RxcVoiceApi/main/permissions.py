@@ -8,7 +8,7 @@ class DelegatePermission(permissions.BasePermission):
         if request.method == 'GET':
             return request.user.is_authenticated
         elif request.method == 'POST':
-            return request.user.is_staff
+            return request.user.is_authenticated
         elif request.method in ['PUT', 'PATCH']:
             return request.user.is_authenticated
         elif request.method in ['DELETE']:

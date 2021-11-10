@@ -23,6 +23,7 @@ class ProcessList(mixins.CreateModelMixin,
     def get(self, request, *args, **kwargs):
         processes = []
         for process in self.get_queryset():
+            # can probably move this?
             groups = process.groups.all()
             for group in groups:
                 assign_perm('can_view', group, process)

@@ -15,6 +15,9 @@ urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
 
     # Authentication APIs
+    path('profile/', ProfileList.as_view(), name='profile-list'),
+    path('profiles/<int:pk>/', ProfileDetail.as_view(),
+         name='profile-detail'),
     path('delegates/', DelegateList.as_view(), name='delegate-list'),
     path('delegates/<int:pk>/', DelegateDetail.as_view(),
          name='delegate-detail'),
