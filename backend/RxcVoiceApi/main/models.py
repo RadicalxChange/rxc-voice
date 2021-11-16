@@ -3,6 +3,36 @@ from django.contrib.auth.models import (User, Group)
 from django.contrib.postgres.fields import ArrayField
 
 
+class Process(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    title = models.CharField(max_length=256, blank=False)
+    description = models.TextField(blank=True, null=True)
+    start_date = models.DateTimeField(blank=False)
+    end_date = models.DateTimeField(blank=False)
+    groups = models.ManyToManyField(Group, blank=True, default=[])
+    matching_pool = models.DecimalField(
+    default=0, max_digits=10, decimal_places=0, blank=True, null=True)
+    DELEGATION = 'Delegation'
+    DELIBERATION = 'Deliberation'
+    ELECTION = 'Election'
+    STATUS_CHOICES = (
+        (DELEGATION, 'Delegation'),
+        (DELIBERATION, 'Deliberation'),
+        (ELECTION, 'Election'),
+    )
+    status = models.CharField(max_length=14, choices=STATUS_CHOICES,
+                          default=DELEGATION)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "processes"
+        permissions = [
+            ("can_view", "Can view"),
+        ]
+
+
 class Profile(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     # When a user deletes their account, their user object is not deleted.
@@ -110,41 +140,6 @@ class Conversation(models.Model):
         return self.title
 
     class Meta:
-        permissions = [
-            ("can_view", "Can view"),
-        ]
-
-
-class Process(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    title = models.CharField(max_length=256, blank=False)
-    description = models.TextField(blank=True, null=True)
-    start_date = models.DateTimeField(blank=False)
-    end_date = models.DateTimeField(blank=False)
-    groups = models.ManyToManyField(Group, blank=True, default=[])
-    delegates = models.ManyToManyField(Delegate, blank=True, default=[])
-    matching_pool = models.DecimalField(
-        default=0, max_digits=10, decimal_places=0, blank=True, null=True)
-    conversation = models.OneToOneField(
-        Conversation, null=True, on_delete=models.SET_NULL)
-    election = models.OneToOneField(
-        Election, null=True, on_delete=models.SET_NULL)
-    DELEGATION = 'Delegation'
-    DELIBERATION = 'Deliberation'
-    ELECTION = 'Election'
-    STATUS_CHOICES = (
-        (DELEGATION, 'Delegation'),
-        (DELIBERATION, 'Deliberation'),
-        (ELECTION, 'Election'),
-    )
-    status = models.CharField(max_length=14, choices=STATUS_CHOICES,
-                              default=DELEGATION)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name_plural = "processes"
         permissions = [
             ("can_view", "Can view"),
         ]

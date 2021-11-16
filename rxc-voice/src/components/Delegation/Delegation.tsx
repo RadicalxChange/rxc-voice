@@ -12,7 +12,6 @@ import { Transfer } from "../../models/Transfer";
 import TransferCard from "./components/TransferCard";
 import ProcessMenu from "../ProcessMenu";
 import TransferModal from "./components/TransferModal";
-import { Profile } from "../../models/Profile";
 
 import "./Delegation.scss";
 
