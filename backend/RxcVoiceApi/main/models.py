@@ -3,36 +3,6 @@ from django.contrib.auth.models import (User, Group)
 from django.contrib.postgres.fields import ArrayField
 
 
-class Process(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    title = models.CharField(max_length=256, blank=False)
-    description = models.TextField(blank=True, null=True)
-    start_date = models.DateTimeField(blank=False)
-    end_date = models.DateTimeField(blank=False)
-    groups = models.ManyToManyField(Group, blank=True, default=[])
-    matching_pool = models.DecimalField(
-    default=0, max_digits=10, decimal_places=0, blank=True, null=True)
-    DELEGATION = 'Delegation'
-    DELIBERATION = 'Deliberation'
-    ELECTION = 'Election'
-    STATUS_CHOICES = (
-        (DELEGATION, 'Delegation'),
-        (DELIBERATION, 'Deliberation'),
-        (ELECTION, 'Election'),
-    )
-    status = models.CharField(max_length=14, choices=STATUS_CHOICES,
-                          default=DELEGATION)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name_plural = "processes"
-        permissions = [
-            ("can_view", "Can view"),
-        ]
-
-
 class Profile(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     # When a user deletes their account, their user object is not deleted.
@@ -55,20 +25,6 @@ class Profile(models.Model):
     # Represented by path
     profile_pic = models.TextField(null=True, blank=True)
     groups_managed = models.ManyToManyField(Group, blank=True, default=[])
-
-    def __str__(self):
-        return self.user.email
-
-
-class Delegate(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    profile = models.ForeignKey(
-        Profile, related_name='delegates', blank=True, null=True, on_delete=models.SET_NULL)
-    invited_by = models.ForeignKey(
-        Profile, related_name='delegates_invited', blank=True, null=True, on_delete=models.SET_NULL)
-    process = models.ForeignKey(Process, related_name='delegates', null=True, on_delete=models.SET_NULL)
-    credit_balance = models.DecimalField(
-        default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
 
     def __str__(self):
         return self.user.email
@@ -110,21 +66,6 @@ class Proposal(models.Model):
         return self.title
 
 
-class Vote(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    # When a user deletes their account, their user object is not deleted.
-    # "is_active" field is set to 'False'.
-    sender = models.ForeignKey(Delegate, null=True, on_delete=models.SET_NULL)
-    proposal = models.ForeignKey(Proposal, on_delete=models.SET_NULL,
-                                 null=True, blank=False)
-    amount = models.DecimalField(
-        default=0, max_digits=4, decimal_places=0)
-    date = models.DateTimeField(null=True)
-
-    def __str__(self):
-        return str(self.sender) + " " + str(self.amount) + " -> " + str(self.proposal)
-
-
 class Conversation(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     uuid = models.CharField(max_length=256, null=True, editable=False)
@@ -143,6 +84,69 @@ class Conversation(models.Model):
         permissions = [
             ("can_view", "Can view"),
         ]
+
+
+class Process(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    title = models.CharField(max_length=256, blank=False)
+    description = models.TextField(blank=True, null=True)
+    start_date = models.DateTimeField(blank=False)
+    end_date = models.DateTimeField(blank=False)
+    groups = models.ManyToManyField(Group, blank=True, default=[])
+    matching_pool = models.DecimalField(
+        default=0, max_digits=10, decimal_places=0, blank=True, null=True)
+    conversation = models.OneToOneField(
+        Conversation, null=True, on_delete=models.SET_NULL)
+    election = models.OneToOneField(
+        Election, null=True, on_delete=models.SET_NULL)
+    DELEGATION = 'Delegation'
+    DELIBERATION = 'Deliberation'
+    ELECTION = 'Election'
+    STATUS_CHOICES = (
+        (DELEGATION, 'Delegation'),
+        (DELIBERATION, 'Deliberation'),
+        (ELECTION, 'Election'),
+    )
+    status = models.CharField(max_length=14, choices=STATUS_CHOICES,
+                              default=DELEGATION)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "processes"
+        permissions = [
+            ("can_view", "Can view"),
+        ]
+
+
+class Delegate(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    profile = models.ForeignKey(
+        Profile, related_name='delegates', blank=True, null=True, on_delete=models.SET_NULL)
+    invited_by = models.ForeignKey(
+        Profile, related_name='delegates_invited', blank=True, null=True, on_delete=models.SET_NULL)
+    process = models.ForeignKey(Process, related_name='delegates', null=True, on_delete=models.SET_NULL)
+    credit_balance = models.DecimalField(
+        default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
+
+    def __str__(self):
+        return self.user.email
+
+
+class Vote(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    # When a user deletes their account, their user object is not deleted.
+    # "is_active" field is set to 'False'.
+    sender = models.ForeignKey(Delegate, null=True, on_delete=models.SET_NULL)
+    proposal = models.ForeignKey(Proposal, on_delete=models.SET_NULL,
+                                 null=True, blank=False)
+    amount = models.DecimalField(
+        default=0, max_digits=4, decimal_places=0)
+    date = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return str(self.sender) + " " + str(self.amount) + " -> " + str(self.proposal)
 
 
 class Transfer(models.Model):
