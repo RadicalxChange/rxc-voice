@@ -28,21 +28,10 @@ function Account() {
     setColor(BgColor.Yellow);
 
     var user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
-    console.log(user)
     setUser(user);
     setEmail(user.email);
     setFirstName(user.first_name);
     setLastName(user.last_name);
-    if (creditBalance === null) {
-      if (user) {
-        WebService.getDelegate(user.id).subscribe(async (data: any) => {
-          if (data.ok) {
-            const delegate = await data.json();
-            updateCreditBalance(delegate.credit_balance);
-          }
-        });
-      }
-    }
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -181,7 +170,6 @@ function Account() {
           <div className="info">
             <h3 className="name">{firstName + " " + lastName}</h3>
             <h3 className="email">{email}</h3>
-            <h3 className="credit-balance">Credit Balance: {creditBalance}</h3>
           </div>
         )}</>
         </div>

@@ -2,7 +2,7 @@ from django.contrib import admin
 from guardian.shortcuts import assign_perm
 import uuid
 
-from .models import (Election, Proposal, Delegate, Process, Conversation, Transfer, MatchPayment)
+from .models import (Election, Proposal, Delegate, Profile, Process, Conversation, Transfer, MatchPayment)
 from .signals import send_register_mail
 
 class ElectionAdmin(admin.ModelAdmin):

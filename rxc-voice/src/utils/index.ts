@@ -118,10 +118,7 @@ export const mapToDelegates = (delegates: Delegate[]): Delegate[] => {
 export const mapToDelegate = (delegate: Delegate): Delegate => {
   return {
     id: delegate.id,
-    is_verified: delegate.is_verified,
-    user: delegate.user,
-    public_username: delegate.public_username,
-    oauth_provider: delegate.oauth_provider,
+    profile: delegate.profile,
     credit_balance: delegate.credit_balance,
     pending_credits: delegate.pending_credits,
   };
@@ -142,7 +139,7 @@ export const mapToProcess = (process: Process): Process => {
     description: process.description,
     start_date: process.start_date,
     end_date: process.end_date,
-    delegates: mapToDelegates(process.delegates).filter(delegate => delegate.is_verified),
+    delegates: mapToDelegates(process.delegates).filter(delegate => delegate.profile.is_verified),
     matching_pool: process.matching_pool,
     conversation: process.conversation,
     curation_info: process.curation_info,
@@ -186,7 +183,7 @@ export const validatePasswordLength = (password: string) => {
   return false;
 };
 
-export const getDelegateId = (user: any) => {
+export const getProfileId = (user: any) => {
   if (user) {
     return user.id;
   } else {
@@ -278,14 +275,6 @@ export const getStatus = (process: Process | null) => {
 export const getDescription = (process: Process | null) => {
   if (process) {
     return process.description;
-  } else {
-    return undefined;
-  }
-};
-
-export const getCurationInfo = (process: Process | null) => {
-  if (process) {
-    return process.curation_info;
   } else {
     return undefined;
   }

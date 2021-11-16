@@ -19,20 +19,20 @@ function LandingPage() {
       <div className="top-panel">
         <img src={logo} className="App-logo" alt="logo" />
         <p className="subtitle">A way for groups to evolve and make decisions democratically</p>
-        <button type="button">
-            <Link
-            to={`/verify`}
-            >
-            </Link>
-            Get Started
-        </button>
-        <button type="button">
-            <Link
-            to={`/`}
-            >
-            </Link>
-            Learn More
-        </button>
+        <Link
+        to={`/verify`}
+        >
+          <button type="button">
+              Get Started
+          </button>
+        </Link>
+        <Link
+        to={`/`}
+        >
+          <button type="button">
+              Learn More
+          </button>
+        </Link>
       </div>
     </div>
   );

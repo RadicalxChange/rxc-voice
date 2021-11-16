@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 
 from .rootview import RootView
-from .authviews import (DelegateList, DelegateDetail, UserDetail,
+from .authviews import (DelegateList, DelegateDetail, ProfileList, ProfileDetail, UserDetail,
                         CustomAuthToken, PermissionList, EmailApplication,
                         GroupList, GetGithubUser, ValidateAuthToken,
                         GetTwitterToken, ForgotPassword, ResetPassword)

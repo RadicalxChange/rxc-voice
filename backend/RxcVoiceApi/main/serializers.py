@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
-from .models import Election, Vote, Proposal, Delegate, Conversation, Process, Transfer
+from .models import Election, Vote, Proposal, Delegate, Profile, Conversation, Process, Transfer
 from django.contrib.auth.models import (User, Group, Permission)
 
 
@@ -199,6 +199,21 @@ class ProfileSerializer(serializers.ModelSerializer):
             )
         return profile
 
+    def update(self, instance, validated_data):
+        instance.oauth_provider = validated_data.get('oauth_provider', instance.oauth_provider)
+        instance.save()
+
+        user = instance.user
+        user.username = validated_data.get('username', user.username)
+        user.first_name = validated_data.get('first_name', user.first_name)
+        user.last_name = validated_data.get('last_name', user.last_name)
+        user.email = validated_data.get('email', user.email)
+        if validated_data.get('password', '') != '':
+            user.set_password(validated_data['password'])
+        user.save()
+
+        return instance
+
 
 class DelegateSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
@@ -290,6 +305,7 @@ class TransferSerializer(serializers.ModelSerializer):
                         'email': recipient,
                     },
                 },
+                'process': process,
                 'credit_balance': 0,
                 'invited_by': sender,
                 },
@@ -302,7 +318,6 @@ class TransferSerializer(serializers.ModelSerializer):
             raise ValidationError("Invalid transfer.")
         sender.credit_balance -= validated_data.get('amount')
         sender.save()
-        process.delegates.add(recipient_object)
         transfer = Transfer.objects.create(
             sender=sender,
             recipient=recipient,
@@ -360,7 +375,7 @@ class ProcessSerializer(serializers.ModelSerializer):
         self.fields['election'] = ElectionSerializer(context=self.context)
         self.fields['delegates'] = DelegateSerializer(
             many=True,
-            context={'allowed_fields': ['credit_balance', 'pending_credits']}
+            context={'allowed_fields': ['id', 'profile', 'invited_by', 'process', 'credit_balance', 'pending_credits']}
             )
         self.fields['conversation'] = ConversationSerializer()
 

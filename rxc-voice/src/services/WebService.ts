@@ -59,17 +59,29 @@ export const modifyUser = (moddata: any, id: string): Observable<any> => {
   });
 };
 
-export const modifyDelegate = (moddata: any, id: string): Observable<any> => {
+export const modifyProfile = (moddata: any, id: string): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/delegates/${id}/`, {
+      fetch(`${ROOT_URL}/profiles/${id}/`, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
          },
         method: "PUT",
         body: JSON.stringify(moddata),
+      }),
+    );
+  });
+};
+
+export const createProfile = (data: any): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/profile/`, {
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        method: "POST",
+        body: JSON.stringify(data),
       }),
     );
   });

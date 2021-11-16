@@ -60,7 +60,7 @@
   .create-account-button {
     display: block;
     text-align: center;
-    margin: 10vmin auto;
+    margin: 5vw auto 10vmin auto;
     padding: 1vmin 4vmin;
     background: var(--blackColor);
     color: white;
@@ -70,13 +70,17 @@
     cursor: pointer;
     font-size: 1rem;
   }
-  .login-button:hover {
+  .create-account-button:hover {
     background: var(--whiteColor);
     color: black;
   }
 
   .text {
     margin-bottom: 3vw;
+  }
+
+  #error-message {
+    margin: 5vw auto 0 auto;
   }
 
   .login-link {

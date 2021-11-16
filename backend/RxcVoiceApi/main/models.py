@@ -33,10 +33,10 @@ class Profile(models.Model):
 class Delegate(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     profile = models.ForeignKey(
-        'self', blank=True, null=True, on_delete=models.SET_NULL)
+        Profile, related_name='delegates', blank=True, null=True, on_delete=models.SET_NULL)
     invited_by = models.ForeignKey(
-        'self', blank=True, null=True, on_delete=models.SET_NULL)
-    process = models.ForeignKey(Process, null=True, on_delete=models.SET_NULL)
+        Profile, related_name='delegates_invited', blank=True, null=True, on_delete=models.SET_NULL)
+    process = models.ForeignKey(Process, related_name='delegates', null=True, on_delete=models.SET_NULL)
     credit_balance = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
 
@@ -153,10 +153,10 @@ class Process(models.Model):
 class Transfer(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     sender = models.ForeignKey(
-        Delegate, related_name="sender", null=True, on_delete=models.SET_NULL)
+        Delegate, related_name='transfers_sent', null=True, on_delete=models.SET_NULL)
     recipient = models.CharField(max_length=64, blank=True, null=True)
     recipient_object = models.ForeignKey(
-        Delegate, related_name="recipient_object", null=True, blank=True, on_delete=models.SET_NULL)
+        Delegate, related_name='transfers_received', null=True, blank=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0)
     date = models.DateTimeField(blank=False)

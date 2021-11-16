@@ -5,6 +5,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
 from main.models import Delegate, Profile, Process
 
+
 def is_verified(user_id):
     try:
         profile = Profile.objects.filter(user__id=user_id).first()
@@ -15,6 +16,7 @@ def is_verified(user_id):
     else:
         return False
 
+
 def is_group_admin(user_id, process_groups):
     try:
         profile = Profile.objects.filter(user__id=user_id).first()
@@ -24,14 +26,6 @@ def is_group_admin(user_id, process_groups):
         return not set(process_groups).isdisjoint(profile.groups_managed)
     else:
         return False
-
-def add_to_delegation(profile):
-    profile_groups = map(lambda x: x.name, profile.user.groups.all())
-    processes = Process.objects.filter(groups__name__in=profile_groups)
-    for process in processes:
-        delegate = profile.delegates.get(process=process)
-        if delegate is not None:
-            process.delegates.add(delegate)
 
 
 def premailer_transform(html):

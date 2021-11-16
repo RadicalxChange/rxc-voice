@@ -21,7 +21,7 @@ from django.conf import settings
 import json
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from .utils import get_mail_body, account_activation_token, add_to_delegation
+from .utils import get_mail_body, account_activation_token
 from .services import send_mail
 
 
@@ -40,7 +40,7 @@ class DelegateList(mixins.CreateModelMixin,
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.create(serializer.validated_data, set_unusable_password=bool(kwargs['admin_create']))
+        serializer.create(serializer.validated_data, set_unusable_password=kwargs.pop('admin_create', False))
         return Response(status=status.HTTP_201_CREATED)
 
 
@@ -79,8 +79,19 @@ class ProfileList(mixins.CreateModelMixin,
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.create(serializer.validated_data)
-        return Response(status=status.HTTP_201_CREATED)
+        profile = serializer.create(serializer.validated_data, set_unusable_password=kwargs.pop('admin_create', False))
+        token, created = Token.objects.get_or_create(user=profile.user)
+        return Response({
+            'token': token.key,
+            'id': profile.pk,
+            'is_verified': profile.is_verified,
+            'user_id': profile.user.id,
+            'username': token.user.username,
+            'email': token.user.email,
+            'first_name': token.user.first_name,
+            'last_name': token.user.last_name,
+            'profile_pic': profile.profile_pic,
+        }, status=status.HTTP_201_CREATED)
 
 
 class ProfileDetail(mixins.RetrieveModelMixin,
@@ -267,12 +278,9 @@ class ValidateAuthToken(ObtainAuthToken):
                 'user_id': profile.user.id,
                 'username': token.user.username,
                 'email': token.user.email,
-                # 'phone_number': token.user.phone_number,
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
                 'profile_pic': profile.profile_pic,
-                # 'invited_by': token.user.invited_by,
-                'credit_balance': profile.credit_balance,
             })
         else:
             return HttpResponse('Activation link is invalid!')
@@ -321,10 +329,6 @@ class GetGithubUser(generics.GenericAPIView):
                     # profile pic available at github_data['avatar_url']
                     profile.is_verified = True
                     profile.save()
-                    try:
-                        add_to_delegation(profile)
-                    except:
-                        print(traceback.format_exc())
                     cors_header = {
                         'Access-Control-Allow-Origin': '*',
                     }
@@ -390,10 +394,6 @@ class GetTwitterToken(generics.GenericAPIView):
                 profile.is_verified = True
                 # get profile pic
                 profile.save()
-                try:
-                    add_to_delegation(profile)
-                except:
-                    print(traceback.format_exc())
 
         return Response(
             twitter_data,

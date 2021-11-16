@@ -12,6 +12,7 @@ import { Transfer } from "../../models/Transfer";
 import TransferCard from "./components/TransferCard";
 import ProcessMenu from "../ProcessMenu";
 import TransferModal from "./components/TransferModal";
+import { Profile } from "../../models/Profile";
 
 import "./Delegation.scss";
 
@@ -47,7 +48,7 @@ function Delegation() {
   }, [processId, selectedProcess]);
 
   const isVerified = (delegate: Delegate, index, array) => {
-    return delegate.public_username !== null;
+    return delegate.profile.is_verified !== null;
   };
 
   const processTransferData = (data: any) => {
@@ -157,7 +158,7 @@ function Delegation() {
                     {getDelegates(selectedProcess)!
                       .filter(isVerified)
                       .sort((a: Delegate, b: Delegate) => {
-                        return a.user.first_name.localeCompare(b.user.first_name);
+                        return a.profile.user.first_name.localeCompare(b.profile.user.first_name);
                       })
                       .map((delegate: Delegate) => (
                         <DelegateCard
