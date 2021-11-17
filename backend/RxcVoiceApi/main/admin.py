@@ -1,12 +1,18 @@
 from django.contrib import admin
+from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 from guardian.shortcuts import assign_perm
 import uuid
 
-from .models import (Election, Proposal, Delegate, Profile, Process, Conversation, Transfer, MatchPayment)
+from .models import (Stage, Election, Proposal, Delegate, Profile, Process, Conversation, Delegation, Transfer, MatchPayment)
 from .signals import send_register_mail
 
-class ElectionAdmin(admin.ModelAdmin):
-    list_display = ['id','title','start_date','end_date']
+
+class StageChildAdmin(PolymorphicChildModelAdmin):
+    # base admin class for all child models
+    base_model = Stage
+
+
+class ElectionAdmin(StageChildAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -17,14 +23,19 @@ class ElectionAdmin(admin.ModelAdmin):
             assign_perm('can_vote', group, form.instance)
 
 
-class ConversationAdmin(admin.ModelAdmin):
-    list_display = ['id','title','start_date','end_date']
+class ConversationAdmin(StageChildAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
             form.instance.uuid = str(uuid.uuid1())
         form.instance.save()
+
+
+class StageParentAdmin(PolymorphicParentModelAdmin):
+    # parent model base admin
+    base_model = Stage
+    child_models = (Delegation, Conversation, Election)
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -40,7 +51,7 @@ class TransferAdmin(admin.ModelAdmin):
 
 
 class ProcessAdmin(admin.ModelAdmin):
-    list_display = ['id','title','start_date','end_date','matching_pool','status']
+    list_display = ['id','title','start_date','end_date']
 
 
 class ProposalAdmin(admin.ModelAdmin):
@@ -51,6 +62,8 @@ class MatchPaymentAdmin(admin.ModelAdmin):
     list_display = ['id','recipient','amount','date','process']
 
 
+admin.site.register(Stage, StageChildAdmin)
+admin.site.register(Delegation)
 admin.site.register(Election, ElectionAdmin)
 admin.site.register(Proposal, ProposalAdmin)
 admin.site.register(Profile, ProfileAdmin)

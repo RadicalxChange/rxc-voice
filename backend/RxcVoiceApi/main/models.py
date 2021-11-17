@@ -1,6 +1,26 @@
 from django.db import models
+from polymorphic.models import PolymorphicModel
 from django.contrib.auth.models import (User, Group)
 from django.contrib.postgres.fields import ArrayField
+import uuid
+
+
+class Process(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    title = models.CharField(max_length=256, blank=False)
+    description = models.TextField(blank=True, null=True)
+    start_date = models.DateTimeField(blank=False)
+    end_date = models.DateTimeField(blank=False)
+    groups = models.ManyToManyField(Group, blank=True, default=[])
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "processes"
+        permissions = [
+            ("can_view", "Can view"),
+        ]
 
 
 class Profile(models.Model):
@@ -30,17 +50,83 @@ class Profile(models.Model):
         return self.user.email
 
 
-class Election(models.Model):
+class Delegate(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
+    profile = models.ForeignKey(
+        Profile, related_name='delegates', blank=True, null=True, on_delete=models.SET_NULL)
+    invited_by = models.ForeignKey(
+        Profile, related_name='delegates_invited', blank=True, null=True, on_delete=models.SET_NULL)
+    process = models.ForeignKey(Process, related_name='delegates', null=True, on_delete=models.SET_NULL)
+    credit_balance = models.DecimalField(
+        default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
+
+    def __str__(self):
+        return self.user.email
+
+
+class Stage(PolymorphicModel):
+    id = models.AutoField(primary_key=True, editable=False)
+    DELEGATION = 'delg'
+    CONVERSATION = 'conv'
+    ELECTION = 'elec'
+    CUSTOM = 'cust'
+    STAGE_TYPE_CHOICES = (
+        (DELEGATION, 'delegation'),
+        (CONVERSATION, 'conversation'),
+        (ELECTION, 'election'),
+        (CUSTOM, 'custom'),
+    )
+    type = models.CharField(max_length=4, choices=STAGE_TYPE_CHOICES,
+                                    default=CUSTOM)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True)
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
-    negative_votes = models.BooleanField(default=True)
-    groups = models.ManyToManyField(Group, blank=True, default=[])
+    process = models.ForeignKey(Process, related_name='stages', null=True, on_delete=models.SET_NULL)
+    position = models.DecimalField(
+                default=0, max_digits=2, decimal_places=0, editable=True)
 
     def __str__(self):
         return self.title
+
+
+class Delegation(Stage):
+    num_credits = models.DecimalField(
+        default=0, max_digits=10, decimal_places=0, editable=False)
+    allow_transfers = models.BooleanField(default=True, blank=True)
+    allow_invites = models.BooleanField(default=True, blank=True)
+    NONE = 'none'
+    DEFAULT = 'default'
+    INFINITE = 'infinite'
+    MATCHING_POOL_CHOICES = (
+        (NONE, 'none'),
+        (DEFAULT, 'default'),
+        (INFINITE, 'infinite'),
+    )
+    matching_pool = models.CharField(max_length=8, choices=MATCHING_POOL_CHOICES,
+                                    default=DEFAULT)
+
+    def save(self, *args, **kwargs):
+    	# if transfers are not allowed, there can be no invites or qf matching
+    	if not self.allow_transfers:
+            self.allow_invites = False
+            self.matching_pool = NONE
+    	super(Blog, self).save(*args, **kwargs)
+
+
+class Conversation(Stage):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    show_report = models.BooleanField(default=False, blank=True)
+    report_id = models.CharField(max_length=256, blank=True)
+
+    class Meta:
+        permissions = [
+            ("can_view", "Can view"),
+        ]
+
+
+class Election(Stage):
+    negative_votes = models.BooleanField(default=True)
 
     class Meta:
         permissions = [
@@ -64,74 +150,6 @@ class Proposal(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Conversation(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    uuid = models.CharField(max_length=256, null=True, editable=False)
-    title = models.CharField(max_length=256, blank=False)
-    description = models.TextField(blank=True)
-    start_date = models.DateTimeField(blank=False)
-    end_date = models.DateTimeField(blank=False)
-    show_report = models.BooleanField(default=False, blank=True)
-    report_id = models.CharField(max_length=256, blank=True)
-    groups = models.ManyToManyField(Group, blank=True, default=[])
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        permissions = [
-            ("can_view", "Can view"),
-        ]
-
-
-class Process(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    title = models.CharField(max_length=256, blank=False)
-    description = models.TextField(blank=True, null=True)
-    start_date = models.DateTimeField(blank=False)
-    end_date = models.DateTimeField(blank=False)
-    groups = models.ManyToManyField(Group, blank=True, default=[])
-    matching_pool = models.DecimalField(
-        default=0, max_digits=10, decimal_places=0, blank=True, null=True)
-    conversation = models.OneToOneField(
-        Conversation, null=True, on_delete=models.SET_NULL)
-    election = models.OneToOneField(
-        Election, null=True, on_delete=models.SET_NULL)
-    DELEGATION = 'Delegation'
-    DELIBERATION = 'Deliberation'
-    ELECTION = 'Election'
-    STATUS_CHOICES = (
-        (DELEGATION, 'Delegation'),
-        (DELIBERATION, 'Deliberation'),
-        (ELECTION, 'Election'),
-    )
-    status = models.CharField(max_length=14, choices=STATUS_CHOICES,
-                              default=DELEGATION)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name_plural = "processes"
-        permissions = [
-            ("can_view", "Can view"),
-        ]
-
-
-class Delegate(models.Model):
-    id = models.AutoField(primary_key=True, editable=False)
-    profile = models.ForeignKey(
-        Profile, related_name='delegates', blank=True, null=True, on_delete=models.SET_NULL)
-    invited_by = models.ForeignKey(
-        Profile, related_name='delegates_invited', blank=True, null=True, on_delete=models.SET_NULL)
-    process = models.ForeignKey(Process, related_name='delegates', null=True, on_delete=models.SET_NULL)
-    credit_balance = models.DecimalField(
-        default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
-
-    def __str__(self):
-        return self.user.email
 
 
 class Vote(models.Model):

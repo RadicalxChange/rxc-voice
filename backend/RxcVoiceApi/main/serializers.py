@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
-from .models import Election, Vote, Proposal, Delegate, Profile, Conversation, Process, Transfer
+from .models import Stage, Election, Vote, Proposal, Delegate, Profile, Conversation, Delegation, Process, Transfer
 from django.contrib.auth.models import (User, Group, Permission)
 
 
@@ -18,13 +18,15 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         conversation = Conversation.objects.create(
-            uuid=str(uuid.uuid1()),
+            uuid=uuid.uuid4(),
+            type=Stage.CONVERSATION,
             title=validated_data.get('title'),
             description=validated_data.get('description'),
             start_date=validated_data.get('start_date'),
             end_date=validated_data.get('end_date'),
+            process=validated_data.get('process'),
+            position=validated_data.get('position'),
             )
-        conversation.groups.set(validated_data.get('groups', []))
         return conversation
 
 
@@ -102,6 +104,18 @@ class ElectionSerializer(serializers.ModelSerializer):
 
     def get_show_results(self, obj):
         return self.context.get('request').user.has_perm('can_view_results', obj)
+
+    def create(self, validated_data):
+        election = Election.objects.create(
+            type=Stage.ELECTION,
+            title=validated_data.get('title'),
+            description=validated_data.get('description'),
+            start_date=validated_data.get('start_date'),
+            end_date=validated_data.get('end_date'),
+            process=validated_data.get('process'),
+            position=validated_data.get('position'),
+            )
+        return election
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -369,15 +383,79 @@ class CustomAuthTokenSerializer(serializers.Serializer):
         return attrs
 
 
+class DelegationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delegation
+        fields = '__all__'
+
+
+class StageListSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        stages = [Stage(**item) for item in validated_data]
+        uuids = { stage.uuid:uuid.uuid4() for stage in stages }
+        ret = []
+        for stage in stages:
+            stage.uuid = uuids[stage.uuid]
+            stage.next_stage = uuids[stage.next_stage]
+            ret.append(self.child.create(stage))
+        return ret
+
+
+class StageSerializer(serializers.ModelSerializer):
+    """
+    Stage is Polymorphic
+    """
+    class Meta:
+        model = Stage
+        fields = '__all__'
+        lsit_serializer_class = StageListSerializer
+
+    def to_representation(self, obj):
+        if isinstance(obj, models.Delegation):
+            return DelegationSerializer(obj, context=self.context).to_representation(obj)
+        elif isinstance(obj, models.Conversation):
+           return ConversationSerializer(obj, context=self.context).to_representation(obj)
+        elif isinstance(obj, models.Election):
+            return ElectionSerializer(obj, context=self.context).to_representation(obj)
+        return super(StageSerializer, self).to_representation(obj)
+
+    def create(self, validated_data):
+        type = validated_data.get('type')
+        if type == Stage.DELEGATION:
+            return DelegationSerializer.create(
+                DelegationSerializer(),
+                validated_data=validated_data
+                )
+        elif type == Stage.CONVERSATION:
+            return ConversationSerializer.create(
+                ConversationSerializer(),
+                validated_data=validated_data
+                )
+        elif type == Stage.ELECTION:
+            return ElectionSerializer.create(
+                ElectionSerializer(),
+                validated_data=validated_data
+                )
+        else:
+            return Stage.objects.create(
+                type=type,
+                title=validated_data.get('title'),
+                description=validated_data.get('description'),
+                start_date=validated_data.get('start_date'),
+                end_date=validated_data.get('end_date'),
+                process=validated_data.get('process'),
+                position=validated_data.get('position'),
+                )
+
+
 class ProcessSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(ProcessSerializer, self).__init__(*args, **kwargs)
-        self.fields['election'] = ElectionSerializer(context=self.context)
+        self.fields['stages'] = StageSerializer(context=self.context)
         self.fields['delegates'] = DelegateSerializer(
             many=True,
             context={'allowed_fields': ['id', 'profile', 'invited_by', 'process', 'credit_balance', 'pending_credits']}
             )
-        self.fields['conversation'] = ConversationSerializer()
 
     class Meta:
         model = Process
