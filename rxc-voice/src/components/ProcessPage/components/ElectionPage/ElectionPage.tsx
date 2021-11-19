@@ -1,23 +1,27 @@
 import React, { useState, useEffect, useReducer, useContext } from "react";
-import { useParams } from "react-router-dom";
 import moment from 'moment';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
-import { Proposal } from "../../models/Proposal";
-import { getElection, getId, getTitle, standInElection, standInResultData } from "../../utils";
-import { WebService } from "../../services";
-import { Vote } from "../../models/Vote";
+import { Proposal } from "../../../../models/Proposal";
+import { getUserData, getUserDelegate, updateCreditBalance } from "../../../../utils";
+import { WebService } from "../../../../services";
+import { Vote } from "../../../../models/Vote";
 import ProposalWidget from "./components/ProposalWidget";
-import { ActionContext, StateContext } from "../../hooks";
-import { BgColor } from "../../models/BgColor";
 import ProposalResults from "./components/ProposalResults";
 import RemainingCredits from "./components/RemainingCredits";
-import ProcessMenu from "../ProcessMenu/ProcessMenu";
+import { Process } from "../../../../models/Process";
+import { Election } from "../../../../models/Stage";
+import { User } from "../../../../models/User";
+import { Delegate } from "../../../../models/Delegate";
+import { ActionContext } from "../../../../hooks";
+import { ResultData } from "../../../../models/ResultData";
 
-import "./Election.scss";
+import "./ElectionPage.scss";
 
-function Election() {
+function ElectionPage(props: {process: Process, election: Election}) {
+  const user: User | undefined = getUserData();
+  const userDelegate: Delegate | undefined = getUserDelegate(user, props.process);
+
   const [votesCast, setVotesCast] = useState(0);
 
   function proposalReducer(proposals: any[], change: any) {
@@ -36,50 +40,35 @@ function Election() {
     }
   };
 
-  const { selectedProcess, creditBalance } = useContext(StateContext);
-  const { selectProcess, setColor, updateCreditBalance } = useContext(ActionContext);
-  const { processId } = useParams<ProcessPageRouteParams>();
-  const [election, setElection] = useState(standInElection);
+  const { selectProcess, setUserData } = useContext(ActionContext);
   const [creditsSpent, setCreditsSpent] = useState(0);
-  const [startingBalance, setStartingBalance] = useState(0);
+  const [startingBalance, setStartingBalance] = useState(
+    userDelegate?.credit_balance ? userDelegate.credit_balance : 0
+  );
   const [proposals, proposalDispatch] = useReducer(proposalReducer, new Array<any>());
-  const [ratProposal, setRatProposal] = useState({exists: false, index: 0});
-  const [alreadyVoted, setAlreadyVoted] = useState(false);
+  const [ratProposal, setRatProposal] = useState<number | undefined>(undefined);
   const [changingVotes, setChangingVotes] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [resultData, setResultData] = useState(standInResultData);
+  const [resultData, setResultData] = useState<ResultData | undefined>(undefined);
+  const [alreadyVoted, setAlreadyVoted] = useState(props.election.show_results);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setColor(BgColor.White);
-    if (processId && (!selectedProcess || (getId(selectedProcess) !== +processId))) {
-      selectProcess(processId);
-    } else if (selectedProcess) {
-      const thisElection = getElection(selectedProcess);
-      if (thisElection) {
-        if (election.id !== thisElection.id) {
-          setElection(thisElection!);
-          if (thisElection.show_results) {
-            setAlreadyVoted(true);
-          }
-          WebService.fetchProposals(thisElection.id)
-          .subscribe((data: Proposal[]) => {
-            processProposalData(data);
-          });
-          setLoading(false);
-        }
-      }
-    }
+    WebService.fetchProposals(props.election.id)
+    .subscribe((data: Proposal[]) => {
+      processProposalData(data);
+    });
+    setLoading(false);
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
- }, [processId, selectedProcess]);
+ }, []);
 
   const processProposalData = (data: any) => {
     const proposalData = shuffle(data.proposals);
     const voteData = data.votes;
     var highestProposal = 0;
     var lowestProposal = 0;
-    var ratificationIndex: number | undefined = undefined;
+    var ratificationIndex: number | undefined;
     var spentPreviously: number = 0;
     proposalData.forEach((proposal, i) => {
       if (proposal.ballot_ratification) {
@@ -107,11 +96,9 @@ function Election() {
       });
       spentPreviously += Math.pow(+amount, 2);
     });
-    setStartingBalance(creditBalance ? +creditBalance! + spentPreviously : 0)
+    setStartingBalance(currentBalance => currentBalance + spentPreviously);
     if (ratificationIndex) {
-      setRatProposal({exists: true, index: ratificationIndex});
-    } else {
-      setRatProposal({exists: false, index: 0});
+      setRatProposal(ratificationIndex);
     }
     setResultData({
       proposals: proposalData,
@@ -120,26 +107,25 @@ function Election() {
     })
   };
 
-  const notRatProposal = (proposal: Proposal, index, array) => {
-   return !proposal.ballot_ratification;
+  const notRatProposal = (proposal: Proposal, index: number, array: Proposal[]) => {
+   return index !== ratProposal;
   };
 
-  const submitVotes = () => {
+  const submitVotes = (user: User) => {
     const postData = new Array<any>();
-    const user = sessionStorage.getItem("user");
     proposals.forEach(proposal => postData.push({
       proposal: proposal.id,
       amount: proposal.amount,
       date: moment().format('YYYY-MM-DDTHH:MM'),
-      sender: user ? JSON.parse(user).id : '',
+      sender: user.id,
     }));
-    WebService.postVotes(postData, election.id).subscribe(async (data) => {
+    WebService.postVotes(postData, props.election.id).subscribe(async (data) => {
                     if (data.ok) {
                       setAlreadyVoted(true);
-                      selectProcess(processId);
-                      if (creditBalance !== null) {
-                        updateCreditBalance(startingBalance - creditsSpent);
-                      }
+                      props.election.show_results = true;
+                      selectProcess(props.process.id);
+                      const userData = updateCreditBalance(user, props.process, startingBalance - creditsSpent);
+                      setUserData(userData);
                       setSuccess(true);
                       setChangingVotes(false);
                     } else {
@@ -193,40 +179,39 @@ function Election() {
     return (
       <h2>loading...</h2>
     );
-  } else if (moment() < moment(election.start_date)) {
+  } else if (moment() < moment(props.election.start_date)) {
     return (
       <div className="voting-page">
-        <ProcessMenu />
         <div className="body">
           <h1>Election</h1>
-          <h2>{getTitle(selectedProcess)}</h2>
-          <p className="explain-text"><strong>The Election Stage begins on {moment(election.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+          <h2>{props.process.title}</h2>
+          <p className="explain-text"><strong>The Election Stage begins on {moment(props.election.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
         </div>
       </div>
     );
-  } else if (moment() > moment(election.end_date)) {
+  } else if (moment() > moment(props.election.end_date)) {
     return (
       <div className="results-page">
-        <ProcessMenu />
         <div className="body">
           <h1>Election Results</h1>
-          <h2>{getTitle(selectedProcess)}</h2>
+          <h2>{props.process.title}</h2>
           <p className="explain-text"><strong>The Election Stage has concluded. You can see the results below!</strong></p>
           <button onClick={downloadXLSX} id="download" className="submit-button">
             Download spreadsheet
           </button>
-          <ProposalResults resultData={resultData} />
+          {resultData ? (
+            <ProposalResults resultData={resultData} />
+          ) : null}
         </div>
       </div>
     );
   } else if (alreadyVoted && !changingVotes) {
     return (
       <div className="voting-page">
-        <ProcessMenu />
         <div className="body">
           <h1>Election</h1>
-          <h2>{getTitle(selectedProcess)}</h2>
-          <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+          <h2>{props.process.title}</h2>
+          <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
           <p>Thanks for voting! The results will
             appear here when the election stage is over.
           </p>
@@ -261,9 +246,10 @@ function Election() {
     );
   } else {
     return (
-        <div className="voting-page">
-          <ProcessMenu />
-          {((creditBalance && (creditBalance! >= 25)) || alreadyVoted) ? (
+      <div className="voting-page">
+        {user && userDelegate ? (
+          <>
+          {userDelegate.credit_balance >= 25 || alreadyVoted ? (
             <div className="button-container">
               <RemainingCredits
                 creditsRemaining={startingBalance - creditsSpent}
@@ -273,7 +259,7 @@ function Election() {
               <button
                 type="button"
                 className="submit-button"
-                onClick={() => submitVotes()}
+                onClick={() => submitVotes(user)}
                 >
                 Save Votes
               </button>
@@ -290,20 +276,20 @@ function Election() {
           ) : null}
           <div className="body">
             <h1>Election</h1>
-            <h2>{getTitle(selectedProcess)}</h2>
+            <h2>{props.process.title}</h2>
             <div className="explain-text">
               <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
               <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. The proposals are shuffled on each load to mitigate possible effects of list order on the Election results. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
               <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
             </div>
-            <p className="explain-text"><strong>The Election Stage closes on {moment(election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-            {((creditBalance && (creditBalance! >= 25)) || alreadyVoted) ? (
+            <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+            {userDelegate.credit_balance >= 25 || alreadyVoted ? (
             <ul className="proposal-list">
-              {ratProposal.exists === true && proposals[ratProposal.index] ? (
-                <ProposalWidget key={ratProposal.index}
+              {ratProposal && proposals[ratProposal] ? (
+                <ProposalWidget key={ratProposal}
                                 creditsRemaining={startingBalance - creditsSpent}
-                                proposal={proposals[ratProposal.index]}
-                                negativeVotes={election.negative_votes}
+                                proposal={proposals[ratProposal]}
+                                negativeVotes={props.election.negative_votes}
                                 onChange={proposalDispatch} />
               ) : null}
               {proposals
@@ -312,7 +298,7 @@ function Election() {
                 <ProposalWidget key={i}
                                 creditsRemaining={startingBalance - creditsSpent}
                                 proposal={proposal}
-                                negativeVotes={election.negative_votes}
+                                negativeVotes={props.election.negative_votes}
                                 onChange={proposalDispatch} />
               ))}
             </ul>
@@ -320,9 +306,13 @@ function Election() {
               <p className="insufficient-credits">Sorry! You do not have enough voice credits to participate in Deliberation or Election. The threshold for participation is 25 voice credits.</p>
             )}
           </div>
-        </div>
+          </>
+        ) : (
+          <h3>Sorry, something went wrong. Head back to home to find what you're looking for.</h3>
+        )}
+      </div>
     );
   }
 }
 
-export default Election;
+export default ElectionPage;

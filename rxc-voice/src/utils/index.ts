@@ -1,69 +1,37 @@
-import { Election } from "../models/Election";
+import { Stage, StageType, Delegation, Conversation, Election } from "../models/Stage";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
-import { Voter } from "../models/Voter";
 import { Delegate } from "../models/Delegate"
-import { Permission } from "../models/Permission";
 import { Process } from "../models/Process";
-import { Status } from "../models/Status";
 import { Transfer } from "../models/Transfer";
-import { ResultData } from "../models/ResultData";
+import { User } from "../models/User";
 import * as Domain from "./urls";
 
 export { Domain };
 
-export const userobj = () => {
+export const getUserData = (): User | undefined => {
   if (sessionStorage.getItem("user")) {
     return JSON.parse(sessionStorage.getItem("user")!);
   } else {
-    return null;
+    return undefined;
   }
 };
+export const getUserDelegate = (user: User | undefined, process: Process): Delegate | undefined => {
+  return user?.delegates.find((delegate: Delegate) => {
+    return delegate.process === process.id;
+  });
+}
+export const updateCreditBalance = (user: User, process: Process, new_balance: number): User => {
+  user.delegates = user.delegates.map((delegate: Delegate) => {
+    if (delegate.process === process.id) {
+      delegate.credit_balance = new_balance;
+    }
+    return delegate;
+  });
+  return user;
+}
 export const oauthState = sessionStorage.getItem("oauthState");
 export const twitterOauthSecret = sessionStorage.getItem("twitterOauthSecret");
-
-export const standInElection = (): Election => ({
-  id: 0,
-  title: 'loading election...',
-  description: '',
-  start_date: '',
-  end_date: '',
-  negative_votes: true,
-  matching_fund: 0,
-  vote_token: '',
-  num_tokens: 0,
-  proposals: new Array<Proposal>(),
-  show_results: false,
-});
-
-export const standInResultData = (): ResultData => ({
-  proposals: new Array<Proposal>(),
-  highestProposal: 0,
-  lowestProposal: 0,
-});
-
-export const standInVoter = (): Voter => ({
-  id: 0,
-  email: '',
-  password: '',
-});
-
-export const standInProcess = {
-  id: 0,
-  title: 'loading process...',
-  description: '',
-  start_date: '',
-  end_date: '',
-  delegates: new Array<Delegate>(),
-  matching_pool: 0,
-  conversation: {},
-  curation_info: '',
-  top_posts: new Array<string>(),
-  election: {},
-  status: Status.Delegation,
-}
-
-export const defaultPermission = (): Permission => (Permission.None);
 
 export const mapToProposals = (proposals: Proposal[]): Proposal[] => {
   return proposals.map(mapToProposal);
@@ -121,10 +89,82 @@ export const mapToDelegate = (delegate: Delegate): Delegate => {
     profile: delegate.profile,
     credit_balance: delegate.credit_balance,
     pending_credits: delegate.pending_credits,
+    process: delegate.process,
   };
 };
 
-export const mapToProcesses = (processes: Process[]): Process[] => {
+export const mapToDelegation = (stage: any): Delegation => {
+  return {
+    id: stage.id,
+    type: stage.type,
+    title: stage.title,
+    description: stage.description,
+    start_date: stage.start_date,
+    end_date: stage.end_date,
+    position: stage.position,
+    num_credits: stage.num_credits,
+    allow_transfers: stage.allow_transfers,
+    allow_invites: stage.allow_invites,
+    match_pool_mode: stage.matching_pool,
+  };
+};
+
+export const mapToConversation = (stage: any): Conversation => {
+  return {
+    id: stage.id,
+    type: stage.type,
+    title: stage.title,
+    description: stage.description,
+    start_date: stage.start_date,
+    end_date: stage.end_date,
+    position: stage.position,
+    uuid: stage.uuid,
+    show_report: stage.show_report,
+    report_id: stage.report_id,
+  };
+};
+
+export const mapToElection = (stage: any): Election => {
+  return {
+    id: stage.id,
+    type: stage.type,
+    title: stage.title,
+    description: stage.description,
+    start_date: stage.start_date,
+    end_date: stage.end_date,
+    position: stage.position,
+    negative_votes: stage.negative_votes,
+    proposals: stage.proposals,
+    show_results: stage.show_results,
+  };
+};
+
+export const mapToStages = (stages: any[]): Stage[] => {
+  return stages.map(mapToStage);
+};
+
+export const mapToStage = (stage: any): Stage => {
+  switch (stage.type) {
+    case StageType.Delegation:
+      return mapToDelegation(stage);
+    case StageType.Conversation:
+      return mapToConversation(stage);
+    case StageType.Election:
+      return mapToElection(stage);
+    default:
+      return {
+        id: stage.id,
+        type: stage.type,
+        title: stage.title,
+        description: stage.description,
+        start_date: stage.start_date,
+        end_date: stage.end_date,
+        position: stage.position,
+      };
+  }
+};
+
+export const mapToProcesses = (processes: any[]): Process[] => {
   if (processes.length) {
     return processes.map(mapToProcess);
   } else {
@@ -132,7 +172,7 @@ export const mapToProcesses = (processes: Process[]): Process[] => {
   }
 };
 
-export const mapToProcess = (process: Process): Process => {
+export const mapToProcess = (process: any): Process => {
   return {
     id: process.id,
     title: process.title,
@@ -140,12 +180,8 @@ export const mapToProcess = (process: Process): Process => {
     start_date: process.start_date,
     end_date: process.end_date,
     delegates: mapToDelegates(process.delegates).filter(delegate => delegate.profile.is_verified),
-    matching_pool: process.matching_pool,
-    conversation: process.conversation,
-    curation_info: process.curation_info,
-    top_posts: process.top_posts,
-    election: process.election,
-    status: process.status,
+    stages: mapToStages(process.stages),
+    curr_stage: process.curr_stage,
   };
 };
 
@@ -170,10 +206,10 @@ export const containsNumber = (str: string) => {
   return /\d/.test(str);
 };
 
-export const validateEmail = (email: string) => {
+export const validateEmail = (email: string | undefined) => {
   // eslint-disable-next-line
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
+  return email ? re.test(email) : false;
 };
 
 export const validatePasswordLength = (password: string) => {
@@ -181,125 +217,4 @@ export const validatePasswordLength = (password: string) => {
     return true;
   }
   return false;
-};
-
-export const getProfileId = (user: any) => {
-  if (user) {
-    return user.id;
-  } else {
-    return undefined;
-  }
-};
-
-export const getUserId = (user: any) => {
-  if (user) {
-    return user.user_id;
-  } else {
-    return undefined;
-  }
-};
-
-export const userIsVerified = (user: any) => {
-  if (user) {
-    return user.is_verified;
-  } else {
-    return false;
-  }
-};
-
-export const verifyUser = (user: any) => {
-  if (user) {
-    user.is_verified = true;
-    return user;
-  } else {
-    return null;
-  }
-};
-
-export const getTitle = (process: Process | null) => {
-  if (process) {
-    return process.title;
-  } else {
-    return undefined;
-  }
-};
-
-export const getId = (process: Process | null) => {
-  if (process) {
-    return process.id;
-  } else {
-    return undefined;
-  }
-};
-
-export const getDelegates = (process: Process | null) => {
-  if (process) {
-    return process.delegates;
-  } else {
-    return undefined;
-  }
-};
-
-export const getConversation = (process: Process | null) => {
-  if (process) {
-    return process.conversation;
-  } else {
-    return undefined;
-  }
-};
-
-export const getElection = (process: Process | null) => {
-  if (process) {
-    return process.election;
-  } else {
-    return undefined;
-  }
-};
-
-export const getEndDate = (process: Process | null) => {
-  if (process) {
-    return process.end_date;
-  } else {
-    return undefined;
-  }
-};
-
-export const getStatus = (process: Process | null) => {
-  if (process) {
-    return process.status;
-  } else {
-    return undefined;
-  }
-};
-
-export const getDescription = (process: Process | null) => {
-  if (process) {
-    return process.description;
-  } else {
-    return undefined;
-  }
-};
-
-export const getMatchingPool = (process: Process | null) => {
-  if (process) {
-    return process.matching_pool;
-  } else {
-    return undefined;
-  }
-};
-
-export const getRecipient = (transferData: any) => {
-  if (transferData) {
-    return transferData.recipient;
-  } else {
-    return null;
-  }
-};
-
-export const getAmount = (transferData: any) => {
-  if (transferData) {
-    return transferData.amount;
-  } else {
-    return null;
-  }
 };

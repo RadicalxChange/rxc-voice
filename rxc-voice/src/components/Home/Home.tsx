@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-// import { Link } from "react-router-dom";
 import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { Process } from "../../models/Process";
@@ -14,7 +13,7 @@ function Home() {
   useEffect(() => {
     setColor(BgColor.Yellow);
 
-    if (!processes.length) {
+    if (processes === undefined) {
       fetchProcesses();
     }
 
@@ -29,17 +28,16 @@ function Home() {
       <div className="create-button">
         <a href="/create-event">+ Create a new Event</a>
       </div>
-      <div className="content">
-          {activeProcesses.length ? (
+      {activeProcesses?.length || pastProcesses?.length ? (
+        <div className="content">
+          {activeProcesses ? (
             <ul className="process-list">
               {activeProcesses.map((process: Process) => (
                 <ProcessCard process={process} key={process.id} active={true} />
               ))}
             </ul>
-          ) : (
-            <></>
-          )}
-          {pastProcesses.length ? (
+          ) : null}
+          {pastProcesses ? (
             <ul className="process-list">
               {pastProcesses
                 .filter((process: Process) => (
@@ -49,10 +47,11 @@ function Home() {
                 <ProcessCard key={process.id} process={process} active={false} />
               ))}
             </ul>
-          ) : (
-            <></>
-          )}
-      </div>
+          ) : null}
+        </div>
+        ) : (
+          <p className="no-events">When you participate in an event, it will appear here!</p>
+        )}
     </div>
   );
 }

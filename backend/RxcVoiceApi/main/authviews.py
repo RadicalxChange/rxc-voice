@@ -88,6 +88,7 @@ class ProfileList(mixins.CreateModelMixin,
             'user_id': profile.user.id,
             'username': token.user.username,
             'email': token.user.email,
+            'public_username': profile.public_username,
             'first_name': token.user.first_name,
             'last_name': token.user.last_name,
             'profile_pic': profile.profile_pic,
@@ -210,6 +211,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
                 'profile_pic': profile.profile_pic,
+                'delegates': profile.delegates.all(),
             })
 
 
@@ -278,9 +280,11 @@ class ValidateAuthToken(ObtainAuthToken):
                 'user_id': profile.user.id,
                 'username': token.user.username,
                 'email': token.user.email,
+                'public_username': profile.public_username,
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
                 'profile_pic': profile.profile_pic,
+                'delegates': profile.delegates.all(),
             })
         else:
             return HttpResponse('Activation link is invalid!')

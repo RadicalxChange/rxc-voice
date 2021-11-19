@@ -3,15 +3,23 @@ import React, { createContext, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { BgColor } from "../models/BgColor";
 import { Process } from "../models/Process";
+import { Transfer } from "../models/Transfer";
 import { WebService } from "../services";
 
-const yellowColor = "var(--yellowColor)";
-const whiteColor = "var(--whiteColor)";
+export interface State {
+  color: BgColor,
+  loading: boolean,
+  creditBalance?: number,
+  processes?: Process[],
+  activeProcesses?: Process[],
+  pastProcesses?: Process[],
+  selectedProcess?: Process,
+  stagedTransfer?: Transfer,
+}
 
 const actionInitialValue = {
   setColor: (color: BgColor) => {},
   logoutUser: () => {},
-  // updateUser: (id: string, updatedUser: any) => {},
   setUserData: (user: any) => {},
   updateCreditBalance: (amount: any) => {},
   selectProcess: (selectedProcess: any) => {},
@@ -19,18 +27,11 @@ const actionInitialValue = {
   stageTransfer: (transfer: any) => {},
 };
 const stateInitialValue = {
-  color: yellowColor,
-  user: null,
-  creditBalance: null,
-  processes: [],
-  activeProcesses: [],
-  pastProcesses: [],
-  selectedProcess: null,
-  stagedTransfer: null,
+  color: BgColor.Yellow,
   loading: false,
 };
 export const ActionContext = createContext(actionInitialValue);
-export const StateContext = createContext(stateInitialValue);
+export const StateContext = createContext<State>(stateInitialValue);
 
 export const AppProvider = (props: any) => {
   const history = useHistory();
@@ -76,16 +77,10 @@ export const AppProvider = (props: any) => {
           };
       }
     }, {
-      color: yellowColor,
+      color: BgColor.Yellow,
       user: sessionStorage.getItem("user")
         ? JSON.parse(sessionStorage.getItem("user")!)
-        : null,
-      creditBalance: null,
-      processes: [],
-      activeProcesses: [],
-      pastProcesses: [],
-      selectedProcess: null,
-      stagedTransfer: null,
+        : undefined,
       loading: false,
     }
   );
@@ -95,11 +90,11 @@ export const AppProvider = (props: any) => {
       setColor: (color: BgColor) => {
         switch (color) {
           case BgColor.Yellow: {
-            dispatch({ type: "SET_COLOR", color: yellowColor });
+            dispatch({ type: "SET_COLOR", color: BgColor.Yellow });
             break;
           }
           case BgColor.White: {
-            dispatch({ type: "SET_COLOR", color: whiteColor });
+            dispatch({ type: "SET_COLOR", color: BgColor.White });
             break;
           }
         }
@@ -125,22 +120,8 @@ export const AppProvider = (props: any) => {
           user: null,
         });
       },
-      // updateUser: async (id: string, updatedUser: any) => {
-      //   WebService.updateUser(id, updatedUser)
-      //     .subscribe(async (data) => {
-      //       if (data.ok) {
-      //         const user = await data.json();
-      //         sessionStorage.setItem("user", JSON.stringify(user));
-      //         dispatch({
-      //           type: "SET_USER",
-      //           user,
-      //         });
-      //       } else {
-      //         console.error("Error", await data.json());
-      //       }
-      //     });
-      // },
       fetchProcesses: () => {
+        dispatch({ type: "SET_LOADING", loading: true });
         WebService.fetchProcesses().subscribe((data: any) => {
           var activeList: Process[] = new Array<Process>();
           var pastList: Process[] = new Array<Process>();
@@ -160,14 +141,15 @@ export const AppProvider = (props: any) => {
             pastProcesses: pastList,
           });
         });
+        dispatch({ type: "SET_LOADING", loading: false });
       },
       selectProcess: (selectedProcessId: any) => {
         dispatch({ type: "SET_LOADING", loading: true });
         WebService.fetchSingleProcess(selectedProcessId).subscribe(async (data: any) => {
           const process = await data;
           dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: process });
-          dispatch({ type: "SET_LOADING", loading: false });
         });
+        dispatch({ type: "SET_LOADING", loading: false });
       },
       stageTransfer: (transfer: any) => {
         dispatch({
@@ -176,7 +158,7 @@ export const AppProvider = (props: any) => {
         });
       },
     }),
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

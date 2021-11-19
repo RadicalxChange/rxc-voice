@@ -1,5 +1,5 @@
 import { Observable, defer, from } from "rxjs";
-import { Election } from "../models/Election";
+import { Election } from "../models/Stage";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
@@ -43,7 +43,7 @@ export const resetPassword = (data: any): Observable<any> => {
   });
 };
 
-export const modifyUser = (moddata: any, id: string): Observable<any> => {
+export const modifyUser = (moddata: any, id: number): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
@@ -59,7 +59,7 @@ export const modifyUser = (moddata: any, id: string): Observable<any> => {
   });
 };
 
-export const modifyProfile = (moddata: any, id: string): Observable<any> => {
+export const modifyProfile = (moddata: any, id: number): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
@@ -150,7 +150,7 @@ export const fetchProcesses = (): Observable<Process[]> => {
   });
 };
 
-export const fetchSingleProcess = (id: string): Observable<Process> => {
+export const fetchSingleProcess = (id: string): Observable<any> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");
     return from<Promise<Process>>(
@@ -269,7 +269,7 @@ export const estimateMatch = (transfer: any): Observable<any> => {
   });
 };
 
-export const fetchTransfers = (process_id: string): Observable<any> => {
+export const fetchTransfers = (process_id: number): Observable<any> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");
     return from<Promise<any>>(

@@ -8,7 +8,8 @@ from .permissions import ProcessPermission, TransferPermission
 from .models import Process, Transfer, MatchPayment
 from guardian.shortcuts import assign_perm
 from django.utils import timezone
-from .services import match_transfers, estimate_match
+from .services import estimate_match
+from .utils import advance_stage
 
 
 class ProcessList(mixins.CreateModelMixin,
@@ -70,17 +71,9 @@ class ProcessDetail(mixins.RetrieveModelMixin,
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
-        # eventually need a better way to do this to avoid async problems
-        if timezone.now() > instance.conversation.start_date:
-            if instance.matching_pool != 0:
-                match_transfers(instance)
-            if timezone.now() > instance.election.start_date:
-                instance.status = 'Election'
-            else:
-                instance.status = 'Deliberation'
-        else:
-            instance.status = 'Delegation'
-        instance.save()
+        curr_stage = instance.stages.filter(position=instance.curr_stage).first()
+        if curr_stage.end_date < timezone.now():
+            advance_stage(instance, curr_stage)
         serializer = self.get_serializer(
             instance,
             context={'request': request}

@@ -1,9 +1,23 @@
 import premailer
-
 from django.template.loader import render_to_string
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils import timezone
 import six
-from main.models import Delegate, Profile, Process
+from .models import Profile, Stage
+from .services import match_transfers
+
+
+def advance_stage(process, curr_stage):
+    if curr_stage.type == Stage.DELEGATION:
+        match_transfers(process, curr_stage)
+    stages_sorted = sorted(process.stages, key=lambda stage: stage.position)
+    for stage in stages_sorted[curr_stage.position+1:]:
+        if stage.start_date < timezone.now() < stage.end_date:
+            process.curr_stage = stage.position
+            process.save()
+            return
+    process.curr_stage = stages_sorted[-1].position
+    process.save()
 
 
 def is_verified(user_id):

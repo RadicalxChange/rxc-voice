@@ -1,0 +1,118 @@
+.process-page {
+  text-align: left;
+  margin-top: 5vw;
+  font-size: .8rem;
+  padding-bottom: 18vh;
+
+  .body {
+
+    .content-header {
+      margin-top: 20vw;
+      display: grid;
+      grid-template-columns: auto auto;
+      text-align: left;
+
+      .credit-balance {
+        margin: auto 0 auto auto;
+      }
+    }
+
+    .transfers {
+      margin: 3rem 0;
+      border: 1px solid black;
+      border-radius: 8px;
+      padding: 1rem;
+
+      .transfers-header {
+        margin-left: 2vw;
+        display: grid;
+        grid-template-columns: 50% 50%;
+        border-bottom: 1px solid black;
+      }
+      .transfer-list {
+        margin: 0 0 0 2vw;
+      }
+      .type {
+        grid-column: 1;
+      }
+      .amount {
+        grid-column: 2;
+      }
+      .total {
+        font-weight: bold;
+      }
+      .transfers-subtotals {
+        margin-left: 2vw;
+        display: grid;
+        grid-template-columns: 50% 50%;
+        border-top: 1px solid black;
+      }
+    }
+
+    .delegation-content {
+
+      .matching-pool {
+        font-size: 1rem;
+      }
+
+      .submit-button {
+        font-size: 1rem;
+        display: block;
+        margin: 2rem 0;
+        background: black;
+        color: var(--whiteColor);
+        border: 1px solid black;
+        border-radius: 20px;
+        padding: .5em 1em .5em 1em;
+        outline: none;
+        cursor: pointer;
+      }
+      .submit-button:hover {
+        background: var(--whiteColor);
+        color: black;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .process-page {
+    display: grid;
+    grid-template-columns: 8rem 1fr 5vw;
+    column-gap: 4vw;
+    margin-top: 5vw;
+
+    .nav {
+      grid-column: 1;
+    }
+
+    .body {
+      grid-column: 2;
+      grid-row: 1;
+
+      .content-header {
+        margin-top: 5vw;
+      }
+
+      .transfers {
+      }
+
+      .delegation-content {
+
+        .matching-pool {
+          margin-top: 3rem;
+        }
+
+        .delegate-list {
+          margin-right: 5vw;
+        }
+        .about {
+          margin: 0 6vw 0 6vw;
+          position: fixed;
+          left: 58vw;
+          top: 20vw;
+        }
+      }
+    }
+  }
+}

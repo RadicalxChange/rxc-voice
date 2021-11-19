@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StateContext } from "../../../hooks";
+import { StateContext } from "../../../../../hooks";
 
 import "./DelegateCard/DelegateCard.scss";
 

@@ -5,7 +5,7 @@ from django.db.models.functions import Now
 import sendgrid
 
 from sendgrid.helpers.mail import *
-from .models import Transfer, Delegate, MatchPayment, Process
+from .models import Transfer, Delegate, MatchPayment, Delegation
 
 
 sendgrid_key = os.getenv('SENDGRID_API_KEY', 'NO API FOUND')
@@ -22,7 +22,7 @@ def send_mail(_to_mail, subject, body):
 this is called at the end of the delegation stage to pay out matches from the
 matching fund.
 """
-def match_transfers(process):
+def match_transfers(process, delegation):
     transfers = Transfer.objects.all().filter(process=process)
 
     # {recipient_id: {sender_id: amount}} => each recipient has a dict where the keys
@@ -58,30 +58,32 @@ def match_transfers(process):
                     transfer.save()
                     transfer.sender.credit_balance += transfer.amount
                     transfer.sender.save()
-    raw_matches = {}
-    raw_match_total = 0
-    for recipient_id, sum in sum_of_roots.items():
-        raw_match = (sum * sum) - float(pledged_totals[recipient_id])
-        raw_matches[recipient_id] = raw_match
-        raw_match_total += raw_match
-    for recipient_id, raw_match in raw_matches.items():
-        final_match = raw_match
-        if raw_match_total > process.matching_pool:
-            final_match = (raw_match / raw_match_total) * float(process.matching_pool)
-        if int(final_match) != 0:
-            recipient_object = Delegate.objects.get(id=recipient_id)
-            recipient_object.credit_balance += int(final_match)
-            recipient_object.save()
-            # create a record of this match payment.
-            match_payment = MatchPayment(
-                recipient=recipient_object,
-                amount=int(final_match),
-                date=Now(),
-                process=process,
-                )
-            match_payment.save()
-    process.matching_pool = 0
-    process.save()
+    if delegation.matching_pool != Delegation.NONE:
+        raw_matches = {}
+        raw_match_total = 0
+        for recipient_id, sum in sum_of_roots.items():
+            raw_match = (sum * sum) - float(pledged_totals[recipient_id])
+            raw_matches[recipient_id] = raw_match
+            raw_match_total += raw_match
+        for recipient_id, raw_match in raw_matches.items():
+            final_match = raw_match
+            if delegation.matching_pool == Delegation.DEFAULT:
+                # set matching pool size equal to current voice credit supply
+                avail_funds = delegation.num_credits * len(process.delegates.filter(profile__is_verified=True))
+                if raw_match_total > avail_funds:
+                    final_match = (raw_match / raw_match_total) * float(avail_funds)
+            if int(final_match) != 0:
+                recipient_object = Delegate.objects.get(id=recipient_id)
+                recipient_object.credit_balance += int(final_match)
+                recipient_object.save()
+                # create a record of this match payment.
+                match_payment = MatchPayment(
+                    recipient=recipient_object,
+                    amount=int(final_match),
+                    date=Now(),
+                    process=process,
+                    )
+                match_payment.save()
 
 
 """

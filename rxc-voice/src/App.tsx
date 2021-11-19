@@ -9,25 +9,25 @@ import Account from './components/Account';
 import ValidationPage from './components/ValidationPage';
 import About from './components/About';
 import Callback from './components/Callback';
-import Delegation from './components/Delegation';
-import Deliberation from './components/Deliberation';
-import Election from './components/Election';
+import ProcessPage from './components/ProcessPage';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import NotFound from './components/NotFound';
 import LandingPage from './components/LandingPage';
-import { userIsVerified } from './utils';
+import { User } from './models/User';
+import { getUserData } from './utils';
 
 import './App.scss';
 
 function App() {
-  const { user, color } = useContext(StateContext);
+  const { color } = useContext(StateContext);
+  const user: User | undefined = getUserData();
 
   return (
     <div className="App" style={{ background: color }} >
       <Switch>
         <Route path="/" exact>
-          {userIsVerified(user) ? (
+          {user?.is_verified ? (
             <>
               <Header />
               <Home />
@@ -67,7 +67,7 @@ function App() {
         />
 
         {/* Redirect anything else to login if user is not already logged in */}
-        {!userIsVerified(user) ? (
+        {!user?.is_verified ? (
           <Redirect to="/login" />
         ) : null}
 
@@ -76,19 +76,9 @@ function App() {
           <CreateEvent />
         </Route>
 
-        <Route path="/:processId/:processSlug/Delegation" exact>
+        <Route path="/:processId/:processSlug/:stageId/:stageSlug" exact>
           <Header />
-          <Delegation />
-        </Route>
-
-        <Route path="/:processId/:processSlug/Deliberation" exact>
-          <Header />
-          <Deliberation />
-        </Route>
-
-        <Route path="/:processId/:processSlug/Election" exact>
-          <Header />
-          <Election />
+          <ProcessPage />
         </Route>
 
         <Route path="/account" exact>

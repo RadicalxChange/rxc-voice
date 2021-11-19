@@ -1,12 +1,14 @@
 import React from "react";
 import moment from "moment";
 import ProfileIcon from "../ProfileIcon";
-import { VerificationMethod } from "../../../../models/VerificationMethod";
+import { User } from "../../../../../../models/User";
+import { VerificationMethod } from "../../../../../../models/VerificationMethod";
+import { getUserData } from "../../../../../../utils";
 
 import "./DelegateCard.scss";
 
 function DelegateCard(props: any) {
-  const user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
+  const user: User | undefined = getUserData();
   const delegationOngoing = moment() < moment(props.process.conversation.start_date);
   const oauthDomain: string =
     (props.delegate.oauth_provider === VerificationMethod.Github)
@@ -31,7 +33,7 @@ function DelegateCard(props: any) {
         <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
         <h3 className="info-text">Pending Voice Credits: {props.delegate.pending_credits}</h3>
       </div>
-      {(delegationOngoing && (props.delegate.public_username !== (user ? user.public_username : null))) ? (
+      {(delegationOngoing && (props.delegate.public_username !== user?.public_username)) ? (
         <button
           type="button"
           className="give-credits"

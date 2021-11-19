@@ -1,7 +1,6 @@
 from django.db import models
 from polymorphic.models import PolymorphicModel
 from django.contrib.auth.models import (User, Group)
-from django.contrib.postgres.fields import ArrayField
 import uuid
 
 
@@ -12,6 +11,8 @@ class Process(models.Model):
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
     groups = models.ManyToManyField(Group, blank=True, default=[])
+    curr_stage = models.DecimalField(
+        default=0, blank=True, max_digits=2, decimal_places=0)
 
     def __str__(self):
         return self.title
@@ -77,7 +78,7 @@ class Stage(PolymorphicModel):
         (CUSTOM, 'custom'),
     )
     type = models.CharField(max_length=4, choices=STAGE_TYPE_CHOICES,
-                                    default=CUSTOM)
+                                    default=CUSTOM, editable=False)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True)
     start_date = models.DateTimeField(blank=False)
@@ -107,11 +108,12 @@ class Delegation(Stage):
                                     default=DEFAULT)
 
     def save(self, *args, **kwargs):
-    	# if transfers are not allowed, there can be no invites or qf matching
-    	if not self.allow_transfers:
+        # if transfers are not allowed, there can be no invites or qf matching
+        self.type = Stage.DELEGATION
+        if not self.allow_transfers:
             self.allow_invites = False
-            self.matching_pool = NONE
-    	super(Blog, self).save(*args, **kwargs)
+            self.matching_pool = Delegation.NONE
+        super(Delegation, self).save(*args, **kwargs)
 
 
 class Conversation(Stage):
@@ -124,6 +126,10 @@ class Conversation(Stage):
             ("can_view", "Can view"),
         ]
 
+    def save(self, *args, **kwargs):
+        self.type = Stage.CONVERSATION
+        super(Delegation, self).save(*args, **kwargs)
+
 
 class Election(Stage):
     negative_votes = models.BooleanField(default=True)
@@ -133,6 +139,10 @@ class Election(Stage):
             ("can_vote", "Can vote"),
             ("can_view_results", "Can view results"),
         ]
+
+    def save(self, *args, **kwargs):
+        self.type = Stage.ELECTION
+        super(Delegation, self).save(*args, **kwargs)
 
 
 class Proposal(models.Model):

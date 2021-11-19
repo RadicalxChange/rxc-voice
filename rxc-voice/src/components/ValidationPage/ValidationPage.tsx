@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { useAlert } from "react-alert";
 import { useLocation } from "react-router";
 import { uuid } from "uuidv4";
-import { ActionContext, StateContext } from "../../hooks";
+import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { VerificationMethod } from "../../models/VerificationMethod";
 import { WebService } from "../../services";
-import { getProfileId, validateEmail } from "../../utils";
+import { getUserData, validateEmail } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
+import { User } from "../../models/User";
 // import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, validatePasswordLength } from "../../utils";
 
 import "./ValidationPage.scss";
@@ -18,7 +19,7 @@ function ValidationPage() {
     const linkUid = new URLSearchParams(location.search).get('uidb64');
     const linkToken = new URLSearchParams(location.search).get('token');
     const { setUserData, setColor } = useContext(ActionContext);
-    const { user } = useContext(StateContext);
+    const user: User | undefined = getUserData();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,8 +29,8 @@ function ValidationPage() {
     // const [profilePic, setProfilePic] = useState("");
     const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
     const [signedAgreement, setSignedAgreement] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [alreadyExists, setAlreadyExists] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const alert = useAlert()
 
@@ -42,8 +43,8 @@ function ValidationPage() {
           token: linkToken,
         }).subscribe(async (data) => {
           if (data.ok) {
-            const user = await data.json();
-            setUserData(user);
+            const userData = await data.json();
+            setUserData(userData);
           } else {
             const error = await data.json();
             console.log(error);
@@ -74,11 +75,11 @@ function ValidationPage() {
                   }
                 }
                 if (user) {
-                  WebService.modifyProfile(updatedProfile, getProfileId(user))
+                  WebService.modifyProfile(updatedProfile, user.id)
                     .subscribe(async (data) => {
                       if (data.ok) {
-                        const user = await data.json();
-                        setUserData(user);
+                        const userData = await data.json();
+                        setUserData(userData);
                         oauthRedirect();
                       } else {
                         console.error("Error", await data.json());
@@ -88,8 +89,8 @@ function ValidationPage() {
                     WebService.createProfile(updatedProfile)
                       .subscribe(async (data) => {
                         if (data.ok) {
-                          const user = await data.json();
-                          setUserData(user);
+                          const userData = await data.json();
+                          setUserData(userData);
                           oauthRedirect();
                         } else {
                           const error = await data.json();
