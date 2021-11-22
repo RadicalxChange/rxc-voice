@@ -9,143 +9,144 @@ import { WebService } from "../../services";
 import { getUserData, validateEmail } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
 import { User } from "../../models/User";
+import { Link } from "react-router-dom";
 // import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, validatePasswordLength } from "../../utils";
 
 import "./ValidationPage.scss";
 
 function ValidationPage() {
-    const github_client_id = 'f9be73dc7af4857809e0';
-    const location = useLocation();
-    const linkUid = new URLSearchParams(location.search).get('uidb64');
-    const linkToken = new URLSearchParams(location.search).get('token');
-    const { setUserData, setColor } = useContext(ActionContext);
-    const user: User | undefined = getUserData();
+  const github_client_id = 'f9be73dc7af4857809e0';
+  const location = useLocation();
+  const linkUid = new URLSearchParams(location.search).get('uidb64');
+  const linkToken = new URLSearchParams(location.search).get('token');
+  const { setUserData, setColor } = useContext(ActionContext);
+  const user: User | undefined = getUserData();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passReEntry, setPassReEntry] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    // const [profilePic, setProfilePic] = useState("");
-    const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
-    const [signedAgreement, setSignedAgreement] = useState(false);
-    const [alreadyExists, setAlreadyExists] = useState(false);
-    const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passReEntry, setPassReEntry] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  // const [profilePic, setProfilePic] = useState("");
+  const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
+  const [signedAgreement, setSignedAgreement] = useState(false);
+  const [alreadyExists, setAlreadyExists] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-    const alert = useAlert()
+  const alert = useAlert()
 
-    useEffect(() => {
-      setColor(BgColor.White);
+  useEffect(() => {
+    setColor(BgColor.White);
 
-      if (linkToken && linkUid) {
-        WebService.validateToken({
-          uidb64: linkUid,
-          token: linkToken,
-        }).subscribe(async (data) => {
-          if (data.ok) {
-            const userData = await data.json();
-            setUserData(userData);
-          } else {
-            const error = await data.json();
-            console.log(error);
-            alert.error(error.non_field_errors[0]);
-          }
-        });
-      }
-      setLoading(false);
+    if (linkToken && linkUid) {
+      WebService.validateToken({
+        uidb64: linkUid,
+        token: linkToken,
+      }).subscribe(async (data) => {
+        if (data.ok) {
+          const userData = await data.json();
+          setUserData(userData);
+        } else {
+          const error = await data.json();
+          console.log(error);
+          alert.error(error.non_field_errors[0]);
+        }
+      });
+    }
+    setLoading(false);
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const modify = (e: any) => {
-      e.preventDefault()
-      if (formIsComplete()) {
-        if (validateEmail(email)) {
-          if (password === passReEntry) {
-            if (verificationMethod) {
-              if (signedAgreement) {
-                const updatedProfile = {
-                  oauth_provider: verificationMethod,
-                  user: {
-                    username: email,
-                    email: email,
-                    password: password,
-                    first_name: firstName,
-                    last_name: lastName,
-                  }
+  const modify = (e: any) => {
+    e.preventDefault()
+    if (formIsComplete()) {
+      if (validateEmail(email)) {
+        if (password === passReEntry) {
+          if (verificationMethod) {
+            if (signedAgreement) {
+              const updatedProfile = {
+                oauth_provider: verificationMethod,
+                user: {
+                  username: email,
+                  email: email,
+                  password: password,
+                  first_name: firstName,
+                  last_name: lastName,
                 }
-                if (user) {
-                  WebService.modifyProfile(updatedProfile, user.id)
+              }
+              if (user) {
+                WebService.modifyProfile(updatedProfile, user.id)
+                  .subscribe(async (data) => {
+                    if (data.ok) {
+                      const userData = await data.json();
+                      setUserData(userData);
+                      oauthRedirect();
+                    } else {
+                      console.error("Error", await data.json());
+                    }
+                  });
+                } else {
+                  WebService.createProfile(updatedProfile)
                     .subscribe(async (data) => {
                       if (data.ok) {
                         const userData = await data.json();
                         setUserData(userData);
                         oauthRedirect();
                       } else {
-                        console.error("Error", await data.json());
+                        const error = await data.json();
+                        console.error("Error", error);
+                        if (error.user.username) {
+                          setAlreadyExists(true);
+                        }
                       }
                     });
-                  } else {
-                    WebService.createProfile(updatedProfile)
-                      .subscribe(async (data) => {
-                        if (data.ok) {
-                          const userData = await data.json();
-                          setUserData(userData);
-                          oauthRedirect();
-                        } else {
-                          const error = await data.json();
-                          console.error("Error", error);
-                          if (error.user.username) {
-                            setAlreadyExists(true);
-                          }
-                        }
-                      });
-                  }
-              } else {
-                alert.error("Please sign the user agreement")
-              }
+                }
             } else {
-              alert.error("Please select a verification method")
+              alert.error("Please sign the user agreement")
             }
           } else {
-            alert.error("Re-entered password does not match")
+            alert.error("Please select a verification method")
           }
         } else {
-          alert.error("Please enter a valid email address")
+          alert.error("Re-entered password does not match")
         }
       } else {
-        alert.error("Please fill all the fields")
+        alert.error("Please enter a valid email address")
       }
-    };
+    } else {
+      alert.error("Please fill all the fields")
+    }
+  };
 
-    const oauthRedirect = () => {
-      // redirect to 3rd party oauth app
-      if (verificationMethod === VerificationMethod.Github) {
-        const stateUUID = uuid();
-        sessionStorage.setItem("oauthState", stateUUID);
+  const oauthRedirect = () => {
+    // redirect to 3rd party oauth app
+    if (verificationMethod === VerificationMethod.Github) {
+      const stateUUID = uuid();
+      sessionStorage.setItem("oauthState", stateUUID);
+      window.location.href =
+        'https://github.com/login/oauth/authorize?client_id='
+        + github_client_id
+        + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
+        + stateUUID;
+    } else if (verificationMethod === VerificationMethod.Twitter) {
+      WebService.getTwitterRequestToken().subscribe(async (data) => {
+        sessionStorage.setItem("oauthState", data.oauth_token);
+        sessionStorage.setItem("twitterOauthSecret", data.oauth_secret);
         window.location.href =
-          'https://github.com/login/oauth/authorize?client_id='
-          + github_client_id
-          + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
-          + stateUUID;
-      } else if (verificationMethod === VerificationMethod.Twitter) {
-        WebService.getTwitterRequestToken().subscribe(async (data) => {
-          sessionStorage.setItem("oauthState", data.oauth_token);
-          sessionStorage.setItem("twitterOauthSecret", data.oauth_secret);
-          window.location.href =
-            'https://api.twitter.com/oauth/authenticate?oauth_token='
-            + data.oauth_token;
-          }
-        );
-      }
-    };
+          'https://api.twitter.com/oauth/authenticate?oauth_token='
+          + data.oauth_token;
+        }
+      );
+    }
+  };
 
-    const formIsComplete = () => {
-      if (firstName && lastName && email && password && passReEntry) {
-        return true;
-      }
-      return false;
-    };
+  const formIsComplete = () => {
+    if (firstName && lastName && email && password && passReEntry) {
+      return true;
+    }
+    return false;
+  };
 
   if (loading) {
     return (
@@ -160,6 +161,17 @@ function ValidationPage() {
     );
   } else {
     return (
+      <>
+      <div className="login-header">
+        <p>Already have an account?{" "}
+        <Link
+        to={`/login`}
+        className="nav-link"
+        >
+        Sign in
+        </Link>
+        </p>
+      </div>
       <form className="create-account" onSubmit={modify}>
         <img src={logo} className="App-logo" alt="logo" />
         <p>Create an account</p>
@@ -250,6 +262,7 @@ function ValidationPage() {
           create account
         </button>
       </form>
+      </>
     );
   }
 }

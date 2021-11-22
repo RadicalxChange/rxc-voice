@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
+import { ActionContext } from "../../hooks";
+import { BgColor } from "../../models/BgColor";
 
 import "./LandingPage.scss";
 
 function LandingPage() {
+  const { setColor } = useContext(ActionContext);
+
+  useEffect(() => {
+    setColor(BgColor.Yellow);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="landing-page">

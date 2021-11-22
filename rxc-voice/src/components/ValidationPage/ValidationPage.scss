@@ -91,6 +91,18 @@
   }
 }
 
+.login-header {
+  text-align: right;
+  margin-right: 3vw;
+
+  .nav-link {
+    text-decoration: underline;
+  }
+  .nav-link:hover {
+    text-decoration: none;
+  }
+}
+
 .email-notice {
   max-width: 400px;
   margin: auto;
