@@ -25,6 +25,7 @@ function ElectionPage(props: {process: Process, election: Election}) {
   const [votesCast, setVotesCast] = useState(0);
 
   function proposalReducer(proposals: any[], change: any) {
+    console.log("reducer:\n\tamountchange = " + change.amount + "\n\tcostchange = " + change.cost)
     const proposalToChange: any | undefined = proposals.find(
       proposal => proposal.id === change.id);
     if (proposalToChange === undefined) {
@@ -43,7 +44,7 @@ function ElectionPage(props: {process: Process, election: Election}) {
   const { selectProcess, setUserData } = useContext(ActionContext);
   const [creditsSpent, setCreditsSpent] = useState(0);
   const [startingBalance, setStartingBalance] = useState(
-    userDelegate?.credit_balance ? userDelegate.credit_balance : 0
+    userDelegate?.credit_balance ? +userDelegate.credit_balance : 0
   );
   const [proposals, proposalDispatch] = useReducer(proposalReducer, new Array<any>());
   const [ratProposal, setRatProposal] = useState<number | undefined>(undefined);
@@ -182,65 +183,59 @@ function ElectionPage(props: {process: Process, election: Election}) {
   } else if (moment() < moment(props.election.start_date)) {
     return (
       <div className="voting-page">
-        <div className="body">
-          <h1>Election</h1>
-          <h2>{props.process.title}</h2>
-          <p className="explain-text"><strong>The Election Stage begins on {moment(props.election.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-        </div>
+        <h1>Election</h1>
+        <h2 className="content-header">{props.process.title}</h2>
+        <p className="explain-text"><strong>The Election Stage begins on {moment(props.election.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
       </div>
     );
   } else if (moment() > moment(props.election.end_date)) {
     return (
       <div className="results-page">
-        <div className="body">
-          <h1>Election Results</h1>
-          <h2>{props.process.title}</h2>
-          <p className="explain-text"><strong>The Election Stage has concluded. You can see the results below!</strong></p>
-          <button onClick={downloadXLSX} id="download" className="submit-button">
-            Download spreadsheet
-          </button>
-          {resultData ? (
-            <ProposalResults resultData={resultData} />
-          ) : null}
-        </div>
+        <h1>Election Results</h1>
+        <h2 className="content-header">{props.process.title}</h2>
+        <p className="explain-text"><strong>The Election Stage has concluded. You can see the results below!</strong></p>
+        <button onClick={downloadXLSX} id="download" className="submit-button">
+          Download spreadsheet
+        </button>
+        {resultData ? (
+          <ProposalResults resultData={resultData} />
+        ) : null}
       </div>
     );
   } else if (alreadyVoted && !changingVotes) {
     return (
       <div className="voting-page">
-        <div className="body">
-          <h1>Election</h1>
-          <h2>{props.process.title}</h2>
-          <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-          <p>Thanks for voting! The results will
-            appear here when the election stage is over.
-          </p>
-          <button
-            type="button"
-            className="submit-button"
-            onClick={() => setChangingVotes(true)}
-            >
-            Change Your Votes
-          </button>
-          <div className="modal">
-            <div className={`success-modal ${!success ? "closed" : ""}`}>
-              <h2>Success!</h2>
-              <div className="explain-text">
-                  <p>Your votes are in. You'll be able to change your votes up until the Election Stage closes.</p>
-              </div>
-              <button
-                type="button"
-                className="submit-button"
-                onClick={() => setSuccess(false)}
-                >
-                Close
-              </button>
+        <h1>Election</h1>
+        <h2 className="content-header">{props.process.title}</h2>
+        <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+        <p>Thanks for voting! The results will
+          appear here when the election stage is over.
+        </p>
+        <button
+          type="button"
+          className="submit-button"
+          onClick={() => setChangingVotes(true)}
+          >
+          Change Your Votes
+        </button>
+        <div className="modal">
+          <div className={`success-modal ${!success ? "closed" : ""}`}>
+            <h2>Success!</h2>
+            <div className="explain-text">
+                <p>Your votes are in. You'll be able to change your votes up until the Election Stage closes.</p>
             </div>
-            <div
-              className={`modal-overlay ${!success ? "closed" : ""}`}
+            <button
+              type="button"
+              className="submit-button"
               onClick={() => setSuccess(false)}
-            ></div>
+              >
+              Close
+            </button>
           </div>
+          <div
+            className={`modal-overlay ${!success ? "closed" : ""}`}
+            onClick={() => setSuccess(false)}
+          ></div>
         </div>
       </div>
     );
@@ -249,7 +244,7 @@ function ElectionPage(props: {process: Process, election: Election}) {
       <div className="voting-page">
         {user && userDelegate ? (
           <>
-          {userDelegate.credit_balance >= 25 || alreadyVoted ? (
+          {+userDelegate.credit_balance >= 25 || alreadyVoted ? (
             <div className="button-container">
               <RemainingCredits
                 creditsRemaining={startingBalance - creditsSpent}
@@ -274,38 +269,36 @@ function ElectionPage(props: {process: Process, election: Election}) {
               ) : null}
             </div>
           ) : null}
-          <div className="body">
-            <h1>Election</h1>
-            <h2>{props.process.title}</h2>
-            <div className="explain-text">
-              <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
-              <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. The proposals are shuffled on each load to mitigate possible effects of list order on the Election results. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
-              <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
-            </div>
-            <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-            {userDelegate.credit_balance >= 25 || alreadyVoted ? (
-            <ul className="proposal-list">
-              {ratProposal && proposals[ratProposal] ? (
-                <ProposalWidget key={ratProposal}
-                                creditsRemaining={startingBalance - creditsSpent}
-                                proposal={proposals[ratProposal]}
-                                negativeVotes={props.election.negative_votes}
-                                onChange={proposalDispatch} />
-              ) : null}
-              {proposals
-                .filter(notRatProposal)
-                .map((proposal: Proposal, i) => (
-                <ProposalWidget key={i}
-                                creditsRemaining={startingBalance - creditsSpent}
-                                proposal={proposal}
-                                negativeVotes={props.election.negative_votes}
-                                onChange={proposalDispatch} />
-              ))}
-            </ul>
-            ) : (
-              <p className="insufficient-credits">Sorry! You do not have enough voice credits to participate in Deliberation or Election. The threshold for participation is 25 voice credits.</p>
-            )}
+          <h1>Election</h1>
+          <h2 className="content-header">{props.process.title}</h2>
+          <div className="explain-text">
+            <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
+            <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. The proposals are shuffled on each load to mitigate possible effects of list order on the Election results. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
+            <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
           </div>
+          <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+          {+userDelegate.credit_balance >= 25 || alreadyVoted ? (
+          <ul className="proposal-list">
+            {ratProposal && proposals[ratProposal] ? (
+              <ProposalWidget key={proposals[ratProposal].id}
+                              creditsRemaining={startingBalance - creditsSpent}
+                              proposal={proposals[ratProposal]}
+                              negativeVotes={props.election.negative_votes}
+                              onChange={proposalDispatch} />
+            ) : null}
+            {proposals
+              .filter(notRatProposal)
+              .map((proposal: Proposal, i) => (
+              <ProposalWidget key={proposal.id}
+                              creditsRemaining={startingBalance - creditsSpent}
+                              proposal={proposal}
+                              negativeVotes={props.election.negative_votes}
+                              onChange={proposalDispatch} />
+            ))}
+          </ul>
+          ) : (
+            <p className="insufficient-credits">Sorry! You do not have enough voice credits to participate in Deliberation or Election. The threshold for participation is 25 voice credits.</p>
+          )}
           </>
         ) : (
           <h3>Sorry, something went wrong. Head back to home to find what you're looking for.</h3>
