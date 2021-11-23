@@ -1,26 +1,6 @@
 .polis-page {
-  text-align: left;
-  margin-top: 5vw;
-  padding-bottom: 18vh;
-  font-size: .8rem;
 
   .body {
-    grid-column: 1 / -1;
-
-    .notice {
-      border: 1px solid black;
-      border-radius: 8px;
-      font-size: 1.2rem;
-      text-align: center;
-      padding: 10px;
-    }
-
-    .polis-link {
-      text-decoration: underline;
-    }
-    .polis-link:hover {
-      text-decoration: none;
-    }
 
     .insufficient-credits {
       font-size: 1rem;
@@ -39,20 +19,8 @@
 
 @media only screen and (min-width: 768px) {
   .polis-page {
-    display: grid;
-    grid-template-columns: 8rem 1fr 5vw;
-    column-gap: 4vw;
 
     .body {
-      grid-column: 2 / 3;
-
-      .notice {
-        margin: 0 15vw;
-      }
-
-      .polis-link {
-        padding: 15px;
-      }
     }
   }
 }

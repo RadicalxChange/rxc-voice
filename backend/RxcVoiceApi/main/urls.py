@@ -37,7 +37,7 @@ urlpatterns = [
     # Process APIs
     path('processes/', ProcessList.as_view(), name='process-list'),
     path('processes/<int:pk>/', ProcessDetail.as_view(), name='process-detail'),
-    path('processes/<int:pk>/transfers/', TransferList.as_view(), name='transfer-list'),
+    path('processes/<int:delegation_id>/transfers/', TransferList.as_view(), name='transfer-list'),
     path('estimate-match/', EstimateMatch.as_view(), name='estimate-match'),
 
     # Election APIs

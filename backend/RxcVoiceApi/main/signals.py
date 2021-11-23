@@ -15,7 +15,7 @@ def send_register_mail(sender, instance, **kwargs):
         uid = urlsafe_base64_encode(force_bytes(instance.pk))
         token = account_activation_token.make_token(instance)
         params = {
-            'delegate_email': instance.user.email,
+            'delegate_email': instance.profile.user.email,
             # 'domain': current_site,
             'uid': uid,
             'token': token,
@@ -25,6 +25,6 @@ def send_register_mail(sender, instance, **kwargs):
 
         try:
             mail_body = get_mail_body('0L_pilot_invite', params)
-            send_mail(instance.user.email, subject, mail_body)
+            send_mail(instance.profile.user.email, subject, mail_body)
         except Exception as e:
             print(e)

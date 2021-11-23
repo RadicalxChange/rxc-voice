@@ -99,15 +99,15 @@ class TransferList(mixins.CreateModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        process = self.kwargs['pk']
-        transfers = self.get_queryset().filter(Q(process__id=process),
-            Q(recipient_object__user=request.user) | Q(sender__user=request.user))
+        delegation_id = self.kwargs['delegation_id']
+        transfers = self.get_queryset().filter(Q(delegation__id=delegation_id),
+            Q(recipient_object__profile__user=request.user) | Q(sender__profile__user=request.user))
         serializer = self.get_serializer(
             transfers,
             many=True,
             context={'request': request}
             )
-        match = MatchPayment.objects.all().filter(Q(recipient__user=request.user), Q(process__id=process)).first()
+        match = MatchPayment.objects.all().filter(Q(recipient__profile__user=request.user), Q(delegation__id=delegation_id)).first()
         result = {}
         result["transfers"] = serializer.data
         result["match"] = match.amount if match else 0
@@ -119,6 +119,8 @@ class TransferList(mixins.CreateModelMixin,
             context={'request': request}
             )
         serializer.is_valid(raise_exception=True)
+        if not request.user.has_perm('can_view', serializer.validated_data.get('delegation').process):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(

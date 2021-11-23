@@ -10,9 +10,9 @@ from .services import match_transfers
 def advance_stage(process, curr_stage):
     if curr_stage.type == Stage.DELEGATION:
         match_transfers(process, curr_stage)
-    stages_sorted = sorted(process.stages, key=lambda stage: stage.position)
-    for stage in stages_sorted[curr_stage.position+1:]:
-        if stage.start_date < timezone.now() < stage.end_date:
+    stages_sorted = sorted(process.stages.all(), key=lambda stage: stage.position)
+    for stage in stages_sorted[int(curr_stage.position)+1:]:
+        if timezone.now() < stage.end_date:
             process.curr_stage = stage.position
             process.save()
             return
@@ -53,10 +53,10 @@ def get_mail_body(mail_name, mail_params):
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
-    def _make_hash_value(self, profile, timestamp):
+    def _make_hash_value(self, delegate, timestamp):
         return (
-            six.text_type(profile.user.pk) + six.text_type(timestamp) +
-            six.text_type(profile.user.is_active)
+            six.text_type(delegate.profile.user.pk) + six.text_type(timestamp) +
+            six.text_type(delegate.profile.user.is_active)
         )
 
 account_activation_token = TokenGenerator()

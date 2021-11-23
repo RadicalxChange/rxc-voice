@@ -16,9 +16,9 @@ export const getUserData = (): User | undefined => {
     return undefined;
   }
 };
-export const getUserDelegate = (user: User | undefined, process: Process): Delegate | undefined => {
+export const getUserDelegate = (user: User | undefined, process: Process | undefined): Delegate | undefined => {
   return user?.delegates.find((delegate: Delegate) => {
-    return delegate.process === process.id;
+    return delegate.process === process?.id;
   });
 }
 export const updateCreditBalance = (user: User, process: Process, new_balance: number): User => {
@@ -74,7 +74,7 @@ export const mapToTransfer = (transfer: any): Transfer => {
     recipient: '',
     amount: transfer.amount,
     date: '',
-    process: transfer.process,
+    delegation: transfer.delegation,
     user_is_sender: transfer.user_is_sender,
   };
 };

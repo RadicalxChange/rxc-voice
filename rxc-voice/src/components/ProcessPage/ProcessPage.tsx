@@ -4,70 +4,63 @@ import { ActionContext, StateContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
 import ProcessMenu from "../ProcessMenu";
-import { Stage, StageType } from "../../models/Stage";
+import { StageType } from "../../models/Stage";
 import { Process } from "../../models/Process";
 import DelegationPage from "./components/DelegationPage";
 import DeliberationPage from "./components/DeliberationPage";
 import ElectionPage from "./components/ElectionPage";
+import { Delegate } from "../../models/Delegate";
 
 import "./ProcessPage.scss";
 
 function ProcessPage() {
   const { processId, stageId } = useParams<ProcessPageRouteParams>();
-  const { selectedProcess, loading } = useContext(StateContext);
+  const { selectedProcess, delegate } = useContext(StateContext);
   const { selectProcess, setColor } = useContext(ActionContext);
-  const [stage, setStage] = useState<Stage | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setColor(BgColor.White);
     if (selectedProcess?.id !== +processId) {
       selectProcess(processId);
+    } else {
+      setLoading(false);
     }
-    setStage(selectedProcess?.stages[+stageId])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processId, stageId, selectedProcess]);
 
-  const renderPage = (process: Process | undefined, stage: any) => {
-    if (process && stage) {
-      console.log(stage)
-      switch (stage.type) {
-        case StageType.Delegation:
-          return <DelegationPage process={process} delegation={stage} />
-        case StageType.Conversation:
-          return <DeliberationPage process={process} conversation={stage} />
-        case StageType.Election:
-          return <ElectionPage process={process} election={stage} />
-      }
-    } else {
-      return <h2>Loading...</h2>
+  const renderPage = (process: Process, stage: any, delegate: Delegate) => {
+    switch (stage.type) {
+      case StageType.Delegation:
+        return <DelegationPage process={process} delegation={stage} userDelegate={delegate} />
+      case StageType.Conversation:
+        return <DeliberationPage process={process} conversation={stage} userDelegate={delegate} />
+      case StageType.Election:
+        return <ElectionPage process={process} election={stage} userDelegate={delegate} />
     }
   };
 
-  if (loading) {
-    return (
-      <div className="process-page">
-        <h2>Loading...</h2>
-      </div>
-    );
-  } else {
-    return (
-      <>
-      {selectedProcess && stage ? (
+  return (
+    <>
+    {!loading ? (
+      selectedProcess && delegate ? (
         <div className="process-page">
           <div className="nav">
             <ProcessMenu process={selectedProcess} />
           </div>
           <div className="body">
-            {renderPage(selectedProcess, stage)}
+            {renderPage(selectedProcess, selectedProcess.stages[+stageId], delegate)}
           </div>
         </div>
       ) : (
-        <h3>Sorry, something went wrong. Head back to home to find what you're looking for.</h3>
-      )}
-      </>
-    );
-  }
+        <h3>Sorry! Something went wrong. Return home to find what you are looking for.</h3>
+      )
+    ) : (
+      <h3>Loading...</h3>
+    )}
+    </>
+  );
 }
 
 export default ProcessPage;

@@ -211,7 +211,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
                 'profile_pic': profile.profile_pic,
-                'delegates': profile.delegates.all(),
+                'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
             })
 
 
@@ -284,7 +284,7 @@ class ValidateAuthToken(ObtainAuthToken):
                 'first_name': token.user.first_name,
                 'last_name': token.user.last_name,
                 'profile_pic': profile.profile_pic,
-                'delegates': profile.delegates.all(),
+                'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
             })
         else:
             return HttpResponse('Activation link is invalid!')
@@ -337,7 +337,20 @@ class GetGithubUser(generics.GenericAPIView):
                         'Access-Control-Allow-Origin': '*',
                     }
                     data_msg.headers.update(cors_header)
-                    return Response(data_msg, status=status.HTTP_200_OK)
+                    token, created = Token.objects.get_or_create(user=profile.user)
+                    return Response({
+                        'token': token.key,
+                        'id': profile.pk,
+                        'is_verified': profile.is_verified,
+                        'user_id': profile.user.id,
+                        'username': profile.user.username,
+                        'email': profile.user.email,
+                        'public_username': profile.public_username,
+                        'first_name': profile.user.first_name,
+                        'last_name': profile.user.last_name,
+                        'profile_pic': profile.profile_pic,
+                        'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
+                    })
                 else:
                     error = {
                         'error': 'permission_denied',
@@ -398,7 +411,20 @@ class GetTwitterToken(generics.GenericAPIView):
                 profile.is_verified = True
                 # get profile pic
                 profile.save()
-
+                token, created = Token.objects.get_or_create(user=profile.user)
+                return Response({
+                    'token': token.key,
+                    'id': profile.pk,
+                    'is_verified': profile.is_verified,
+                    'user_id': profile.user.id,
+                    'username': profile.user.username,
+                    'email': profile.user.email,
+                    'public_username': profile.public_username,
+                    'first_name': profile.user.first_name,
+                    'last_name': profile.user.last_name,
+                    'profile_pic': profile.profile_pic,
+                    'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
+                })
         return Response(
             twitter_data,
             status=resp['status']

@@ -4,7 +4,7 @@ import moment from "moment";
 import { useAlert } from "react-alert";
 import { ActionContext } from "../../../../../../hooks";
 import { WebService } from "../../../../../../services";
-import { getUserData, getUserDelegate, updateCreditBalance } from "../../../../../../utils";
+import { getUserData, updateCreditBalance } from "../../../../../../utils";
 import { User } from "../../../../../../models/User";
 import { Delegate } from "../../../../../../models/Delegate";
 
@@ -18,25 +18,26 @@ function TransferModal(props: any) {
     const [estMatch, setEstMatch] = useState(0);
     const [thresholdWarning, setThresholdWarning] = useState(false);
     const [transferSuccess, setTransferSuccess] = useState(false);
-    const user: User | undefined = getUserData();
-    const userDelegate: Delegate | undefined = getUserDelegate(user, props.process);
 
     const alert = useAlert()
 
-    const submit = (user: User, userDelegate: Delegate) => {
+    const submit = (userDelegate: Delegate) => {
       setThresholdWarning(false);
       const recipient = props.recipient ? props.recipient : recipientEmail;
       WebService.postTransfer({
-        sender: user.id,
+        sender: userDelegate.id,
         recipient: recipient,
         amount: amount,
         date: moment().toISOString(),
-        process: processId,
+        delegation: props.delegation.id,
       }).subscribe(async (data) => {
         if (data.ok) {
           setTransferSuccess(true);
-          const userData = updateCreditBalance(user, props.process, userDelegate.credit_balance - (+amount));
-          setUserData(userData);
+          const user: User | undefined = getUserData();
+          if (user) {
+            const userData = updateCreditBalance(user, props.process, userDelegate.credit_balance - (+amount));
+            setUserData(userData);
+          }
         } else {
           const error = await data.json();
           alert.error(error.non_field_errors[0]);
@@ -44,11 +45,12 @@ function TransferModal(props: any) {
       });
     };
 
-    const maybeSubmit = (user: User, userDelegate: Delegate) => {
+    const maybeSubmit = (userDelegate: Delegate) => {
+      console.log(userDelegate)
       const recipient = props.recipient ? props.recipient : recipientEmail;
       if (!recipient || !amount) {
         alert.error("Incomplete form");
-      } else if (recipient === user.public_username || recipient === user.email) {
+      } else if (recipient === userDelegate.profile.public_username || recipient === userDelegate.profile.user.email) {
         alert.error("You cannot send credits to yourself");
       } else if (+amount > userDelegate.credit_balance) {
         alert.error("Insufficient credits");
@@ -57,7 +59,7 @@ function TransferModal(props: any) {
       } else if (userDelegate.credit_balance - (+amount) < 25) {
         setThresholdWarning(true);
       } else {
-        submit(user, userDelegate);
+        submit(userDelegate);
       }
     };
 
@@ -73,16 +75,16 @@ function TransferModal(props: any) {
       setThresholdWarning(false);
     };
 
-    const onChangeAmount = (new_amt, user: User) => {
+    const onChangeAmount = (new_amt, userDelegate: Delegate) => {
       setAmount(new_amt);
       if (new_amt !== "") {
         const recipient = props.recipient ? props.recipient : recipientEmail;
         WebService.estimateMatch({
-          sender: user.id,
+          sender: userDelegate.id,
           recipient: recipient,
           amount: new_amt,
           date: moment().toISOString(),
-          process: processId,
+          delegation: props.delegation.id,
         }).subscribe(async (data) => {
           if (data.ok) {
             const msg = await data.json();
@@ -110,7 +112,7 @@ function TransferModal(props: any) {
           </div>
         ) : (
           <>
-          {user && userDelegate ? (
+          {props.userDelegate ? (
             <>
             {thresholdWarning ? (
               <div className={`transfer-modal ${!props.recipient && !props.invite ? "closed" : ""}`}>
@@ -124,7 +126,7 @@ function TransferModal(props: any) {
                     <button
                       type="button"
                       className="submit-button"
-                      onClick={() => submit(user, userDelegate)}
+                      onClick={() => submit(props.userDelegate)}
                       >
                       Submit
                     </button>
@@ -149,7 +151,7 @@ function TransferModal(props: any) {
                       placeholder="0"
                       className="amount-input"
                       value={amount}
-                      onChange={(e) => onChangeAmount(e.target.value, user)}
+                      onChange={(e) => onChangeAmount(e.target.value, props.userDelegate)}
                     />
                   </div>
                   {props.recipient ? (
@@ -175,8 +177,9 @@ function TransferModal(props: any) {
                   <div className="button-container">
                     <button
                       type="button"
+                      id="maybe-submit"
                       className="submit-button"
-                      onClick={() => maybeSubmit(user, userDelegate)}
+                      onClick={() => maybeSubmit(props.userDelegate)}
                       >
                       Submit
                     </button>

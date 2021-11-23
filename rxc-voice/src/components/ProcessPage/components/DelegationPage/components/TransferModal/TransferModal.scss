@@ -2,6 +2,7 @@
   display: block;
   padding: 1rem;
   text-align: center;
+  justify-content: center;
   width: 90%;
   position: fixed;
   z-index: 100;
@@ -100,21 +101,9 @@
   }
 }
 
-.submit-button {
-  display: inline-block;
-  background: black;
-  color: white;
-  border: 1px solid black;
-  border-radius: 15px;
-  padding: .5em 1em .5em 1em;
-  cursor: pointer;
-}
-.submit-button:focus {
-  outline: none;
-}
-.submit-button:hover {
-  background: white;
-  color: black;
+#maybe-submit {
+  display: inline-block !important;
+  margin-right: 1rem !important;
 }
 
 .closed {
@@ -141,15 +130,9 @@
 
     .give-credits-page {
 
-      .title {
-      }
-
       .transfer-field-container {
         height: 8vh;
         margin: 0 auto 2rem auto;
-
-        .field-label {
-        }
 
         .amount-input {
           margin-right: 1%;
@@ -168,36 +151,7 @@
       .match-estimate {
         font-size: 1rem;
       }
-
-      .button-container {
-
-        .cancel-button {
-        }
-      }
-
-      .transfer-success {
-      }
-      .hide {
-      }
-
-      .back-button {
-      }
-      .back-button:hover {
-      }
     }
-  }
-
-  .submit-button {
-  }
-  .submit-button:focus {
-  }
-  .submit-button:hover {
-  }
-
-  .closed {
-  }
-
-  .modal-overlay {
   }
 }
 

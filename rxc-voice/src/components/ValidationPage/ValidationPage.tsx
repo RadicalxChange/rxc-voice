@@ -65,29 +65,31 @@ function ValidationPage() {
         if (password === passReEntry) {
           if (verificationMethod) {
             if (signedAgreement) {
-              const updatedProfile = {
-                oauth_provider: verificationMethod,
-                user: {
-                  username: email,
-                  email: email,
-                  password: password,
-                  first_name: firstName,
-                  last_name: lastName,
-                }
+              const updatedUser = {
+                username: email,
+                email: email,
+                password: password,
+                first_name: firstName,
+                last_name: lastName,
               }
               if (user) {
-                WebService.modifyProfile(updatedProfile, user.id)
+                WebService.modifyUser(updatedUser, user.user_id)
                   .subscribe(async (data) => {
                     if (data.ok) {
-                      const userData = await data.json();
-                      setUserData(userData);
-                      oauthRedirect();
+                      WebService.modifyProfile({
+                        oauth_provider: verificationMethod,
+                      }, user.id)
+                        .subscribe(async (data) => {
+                          if (data.ok) {
+                            oauthRedirect();
+                          }
+                        });
                     } else {
                       console.error("Error", await data.json());
                     }
                   });
                 } else {
-                  WebService.createProfile(updatedProfile)
+                  WebService.createProfile(updatedUser)
                     .subscribe(async (data) => {
                       if (data.ok) {
                         const userData = await data.json();

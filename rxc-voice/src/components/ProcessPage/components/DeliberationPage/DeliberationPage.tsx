@@ -1,17 +1,14 @@
 import React, { useEffect } from "react";
 import { Process } from "../../../../models/Process";
-import { getUserData, getUserDelegate } from "../../../../utils";
+import { getUserData } from "../../../../utils";
 import { Conversation } from "../../../../models/Stage";
-import { User } from "../../../../models/User";
 import { Delegate } from "../../../../models/Delegate";
 import moment from "moment";
 
 import "./DeliberationPage.scss";
 
-function DeliberationPage(props: {process: Process, conversation: Conversation}) {
+function DeliberationPage(props: {process: Process, conversation: Conversation, userDelegate: Delegate}) {
   const POLIS_SITE_ID = 'polis_site_id_cG2opQF5hsqj9jGCsr';
-  const user: User | undefined = getUserData();
-  const userDelegate: Delegate | undefined = getUserDelegate(user, props.process);
 
   useEffect(() => {
     // load pol.is embed script
@@ -42,17 +39,17 @@ function DeliberationPage(props: {process: Process, conversation: Conversation})
     <div className="polis-page">
       <div className="body">
       <h1>Deliberation</h1>
-      <h2 className="content-header">{process.title}</h2>
+      <h2 className="content-header">{props.process.title}</h2>
       <div className="explain-text">
         <p>Join us as we collectively draft a ballot of proposals to vote on in our election! Submit proposals, share your thoughts, and show your agreement or disagreement with other delegates’ submissions. This is your chance to influence the ballot of items that voters consider in the final election.</p>
         <p>Want to know more about who else gets a say in this process? Go back to the Delegation Stage to see how the delegation was determined democratically.</p>
       </div>
       {(moment() < moment(props.conversation.end_date)) ? (
         (moment() > moment(props.conversation.start_date)) ? (
-            user && userDelegate ? (
+            props.userDelegate ? (
               <>
               <p className="explain-text"><strong>The Deliberation Stage closes on {moment(props.conversation.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-              {(userDelegate.credit_balance >= 25) ? (
+              {(props.userDelegate.credit_balance >= 25) ? (
                 <>
                 <div
                   id="polis-iframe"
@@ -63,7 +60,7 @@ function DeliberationPage(props: {process: Process, conversation: Conversation})
                   data-ucv={moment(props.conversation.start_date) < moment()}
                   data-ucw={moment(props.conversation.start_date) < moment()}
                   data-ucsd='false'
-                  data-xid={user.token}
+                  data-xid={getUserData()?.token}
                   data-auth_needed_to_vote='false'
                   data-auth_needed_to_write='false'
                   data-auth_opt_fb='false'
@@ -93,13 +90,15 @@ function DeliberationPage(props: {process: Process, conversation: Conversation})
         )
       ) : (
         <div className="body">
-          <p className="explain-text"><strong>The Deliberation Stage has concluded. You can see the results of the conversation below!</strong></p>
-          <iframe
-            title="conversation-results"
-            className="results-iframe"
-            src={"https://pol.is/report/" + props.conversation.report_id}
-          >
-          </iframe>
+          <p className="explain-text"><strong>The Deliberation Stage has concluded. {props.conversation.report_id ? "You can see the results of the conversation below!" : ""}</strong></p>
+            {props.conversation.report_id ? (
+              <iframe
+                title="conversation-results"
+                className="results-iframe"
+                src={"https://pol.is/report/" + props.conversation.report_id}
+              >
+              </iframe>
+            ) : null}
         </div>
       )}
       </div>

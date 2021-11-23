@@ -87,7 +87,7 @@ export const createProfile = (data: any): Observable<any> => {
   });
 };
 
-export const getDelegate = (id: string): Observable<any> => {
+export const getDelegate = (id: number): Observable<any> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");
     return from<Promise<any>>(
@@ -241,7 +241,7 @@ export const postTransfer = (transfer: any): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
-      fetch(`${ROOT_URL}/processes/${transfer.process}/transfers/`, {
+      fetch(`${ROOT_URL}/processes/${transfer.delegation}/transfers/`, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
@@ -287,6 +287,7 @@ export const fetchTransfers = (process_id: number): Observable<any> => {
 export const verifyGithub = (creds: any): Observable<any> => {
     return defer(() => {
       const user: string | null = sessionStorage.getItem("user");
+      console.log(user)
       return from<Promise<any>>(
         fetch(`${ROOT_URL}/github/verify/`, {
           headers: {

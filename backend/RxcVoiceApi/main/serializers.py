@@ -36,6 +36,9 @@ class VoteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        election = Election.objects.get(pk=self.context.get('election_id'))
+        if not election.start_date < timezone.now() < election.end_date:
+            raise ValidationError("Invalid Vote: Voting is not open.")
         try:
             existing_vote = Vote.objects.get(Q(proposal=validated_data['proposal'], sender=validated_data['sender']))
         except(Vote.DoesNotExist):
@@ -44,9 +47,8 @@ class VoteSerializer(serializers.ModelSerializer):
             updated_vote = self.update(existing_vote, validated_data)
             return updated_vote
         else:
-            election = Election.objects.get(pk=self.context.get('election_id'))
             sender = Delegate.objects.get(pk=validated_data['sender'].id)
-            assign_perm('can_view_results', sender.user, election)
+            assign_perm('can_view_results', sender.profile.user, election)
 
             proposal = Proposal.objects.get(pk=validated_data['proposal'].id)
             amount = int(validated_data['amount'])
@@ -64,6 +66,9 @@ class VoteSerializer(serializers.ModelSerializer):
             return vote
 
     def update(self, instance, validated_data):
+        election = Election.objects.get(pk=self.context.get('election_id'))
+        if not election.start_date < timezone.now() < election.end_date:
+            raise ValidationError("Invalid Vote: Voting is not open.")
         # update Vote object
         old_amount = instance.amount
         new_amount = validated_data.get('amount', instance.amount)
@@ -216,21 +221,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             )
         return profile
 
-    def update(self, instance, validated_data):
-        instance.oauth_provider = validated_data.get('oauth_provider', instance.oauth_provider)
-        instance.save()
-
-        user = instance.user
-        user.username = validated_data.get('username', user.username)
-        user.first_name = validated_data.get('first_name', user.first_name)
-        user.last_name = validated_data.get('last_name', user.last_name)
-        user.email = validated_data.get('email', user.email)
-        if validated_data.get('password', '') != '':
-            user.set_password(validated_data['password'])
-        user.save()
-
-        return instance
-
 
 class DelegateSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
@@ -264,7 +254,10 @@ class DelegateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data, set_unusable_password):
         profile_data = validated_data.get('profile')
-        existing_user = User.objects.get(email=profile_data.user.email)
+        try:
+            existing_user = User.objects.get(email=profile_data['user']['email'])
+        except User.DoesNotExist:
+            existing_user = None
         if existing_user is not None:
             profile = Profile.objects.get(user=existing_user)
         else:
@@ -275,10 +268,14 @@ class DelegateSerializer(serializers.ModelSerializer):
                 )
         delegate, created = Delegate.objects.update_or_create(
             profile=profile,
-            invited_by=validated_data.get('invited_by'),
+            invited_by=validated_data.get('invited_by').profile,
             process=validated_data.get('process'),
             credit_balance=validated_data.get('credit_balance', 0),
             )
+        groups = delegate.process.groups.all()
+        for group in groups:
+            delegate.profile.user.groups.add(group)
+        delegate.save()
         return delegate
 
 
@@ -296,11 +293,11 @@ class TransferSerializer(serializers.ModelSerializer):
             }
 
     def get_user_is_sender(self, obj):
-        return obj.sender.user.id == self.context.get('request').user.id if obj.sender else False
+        return obj.sender.profile.user.id == self.context.get('request').user.id if obj.sender else False
 
     def create(self, validated_data):
-        process = validated_data.get('process')
-        if process.conversation.start_date < timezone.now():
+        delegation = validated_data.get('delegation')
+        if delegation.end_date < timezone.now():
             raise ValidationError("Invalid Transfer: Delegation Stage is concluded.")
         recipient = validated_data.get('recipient')
         sender = validated_data.get('sender')
@@ -316,20 +313,17 @@ class TransferSerializer(serializers.ModelSerializer):
             new_delegate = DelegateSerializer.create(
                 DelegateSerializer(),
                 validated_data={
-                'profile': {
-                    'user': {
-                        'username': recipient,
-                        'email': recipient,
+                    'profile': {
+                        'user': {
+                            'username': recipient,
+                            'email': recipient,
+                        },
                     },
-                },
-                'process': process,
-                'credit_balance': 0,
-                'invited_by': sender,
+                    'process': delegation.process,
+                    'credit_balance': 0,
+                    'invited_by': sender,
                 },
                 set_unusable_password=True)
-            group = process.groups.first()
-            if group is not None:
-                new_delegate.profile.user.groups.add(group)
             recipient_object = new_delegate
         elif recipient_object.id == sender.id or self.context.get('request').user.id == recipient_object.id:
             raise ValidationError("Invalid transfer.")
@@ -342,7 +336,7 @@ class TransferSerializer(serializers.ModelSerializer):
             amount=validated_data.get('amount'),
             date=validated_data.get('date'),
             status=('P'),
-            process=process,
+            delegation=delegation,
             )
         return transfer
 

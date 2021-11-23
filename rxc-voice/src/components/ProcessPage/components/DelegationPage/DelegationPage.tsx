@@ -11,7 +11,7 @@ import { Process } from "../../../../models/Process";
 
 import "./DelegationPage.scss";
 
-function DelegationPage(props: {process: Process, delegation: Delegation}) {
+function DelegationPage(props: {process: Process, delegation: Delegation, userDelegate: Delegate}) {
   const [transfers, setTransfers] = useState(new Array<Transfer>());
   const [subtotal, setSubtotal] = useState(0);
   const [match, setMatch] = useState(0);
@@ -67,10 +67,12 @@ function DelegationPage(props: {process: Process, delegation: Delegation}) {
       <TransferModal
         invite={inviteModal}
         recipient={stagedTransfer}
+        process={props.process}
+        delegation={props.delegation}
         closeModal={closeModal}
       />
       <h1>Delegation</h1>
-      <h2>{props.process.title}</h2>
+      <h2 className="content-header">{props.process.title}</h2>
       <div className="explain-text">
         <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some of their voice credits. Voice credits are used for voting in the election later on.</p>
         <p>Is there anyone you don’t see in the list below that you think should have a say? Send them some of your voice credits to invite them.</p>
@@ -140,7 +142,9 @@ function DelegationPage(props: {process: Process, delegation: Delegation}) {
                   key={delegate.id}
                   delegate={delegate}
                   process={props.process}
+                  delegation={props.delegation}
                   stageTransfer={setStagedTransfer}
+                  userDelegate={props.userDelegate}
                 >
                 </DelegateCard>
               ))}

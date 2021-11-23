@@ -23,7 +23,7 @@ this is called at the end of the delegation stage to pay out matches from the
 matching fund.
 """
 def match_transfers(process, delegation):
-    transfers = Transfer.objects.all().filter(process=process)
+    transfers = Transfer.objects.all().filter(delegation=delegation)
 
     # {recipient_id: {sender_id: amount}} => each recipient has a dict where the keys
     # are senders and the values are amounts
@@ -34,7 +34,7 @@ def match_transfers(process, delegation):
     sum_of_roots = {}
     for transfer in transfers:
         if transfer.recipient_object and transfer.sender:
-            if transfer.recipient_object.is_verified:
+            if transfer.recipient_object.profile.is_verified:
                 if transfer.status == 'P':
                     transfer.status = 'A'
                     transfer.save()
@@ -81,7 +81,7 @@ def match_transfers(process, delegation):
                     recipient=recipient_object,
                     amount=int(final_match),
                     date=Now(),
-                    process=process,
+                    delegation=delegation,
                     )
                 match_payment.save()
 
@@ -91,8 +91,10 @@ this is called by the frontend to calculate an estimated match for a potential
 transfer. Takes in a potential transfer, returns an estimated match.
 """
 def estimate_match(new_transfer):
-    process = new_transfer['process']
-    transfers = Transfer.objects.all().filter(process=process)
+    delegation = new_transfer['delegation']
+    if delegation.matching_pool == Delegation.NONE:
+        return 0
+    transfers = Transfer.objects.all().filter(delegation=delegation)
 
     # {recipient_id: {sender_id: amount}} => each recipient has a dict where the keys
     # are senders and the values are amounts
@@ -128,11 +130,10 @@ def estimate_match(new_transfer):
         if recipient_object.id in distinct_contributions and recipient_object.id in pledged_totals and recipient_object.id in sum_of_roots:
             if sender.id in distinct_contributions[recipient_object.id]:
                 adjusted_sum_roots = sum_of_roots[recipient_object.id] - math.sqrt(distinct_contributions[recipient_object.id][sender.id])
-                distinct_contributions[recipient_object.id][sender.id] += new_transfer['amount']
+                adjusted_sum_roots = adjusted_sum_roots + math.sqrt(distinct_contributions[recipient_object.id][sender.id] + new_transfer['amount'])
             else:
-                distinct_contributions[recipient_object.id][sender.id] = new_transfer['amount']
+                adjusted_sum_roots = sum_of_roots[recipient_object.id] + math.sqrt(new_transfer['amount'])
             adjusted_pledged_total = pledged_totals[recipient_object.id] + new_transfer['amount']
-            adjusted_sum_roots = sum_of_roots[recipient_object.id] + math.sqrt(distinct_contributions[recipient_object.id][sender.id])
     else:
         adjusted_pledged_total = new_transfer['amount']
         adjusted_sum_roots = math.sqrt(new_transfer['amount'])
@@ -149,9 +150,14 @@ def estimate_match(new_transfer):
     curr_match = 0
     if recipient_object and recipient_object.id in raw_matches:
         curr_match = raw_matches[recipient_object.id]
-    if raw_match_total > process.matching_pool:
-        curr_match = (curr_match / raw_match_total) * float(process.matching_pool)
-        adjusted_match = (adjusted_match / raw_match_total) * float(process.matching_pool)
+    if delegation.matching_pool == Delegation.DEFAULT:
+        # set matching pool size equal to current voice credit supply
+        avail_funds = delegation.num_credits * len(delegation.process.delegates.filter(profile__is_verified=True))
+        if raw_match_total > avail_funds:
+            curr_match = (curr_match / raw_match_total) * float(avail_funds)
+            print(adjusted_match)
+            print(avail_funds)
+            adjusted_match = (adjusted_match / raw_match_total) * float(avail_funds)
     # return the difference caused by hypothetical transfer
     # print(str(int(adjusted_match)) + " - " + str(int(curr_match)) + " = " + str(int(adjusted_match) - int(curr_match)))
     return int(adjusted_match) - int(curr_match)

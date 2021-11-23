@@ -19,6 +19,7 @@ function ProposalWidget(props: any) {
       if (costChange > props.creditsRemaining) {
         alert.error("you don't have enough voice credits")
       } else {
+        console.log("handlechange:\n\tamountchange = " + amountChange + "\n\tcostchange = " + costChange)
         props.onChange({
           id: props.proposal.id,
           amount: amountChange,

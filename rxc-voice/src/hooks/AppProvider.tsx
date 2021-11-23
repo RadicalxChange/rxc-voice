@@ -2,18 +2,21 @@ import moment from "moment";
 import React, { createContext, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { BgColor } from "../models/BgColor";
+import { Delegate } from "../models/Delegate";
 import { Process } from "../models/Process";
 import { Transfer } from "../models/Transfer";
+import { User } from "../models/User";
 import { WebService } from "../services";
+import { getUserData, getUserDelegate, updateCreditBalance } from "../utils";
 
 export interface State {
   color: BgColor,
   loading: boolean,
-  creditBalance?: number,
   processes?: Process[],
   activeProcesses?: Process[],
   pastProcesses?: Process[],
   selectedProcess?: Process,
+  delegate?: Delegate,
   stagedTransfer?: Transfer,
 }
 
@@ -21,7 +24,7 @@ const actionInitialValue = {
   setColor: (color: BgColor) => {},
   logoutUser: () => {},
   setUserData: (user: any) => {},
-  updateCreditBalance: (amount: any) => {},
+  selectDelegate: (delegate: any) => {},
   selectProcess: (selectedProcess: any) => {},
   fetchProcesses: () => {},
   stageTransfer: (transfer: any) => {},
@@ -48,10 +51,10 @@ export const AppProvider = (props: any) => {
             ...prevState,
             user: action.user,
           };
-        case "UPDATE_CREDIT_BALANCE":
+        case "SELECT_DELEGATE":
           return {
             ...prevState,
-            creditBalance: action.amount,
+            delegate: action.delegate,
           };
         case "SET_PROCESS_LIST":
           return {
@@ -106,10 +109,10 @@ export const AppProvider = (props: any) => {
           user: user,
         });
       },
-      updateCreditBalance: (amount: any) => {
+      selectDelegate: (delegate: any) => {
         dispatch({
           type: "UPDATE_CREDIT_BALANCE",
-          amount: amount,
+          delegate: delegate,
         });
       },
       logoutUser: async () => {
@@ -121,7 +124,6 @@ export const AppProvider = (props: any) => {
         });
       },
       fetchProcesses: () => {
-        dispatch({ type: "SET_LOADING", loading: true });
         WebService.fetchProcesses().subscribe((data: any) => {
           var activeList: Process[] = new Array<Process>();
           var pastList: Process[] = new Array<Process>();
@@ -141,15 +143,23 @@ export const AppProvider = (props: any) => {
             pastProcesses: pastList,
           });
         });
-        dispatch({ type: "SET_LOADING", loading: false });
       },
       selectProcess: (selectedProcessId: any) => {
-        dispatch({ type: "SET_LOADING", loading: true });
         WebService.fetchSingleProcess(selectedProcessId).subscribe(async (data: any) => {
           const process = await data;
           dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: process });
+          const user: User | undefined = getUserData();
+          if (user && process) {
+            WebService.getDelegate(getUserDelegate(user, process)!.id).subscribe(async (data: any) => {
+              if (data.ok) {
+                const delegateData = await data.json();
+                const userData = updateCreditBalance(user, process, delegateData.credit_balance);
+                dispatch({ type: "SET_USER", user: userData });
+                dispatch({ type: "SELECT_DELEGATE", delegate: delegateData });
+              }
+            });
+          }
         });
-        dispatch({ type: "SET_LOADING", loading: false });
       },
       stageTransfer: (transfer: any) => {
         dispatch({

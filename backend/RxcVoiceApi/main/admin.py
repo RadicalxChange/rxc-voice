@@ -3,7 +3,7 @@ from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModel
 from guardian.shortcuts import assign_perm
 import uuid
 
-from .models import (Stage, Election, Proposal, Delegate, Profile, Process, Conversation, Delegation, Transfer, MatchPayment)
+from .models import (Vote, Stage, Election, Proposal, Delegate, Profile, Process, Conversation, Delegation, Transfer, MatchPayment)
 from .signals import send_register_mail
 
 
@@ -12,30 +12,25 @@ class StageChildAdmin(PolymorphicChildModelAdmin):
     base_model = Stage
 
 
-class ElectionAdmin(StageChildAdmin):
-
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-
-    def save_related(self, request, form, formsets, change):
-        super(ElectionAdmin, self).save_related(request, form, formsets, change)
-        for group in form.instance.groups.all():
-            assign_perm('can_vote', group, form.instance)
-
-
-class ConversationAdmin(StageChildAdmin):
-
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        if not change:
-            form.instance.uuid = str(uuid.uuid1())
-        form.instance.save()
-
-
 class StageParentAdmin(PolymorphicParentModelAdmin):
     # parent model base admin
     base_model = Stage
     child_models = (Delegation, Conversation, Election)
+
+
+class DelegationAdmin(StageChildAdmin):
+    base_model = Delegation
+    list_display = ['id', 'title', 'start_date', 'end_date', 'process', 'position', 'matching_pool', 'allow_transfers', 'allow_invites', 'num_credits']
+
+
+class ConversationAdmin(StageChildAdmin):
+    base_model = Conversation
+    list_display = ['id', 'title', 'start_date', 'end_date', 'process', 'position', 'show_report', 'report_id']
+
+
+class ElectionAdmin(StageChildAdmin):
+    base_model = Election
+    list_display = ['id', 'title', 'start_date', 'end_date', 'process', 'position', 'negative_votes']
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -47,7 +42,7 @@ class DelegateAdmin(admin.ModelAdmin):
 
 
 class TransferAdmin(admin.ModelAdmin):
-    list_display = ['id','sender','recipient','amount','date','status','process']
+    list_display = ['id','sender','recipient','amount','date','status', 'delegation']
 
 
 class ProcessAdmin(admin.ModelAdmin):
@@ -59,12 +54,13 @@ class ProposalAdmin(admin.ModelAdmin):
 
 
 class MatchPaymentAdmin(admin.ModelAdmin):
-    list_display = ['id','recipient','amount','date','process']
+    list_display = ['id','recipient','amount','date','delegation']
 
 
 admin.site.register(Stage, StageChildAdmin)
-admin.site.register(Delegation)
+admin.site.register(Delegation, DelegationAdmin)
 admin.site.register(Election, ElectionAdmin)
+admin.site.register(Vote)
 admin.site.register(Proposal, ProposalAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Delegate, DelegateAdmin)

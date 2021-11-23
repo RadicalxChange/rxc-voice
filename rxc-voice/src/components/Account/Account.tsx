@@ -14,6 +14,7 @@ function Account() {
   // const github_client_id = 'f9be73dc7af4857809e0';
   const { logoutUser, setUserData } = useContext(ActionContext);
   const user: User | undefined = getUserData();
+  console.log(user)
   const [editMode, setEditMode] = useState(false);
 
   const [email, setEmail] = useState(user ? user.email : "");

@@ -3,7 +3,7 @@ import moment from 'moment';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import { Proposal } from "../../../../models/Proposal";
-import { getUserData, getUserDelegate, updateCreditBalance } from "../../../../utils";
+import { getUserData, updateCreditBalance } from "../../../../utils";
 import { WebService } from "../../../../services";
 import { Vote } from "../../../../models/Vote";
 import ProposalWidget from "./components/ProposalWidget";
@@ -18,14 +18,11 @@ import { ResultData } from "../../../../models/ResultData";
 
 import "./ElectionPage.scss";
 
-function ElectionPage(props: {process: Process, election: Election}) {
-  const user: User | undefined = getUserData();
-  const userDelegate: Delegate | undefined = getUserDelegate(user, props.process);
+function ElectionPage(props: {process: Process, election: Election, userDelegate: Delegate}) {
 
   const [votesCast, setVotesCast] = useState(0);
 
   function proposalReducer(proposals: any[], change: any) {
-    console.log("reducer:\n\tamountchange = " + change.amount + "\n\tcostchange = " + change.cost)
     const proposalToChange: any | undefined = proposals.find(
       proposal => proposal.id === change.id);
     if (proposalToChange === undefined) {
@@ -43,9 +40,7 @@ function ElectionPage(props: {process: Process, election: Election}) {
 
   const { selectProcess, setUserData } = useContext(ActionContext);
   const [creditsSpent, setCreditsSpent] = useState(0);
-  const [startingBalance, setStartingBalance] = useState(
-    userDelegate?.credit_balance ? +userDelegate.credit_balance : 0
-  );
+  const [startingBalance, setStartingBalance] = useState(+props.userDelegate.credit_balance);
   const [proposals, proposalDispatch] = useReducer(proposalReducer, new Array<any>());
   const [ratProposal, setRatProposal] = useState<number | undefined>(undefined);
   const [changingVotes, setChangingVotes] = useState(false);
@@ -112,21 +107,24 @@ function ElectionPage(props: {process: Process, election: Election}) {
    return index !== ratProposal;
   };
 
-  const submitVotes = (user: User) => {
+  const submitVotes = (userDelegate: Delegate) => {
     const postData = new Array<any>();
     proposals.forEach(proposal => postData.push({
       proposal: proposal.id,
       amount: proposal.amount,
       date: moment().format('YYYY-MM-DDTHH:MM'),
-      sender: user.id,
+      sender: userDelegate.id,
     }));
     WebService.postVotes(postData, props.election.id).subscribe(async (data) => {
                     if (data.ok) {
                       setAlreadyVoted(true);
                       props.election.show_results = true;
                       selectProcess(props.process.id);
-                      const userData = updateCreditBalance(user, props.process, startingBalance - creditsSpent);
-                      setUserData(userData);
+                      const user: User | undefined = getUserData();
+                      if (user) {
+                        const userData = updateCreditBalance(user, props.process, startingBalance - creditsSpent);
+                        setUserData(userData);
+                      }
                       setSuccess(true);
                       setChangingVotes(false);
                     } else {
@@ -208,7 +206,7 @@ function ElectionPage(props: {process: Process, election: Election}) {
         <h1>Election</h1>
         <h2 className="content-header">{props.process.title}</h2>
         <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-        <p>Thanks for voting! The results will
+        <p className="explain-text">Thanks for voting! The results will
           appear here when the election stage is over.
         </p>
         <button
@@ -242,9 +240,9 @@ function ElectionPage(props: {process: Process, election: Election}) {
   } else {
     return (
       <div className="voting-page">
-        {user && userDelegate ? (
+        {props.userDelegate ? (
           <>
-          {+userDelegate.credit_balance >= 25 || alreadyVoted ? (
+          {+props.userDelegate.credit_balance >= 25 || alreadyVoted ? (
             <div className="button-container">
               <RemainingCredits
                 creditsRemaining={startingBalance - creditsSpent}
@@ -254,7 +252,7 @@ function ElectionPage(props: {process: Process, election: Election}) {
               <button
                 type="button"
                 className="submit-button"
-                onClick={() => submitVotes(user)}
+                onClick={() => submitVotes(props.userDelegate)}
                 >
                 Save Votes
               </button>
@@ -277,7 +275,7 @@ function ElectionPage(props: {process: Process, election: Election}) {
             <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
           </div>
           <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-          {+userDelegate.credit_balance >= 25 || alreadyVoted ? (
+          {+props.userDelegate.credit_balance >= 25 || alreadyVoted ? (
           <ul className="proposal-list">
             {ratProposal && proposals[ratProposal] ? (
               <ProposalWidget key={proposals[ratProposal].id}

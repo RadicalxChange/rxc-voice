@@ -51,9 +51,7 @@ class ProcessPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method == 'GET':
-            return request.user.is_authenticated and is_verified(request.user.id)
-        elif request.method == 'POST':
-            return request.user.is_authenticated
+            return request.user.has_perm('can_view', obj)
         elif request.method in ['PUT', 'PATCH']:
             return is_group_admin(request.user.id, obj.groups) or request.user.is_staff
         elif request.method in ['DELETE']:
@@ -78,7 +76,7 @@ class ElectionPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method == 'GET':
-            return request.user.has_perm('can_vote', obj) or request.user.is_staff
+            return request.user.has_perm('can_view', obj.process) or request.user.is_staff
         elif request.method == 'POST':
             return request.user.is_authenticated
         elif request.method in ['PUT', 'PATCH']:
@@ -103,8 +101,8 @@ class ProposalPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method == 'GET':
-            return request.user.has_perm('can_vote', obj.election) or request.user.is_staff
-        elif request.method in ['POST', 'PUT', 'PATCH', 'DELETE']:
+            return request.user.has_perm('can_view', obj.election.process) or request.user.is_staff
+        elif request.method in ['PUT', 'PATCH', 'DELETE']:
             return is_group_admin(request.user.id, obj.election.groups) or request.user.is_staff
         else:
             return True
@@ -159,7 +157,7 @@ class ConversationPermission(permissions.BasePermission):
             if obj.groups.filter(name='RxC Conversations').exists():
                 return True
             else:
-                return request.user.has_perm('can_view', obj)
+                return request.user.has_perm('can_view', obj.process)
         elif request.method == 'POST':
             return request.user.is_authenticated
         elif request.method in ['PUT', 'PATCH']:
