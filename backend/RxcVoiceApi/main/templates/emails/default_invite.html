@@ -1,0 +1,29 @@
+{% extends 'emails/base.html' %}
+{% block content %}
+
+<div>
+    <h4>Hi, {{ delegate_name }}</h4>
+
+    {% if invitation_message %}
+    <p>{{ invitation_message }}</p>
+    {% else %}
+    <p>Welcome to RxC Voice -- we want to invite you to participate in the following collective decision: {{ process_title }}</p>
+    {% endif %}
+
+    <p>Please use the link below to sign in and participate.</p>
+
+    {% if is_verified %}
+    <a href="https://voice.radicalxchange.org?uidb64={{ uid }}&token={{ token }}">Sign in</a>
+    {% else %}
+    <a href="https://voice.radicalxchange.org/verify?uidb64={{ uid }}&token={{ token }}">Create Account</a>
+    {% endif %}
+
+    <p>If you have any questions, you can get in touch with us at voice@radicalxchange.org</p>
+
+    <p>Best wishes,</p>
+    <p>Your RxC Voice team</p>
+
+    <p>Next-Generation Political Economies at <a href="https://radicalxchange.org">RadicalxChange</a></p>
+</div>
+
+{% endblock %}
