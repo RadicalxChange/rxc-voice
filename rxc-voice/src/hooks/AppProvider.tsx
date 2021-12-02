@@ -2,35 +2,39 @@ import moment from "moment";
 import React, { createContext, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { BgColor } from "../models/BgColor";
+import { Delegate } from "../models/Delegate";
 import { Process } from "../models/Process";
+import { Transfer } from "../models/Transfer";
+import { User } from "../models/User";
 import { WebService } from "../services";
+import { getUserData, getUserDelegate, updateCreditBalance } from "../utils";
 
-const yellowColor = "var(--yellowColor)";
-const whiteColor = "var(--whiteColor)";
+export interface State {
+  color: BgColor,
+  loading: boolean,
+  processes?: Process[],
+  activeProcesses?: Process[],
+  pastProcesses?: Process[],
+  selectedProcess?: Process,
+  delegate?: Delegate,
+  stagedTransfer?: Transfer,
+}
 
 const actionInitialValue = {
   setColor: (color: BgColor) => {},
   logoutUser: () => {},
-  // updateUser: (id: string, updatedUser: any) => {},
   setUserData: (user: any) => {},
-  updateCreditBalance: (amount: any) => {},
+  selectDelegate: (delegate: any) => {},
   selectProcess: (selectedProcess: any) => {},
   fetchProcesses: () => {},
   stageTransfer: (transfer: any) => {},
 };
 const stateInitialValue = {
-  color: yellowColor,
-  user: null,
-  creditBalance: null,
-  processes: [],
-  activeProcesses: [],
-  pastProcesses: [],
-  selectedProcess: null,
-  stagedTransfer: null,
+  color: BgColor.Yellow,
   loading: false,
 };
 export const ActionContext = createContext(actionInitialValue);
-export const StateContext = createContext(stateInitialValue);
+export const StateContext = createContext<State>(stateInitialValue);
 
 export const AppProvider = (props: any) => {
   const history = useHistory();
@@ -47,10 +51,10 @@ export const AppProvider = (props: any) => {
             ...prevState,
             user: action.user,
           };
-        case "UPDATE_CREDIT_BALANCE":
+        case "SELECT_DELEGATE":
           return {
             ...prevState,
-            creditBalance: action.amount,
+            delegate: action.delegate,
           };
         case "SET_PROCESS_LIST":
           return {
@@ -76,16 +80,10 @@ export const AppProvider = (props: any) => {
           };
       }
     }, {
-      color: yellowColor,
+      color: BgColor.Yellow,
       user: sessionStorage.getItem("user")
         ? JSON.parse(sessionStorage.getItem("user")!)
-        : null,
-      creditBalance: null,
-      processes: [],
-      activeProcesses: [],
-      pastProcesses: [],
-      selectedProcess: null,
-      stagedTransfer: null,
+        : undefined,
       loading: false,
     }
   );
@@ -95,11 +93,11 @@ export const AppProvider = (props: any) => {
       setColor: (color: BgColor) => {
         switch (color) {
           case BgColor.Yellow: {
-            dispatch({ type: "SET_COLOR", color: yellowColor });
+            dispatch({ type: "SET_COLOR", color: BgColor.Yellow });
             break;
           }
           case BgColor.White: {
-            dispatch({ type: "SET_COLOR", color: whiteColor });
+            dispatch({ type: "SET_COLOR", color: BgColor.White });
             break;
           }
         }
@@ -111,10 +109,10 @@ export const AppProvider = (props: any) => {
           user: user,
         });
       },
-      updateCreditBalance: (amount: any) => {
+      selectDelegate: (delegate: any) => {
         dispatch({
           type: "UPDATE_CREDIT_BALANCE",
-          amount: amount,
+          delegate: delegate,
         });
       },
       logoutUser: async () => {
@@ -125,21 +123,6 @@ export const AppProvider = (props: any) => {
           user: null,
         });
       },
-      // updateUser: async (id: string, updatedUser: any) => {
-      //   WebService.updateUser(id, updatedUser)
-      //     .subscribe(async (data) => {
-      //       if (data.ok) {
-      //         const user = await data.json();
-      //         sessionStorage.setItem("user", JSON.stringify(user));
-      //         dispatch({
-      //           type: "SET_USER",
-      //           user,
-      //         });
-      //       } else {
-      //         console.error("Error", await data.json());
-      //       }
-      //     });
-      // },
       fetchProcesses: () => {
         WebService.fetchProcesses().subscribe((data: any) => {
           var activeList: Process[] = new Array<Process>();
@@ -162,11 +145,21 @@ export const AppProvider = (props: any) => {
         });
       },
       selectProcess: (selectedProcessId: any) => {
-        dispatch({ type: "SET_LOADING", loading: true });
         WebService.fetchSingleProcess(selectedProcessId).subscribe(async (data: any) => {
           const process = await data;
           dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: process });
-          dispatch({ type: "SET_LOADING", loading: false });
+          const user: User | undefined = getUserData();
+          const delegate: Delegate | undefined = getUserDelegate(user, process)
+          if (user && process && delegate) {
+            WebService.getDelegate(delegate.id).subscribe(async (data: any) => {
+              if (data.ok) {
+                const delegateData = await data.json();
+                const userData = updateCreditBalance(user, process, delegateData.credit_balance);
+                dispatch({ type: "SET_USER", user: userData });
+                dispatch({ type: "SELECT_DELEGATE", delegate: delegateData });
+              }
+            });
+          }
         });
       },
       stageTransfer: (transfer: any) => {
@@ -176,7 +169,7 @@ export const AppProvider = (props: any) => {
         });
       },
     }),
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );

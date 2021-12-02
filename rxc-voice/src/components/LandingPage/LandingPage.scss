@@ -1,0 +1,35 @@
+.landing-page {
+  height: 100vh;
+}
+
+.lp-header {
+  text-align: right;
+  margin-right: 3vw;
+}
+
+.top-panel {
+  padding: 10vmin 4.5vmin;
+}
+
+.top-panel > a > button {
+  display: inline-block;
+  margin: 1em auto 1em auto;
+  background: black;
+  color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: .5em 1em .5em 1em;
+  margin: .5em;
+  outline: none;
+  cursor: pointer;
+}
+.top-panel > a > button:hover {
+  background: var(--yellowColor);
+  color: black;
+}
+
+@media only screen and (min-width: 768px) {
+  .top-panel {
+    padding: 25vh 30vw;
+  }
+}

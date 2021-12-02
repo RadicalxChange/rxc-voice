@@ -2,189 +2,181 @@ import React, { useContext, useEffect, useState } from "react";
 import { useAlert } from "react-alert";
 import { useLocation } from "react-router";
 import { uuid } from "uuidv4";
-import { ActionContext, StateContext } from "../../hooks";
+import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 import { VerificationMethod } from "../../models/VerificationMethod";
 import { WebService } from "../../services";
-import { getDelegateId, getUserId, validateEmail } from "../../utils";
+import { getUserData, validateEmail } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
+import { User } from "../../models/User";
+import { Link } from "react-router-dom";
 // import { containsLowerCase, containsNumber, containsSpecialCharacters, containsUpperCase, validatePasswordLength } from "../../utils";
 
 import "./ValidationPage.scss";
 
 function ValidationPage() {
-    const github_client_id = 'f9be73dc7af4857809e0';
-    const location = useLocation();
-    const linkUid = new URLSearchParams(location.search).get('uidb64');
-    const linkToken = new URLSearchParams(location.search).get('token');
-    const { setUserData, setColor } = useContext(ActionContext);
-    const { user } = useContext(StateContext);
+  const github_client_id = 'f9be73dc7af4857809e0';
+  const location = useLocation();
+  const linkUid = new URLSearchParams(location.search).get('uidb64');
+  const linkToken = new URLSearchParams(location.search).get('token');
+  const { setUserData, setColor } = useContext(ActionContext);
+  const user: User | undefined = getUserData();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passReEntry, setPassReEntry] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    // const [profilePic, setProfilePic] = useState("");
-    const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
-    const [sentEmail, setSentEmail] = useState(false);
-    const [signedAgreement, setSignedAgreement] = useState(false);
-    const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passReEntry, setPassReEntry] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  // const [profilePic, setProfilePic] = useState("");
+  const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
+  const [signedAgreement, setSignedAgreement] = useState(false);
+  const [alreadyExists, setAlreadyExists] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-    const alert = useAlert()
+  const alert = useAlert()
 
-    useEffect(() => {
-      setColor(BgColor.White);
+  useEffect(() => {
+    setColor(BgColor.White);
 
-      if (linkToken && linkUid) {
-        WebService.validateToken({
-          uidb64: linkUid,
-          token: linkToken,
-        }).subscribe(async (data) => {
-          if (data.ok) {
-            const user = await data.json();
-            setUserData(user);
-            setLoading(false);
-          } else {
-            const error = await data.json();
-            console.log(error);
-            alert.error(error.non_field_errors[0]);
-            setLoading(false);
-          }
-        });
-      }
+    if (linkToken && linkUid) {
+      WebService.validateToken({
+        uidb64: linkUid,
+        token: linkToken,
+      }).subscribe(async (data) => {
+        if (data.ok) {
+          const userData = await data.json();
+          setUserData(userData);
+        } else {
+          const error = await data.json();
+          console.log(error);
+          alert.error(error.non_field_errors[0]);
+        }
+      });
+    }
+    setLoading(false);
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const modify = (e: any) => {
-      e.preventDefault()
-      if (formIsComplete()) {
-        if (validateEmail(email)) {
-          if (password === passReEntry) {
-            if (verificationMethod) {
-              if (signedAgreement) {
-                // if (validatePasswordLength(password)) {
-                //   if (containsSpecialCharacters(password)) {
-                //     if (containsUpperCase(password)) {
-                //       if (containsLowerCase(password)) {
-                //         if (containsNumber(password)) {
-                      const updatedUser = {
-                        username: email,
-                        email: email,
-                        password: password,
-                        first_name: firstName,
-                        last_name: lastName,
-                      }
-                      WebService.modifyUser(updatedUser, getUserId(user))
+  const modify = (e: any) => {
+    e.preventDefault()
+    if (formIsComplete()) {
+      if (validateEmail(email)) {
+        if (password === passReEntry) {
+          if (verificationMethod) {
+            if (signedAgreement) {
+              const updatedUser = {
+                username: email,
+                email: email,
+                password: password,
+                first_name: firstName,
+                last_name: lastName,
+              }
+              if (user) {
+                WebService.modifyUser(updatedUser, user.user_id)
+                  .subscribe(async (data) => {
+                    if (data.ok) {
+                      WebService.modifyProfile({
+                        oauth_provider: verificationMethod,
+                      }, user.id)
                         .subscribe(async (data) => {
                           if (data.ok) {
-                            WebService.modifyDelegate({
-                              oauth_provider: verificationMethod,
-                            }, getDelegateId(user))
-                              .subscribe(async (data) => {
-                                if (data.ok) {
-                                  // redirect to 3rd party oauth app
-                                  if (verificationMethod === VerificationMethod.Github) {
-                                    const stateUUID = uuid();
-                                    sessionStorage.setItem("oauthState", stateUUID);
-                                    window.location.href =
-                                      'https://github.com/login/oauth/authorize?client_id='
-                                      + github_client_id
-                                      + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
-                                      + stateUUID;
-                                  } else if (verificationMethod === VerificationMethod.Twitter) {
-                                    WebService.getTwitterRequestToken()
-                                      .subscribe(async (data) => {
-                                          sessionStorage.setItem("oauthState", data.oauth_token);
-                                          sessionStorage.setItem("twitterOauthSecret", data.oauth_secret);
-                                          window.location.href =
-                                            'https://api.twitter.com/oauth/authenticate?oauth_token='
-                                            + data.oauth_token;
-                                        }
-                                      );
-                                  } else if (verificationMethod === VerificationMethod.Application) {
-                                    WebService.emailApplication()
-                                      .subscribe(async (data) => {
-                                        if (data.ok) {
-                                          setSentEmail(true);
-                                        } else {
-                                          console.error("Error", await data.json());
-                                        }
-                                      });
-                                  }
-                                } else {
-                                  console.error("Error", await data.json());
-                                }
-                              });
-                          } else {
-                            console.error("Error", await data.json());
+                            oauthRedirect();
                           }
                         });
-                //         } else {
-                //           alert.error("Password must contain at least one number")
-                //         }
-                //       } else {
-                //         alert.error("Password must contain at least one lower case character")
-                //       }
-                //     } else {
-                //       alert.error("Password must contain at least one upper case character")
-                //     }
-                //   } else {
-                //     alert.error("Password must contain at least 1 special character")
-                //   }
-                // } else {
-                //   alert.error("Password length must be at least 8 characters")
-                // }
-              } else {
-                alert.error("Please sign the user agreement")
-              }
+                    } else {
+                      console.error("Error", await data.json());
+                    }
+                  });
+                } else {
+                  WebService.createProfile(updatedUser)
+                    .subscribe(async (data) => {
+                      if (data.ok) {
+                        const userData = await data.json();
+                        setUserData(userData);
+                        oauthRedirect();
+                      } else {
+                        const error = await data.json();
+                        console.error("Error", error);
+                        if (error.user.username) {
+                          setAlreadyExists(true);
+                        }
+                      }
+                    });
+                }
             } else {
-              alert.error("Please select a verification method")
+              alert.error("Please sign the user agreement")
             }
           } else {
-            alert.error("Re-entered password does not match")
+            alert.error("Please select a verification method")
           }
         } else {
-          alert.error("Please enter a valid email address")
+          alert.error("Re-entered password does not match")
         }
       } else {
-        alert.error("Please fill all the fields")
+        alert.error("Please enter a valid email address")
       }
-    };
+    } else {
+      alert.error("Please fill all the fields")
+    }
+  };
 
-    const formIsComplete = () => {
-      if (firstName && lastName && email && password && passReEntry) {
-        return true;
-      }
-      return false;
-    };
+  const oauthRedirect = () => {
+    // redirect to 3rd party oauth app
+    if (verificationMethod === VerificationMethod.Github) {
+      const stateUUID = uuid();
+      sessionStorage.setItem("oauthState", stateUUID);
+      window.location.href =
+        'https://github.com/login/oauth/authorize?client_id='
+        + github_client_id
+        + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
+        + stateUUID;
+    } else if (verificationMethod === VerificationMethod.Twitter) {
+      WebService.getTwitterRequestToken().subscribe(async (data) => {
+        sessionStorage.setItem("oauthState", data.oauth_token);
+        sessionStorage.setItem("twitterOauthSecret", data.oauth_secret);
+        window.location.href =
+          'https://api.twitter.com/oauth/authenticate?oauth_token='
+          + data.oauth_token;
+        }
+      );
+    }
+  };
+
+  const formIsComplete = () => {
+    if (firstName && lastName && email && password && passReEntry) {
+      return true;
+    }
+    return false;
+  };
 
   if (loading) {
     return (
       <h2>loading...</h2>
     );
-  } else if (!user) {
+  } else if (linkToken && linkUid && !user) {
     return (
+      <>
       <h2>Sorry! This activation link is invalid or expired.</h2>
-    );
-  } else if (sentEmail) {
-    return (
-      <div className="email-notice">
-        <h2>Apply to verify your account</h2>
-        <p className="text">Follow the instructions in the email we just sent
-        you to apply to verify your account. If your application is
-        approved, you will receive a confirmation email. You will not be able
-        to log in to your account until{" "}<strong>after</strong> you have received
-        a confirmation email.
-        </p>
-      </div>
+      <a className="home-button" href="/">Back to RxC Voice</a>
+      </>
     );
   } else {
     return (
+      <>
+      <div className="login-header">
+        <p>Already have an account?{" "}
+        <Link
+        to={`/login`}
+        className="nav-link"
+        >
+        Sign in
+        </Link>
+        </p>
+      </div>
       <form className="create-account" onSubmit={modify}>
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Create your account to participate in the democratic process!</p>
+        <p>Create an account</p>
 
         <input
           type="text"
@@ -225,7 +217,7 @@ function ValidationPage() {
           onChange={(e) => setPassReEntry(e.target.value)}
         />
 
-        <p className="oauth-message">Login to either a Github or Twitter account to verify your identity. We will not access any information on your third-party account other than your username. You may also opt to apply to be verified in a quick video call.</p>
+        <p className="oauth-message">Login to either a Github or Twitter account to verify your identity. We will not access any information on your third-party account other than your username.</p>
         <select
           className="oauth-provider"
           id="select-oauth-provider"
@@ -238,9 +230,6 @@ function ValidationPage() {
               case VerificationMethod.Twitter: {
                 return VerificationMethod.Twitter;
               }
-              case VerificationMethod.Application: {
-                return VerificationMethod.Application;
-              }
               default: {
                 return undefined;
               }
@@ -252,7 +241,6 @@ function ValidationPage() {
           </option>
           <option value={VerificationMethod.Github}>Verify with Github</option>
           <option value={VerificationMethod.Twitter}>Verify with Twitter</option>
-          <option value={VerificationMethod.Application}>Verify by Video Application</option>
         </select>
 
         <div className="attestation">
@@ -263,6 +251,12 @@ function ValidationPage() {
           <input type="checkbox" defaultChecked={signedAgreement} onChange={() => setSignedAgreement(!signedAgreement)} />
         </div>
 
+        {alreadyExists ? (
+          <p id="error-message">A profile already exists with that email address.{" "}
+            <a className="login-link" href="/login">Go to Login</a>
+          </p>
+        ) : null}
+
         <button
           type="submit"
           className="create-account-button"
@@ -270,6 +264,7 @@ function ValidationPage() {
           create account
         </button>
       </form>
+      </>
     );
   }
 }

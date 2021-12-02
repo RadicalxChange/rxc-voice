@@ -10,6 +10,11 @@
     margin: 2vh 0 2vh 0;
   }
 
+  .create-button {
+    text-align: left;
+    margin-top: 5vw;
+  }
+
   .content {
 
     grid-column: 2;
@@ -19,6 +24,10 @@
     margin: 2.5em 0 2.5em 0;
     width: auto;
     position: relative;
+  }
+
+  .no-events {
+    margin-top: 10vh;
   }
 }
 

@@ -12,7 +12,7 @@ from .serializers import (ElectionSerializer,
                           VoteSerializer,
                           ProposalSerializer
                           )
-from .models import Election, Vote, Proposal, Group, Delegate
+from .models import Election, Vote, Proposal, Group
 
 
 class ElectionList(mixins.CreateModelMixin,
@@ -36,18 +36,18 @@ class ElectionList(mixins.CreateModelMixin,
         self.perform_create(serializer)
         # if the election does not belong to a pre-existing group,
         # create a new one for it.
-        request_groups = serializer.validated_data.get('groups') if not(
-            serializer.validated_data.get('groups') is None) else []
-        election_id = serializer.data.get('id')
-        election_object = Election.objects.get(pk=election_id)
-        if len(request_groups) == 0:
-            new_group = Group.objects.create(
-                name="election " + str(election_id))
-            election_object.groups.add(new_group)
+        # request_groups = serializer.validated_data.get('groups') if not(
+        #     serializer.validated_data.get('groups') is None) else []
+        # election_id = serializer.data.get('id')
+        # election_object = Election.objects.get(pk=election_id)
+        # if len(request_groups) == 0:
+        #     new_group = Group.objects.create(
+        #         name="election " + str(election_id))
+        #     election_object.groups.add(new_group)
         # assign can_vote permission to any groups the election belongs to.
-        election_groups = election_object.groups.all()
-        for group in election_groups:
-            assign_perm('can_vote', group, election_object)
+        # election_groups = election_object.groups.all()
+        # for group in election_groups:
+        #     assign_perm('can_vote', group, election_object)
         # pack any new groups into server response.
         result = self.get_serializer(election_object)
         headers = self.get_success_headers(result.data)
@@ -88,12 +88,12 @@ class ElectionDetail(mixins.RetrieveModelMixin,
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
-        election_id = serializer.data.get('id')
-        election_object = Election.objects.get(pk=election_id)
+        # election_id = serializer.data.get('id')
+        # election_object = Election.objects.get(pk=election_id)
         # assign can_vote permission to any groups the election belongs to.
-        election_groups = election_object.groups.all()
-        for group in election_groups:
-            assign_perm('can_vote', group, election_object)
+        # election_groups = election_object.groups.all()
+        # for group in election_groups:
+        #     assign_perm('can_vote', group, election_object)
         return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):
@@ -121,12 +121,16 @@ class VoteList(mixins.CreateModelMixin,
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
+        election_id = self.kwargs['pk']
+        election = Election.objects.get(id=election_id)
         serializer = self.get_serializer(
             data=request.data,
             many=True,
-            context={'election_id': self.kwargs['pk']}
+            context={'election_id': election_id}
             )
         serializer.is_valid(raise_exception=True)
+        if not request.user.has_perm('can_view', election.process):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(
@@ -161,7 +165,7 @@ class ProposalList(mixins.CreateModelMixin,
                 'election_id': self.kwargs['pk']
                 },
             )
-        votes = Vote.objects.all().filter(Q(sender__user=request.user), Q(proposal__election__id=election_id))
+        votes = Vote.objects.all().filter(Q(sender__profile__user=request.user), Q(proposal__election__id=election_id))
         vote_serializer = VoteSerializer(
             votes,
             many=True,

@@ -1,10 +1,10 @@
 from django.urls import path, re_path
 
 from .rootview import RootView
-from .authviews import (DelegateList, DelegateDetail, UserDetail,
+from .authviews import (DelegateList, DelegateDetail, ProfileList, ProfileDetail, UserDetail,
                         CustomAuthToken, PermissionList, EmailApplication,
                         GroupList, GetGithubUser, ValidateAuthToken,
-                        GetTwitterToken, ForgotPassword, ResetPassword)
+                        GetTwitterToken, ForgotPassword, ResetPassword, GroupList)
 from .electionviews import (ElectionList, ElectionDetail, ProposalList,
                             VoteList)
 from .conversationviews import (ConversationList, ConversationDetail)
@@ -15,9 +15,14 @@ urlpatterns = [
     path('', RootView.as_view(), name='root-view'),
 
     # Authentication APIs
-    path('delegates/', DelegateList.as_view(), name='delegate-list'),
+    path('profile/', ProfileList.as_view(), name='profile-list'),
+    path('profiles/<int:pk>/', ProfileDetail.as_view(),
+         name='profile-detail'),
+    path('profile/<int:profile_id>/delegates', DelegateList.as_view(), name='delegate-list'),
     path('delegates/<int:pk>/', DelegateDetail.as_view(),
          name='delegate-detail'),
+     path('users/<int:user_id>/groups', GroupList.as_view(),
+          name='group-list'),
      path('users/<int:pk>/', UserDetail.as_view(),
           name='user-detail'),
     path('groups/', GroupList.as_view(), name='group-list'),
@@ -34,7 +39,7 @@ urlpatterns = [
     # Process APIs
     path('processes/', ProcessList.as_view(), name='process-list'),
     path('processes/<int:pk>/', ProcessDetail.as_view(), name='process-detail'),
-    path('processes/<int:pk>/transfers/', TransferList.as_view(), name='transfer-list'),
+    path('processes/<int:delegation_id>/transfers/', TransferList.as_view(), name='transfer-list'),
     path('estimate-match/', EstimateMatch.as_view(), name='estimate-match'),
 
     # Election APIs
