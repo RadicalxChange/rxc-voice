@@ -72,6 +72,10 @@ function ValidationPage() {
                 first_name: firstName,
                 last_name: lastName,
               }
+              const updatedProfile = {
+                oauth_provider: verificationMethod,
+                user: updatedUser,
+              }
               if (user) {
                 WebService.modifyUser(updatedUser, user.user_id)
                   .subscribe(async (data) => {
@@ -89,7 +93,7 @@ function ValidationPage() {
                     }
                   });
                 } else {
-                  WebService.createProfile(updatedUser)
+                  WebService.createProfile(updatedProfile)
                     .subscribe(async (data) => {
                       if (data.ok) {
                         const userData = await data.json();
