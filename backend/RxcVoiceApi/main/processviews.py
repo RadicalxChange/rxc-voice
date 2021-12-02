@@ -129,8 +129,16 @@ class ProcessList(mixins.CreateModelMixin,
                     print("could not create user")
         headers = self.get_success_headers(serializer.data)
         # assign can_view permission to any groups the process belongs to.
+        result = {}
+        result["process"] = serializer.data
+        delegate_serializer = DelegateSerializer(
+            Delegate.objects.filter(profile__id=request.user.profile.id),
+            many=True,
+            )
+        result["user_delegates"] = delegate_serializer.data
+        result["ok"] = True
         return Response(
-            serializer.data,
+            result,
             status=status.HTTP_201_CREATED,
             headers=headers)
 

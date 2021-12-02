@@ -11,7 +11,6 @@ import { defaultStages, Domain, getUserData } from "../../utils";
 import DelegationSettings from "./components/DelegationSettings";
 import DeliberationSettings from "./components/DeliberationSettings";
 import ElectionSettings from "./components/ElectionSettings";
-import { Delegate } from "../../models/Delegate";
 
 import "./CreateEvent.scss";
 
@@ -48,7 +47,6 @@ function CreateEvent() {
     return stages;
   };
   const [stages, stageDispatch] = useReducer(stageReducer, defaultStages);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setColor(BgColor.White);
@@ -59,7 +57,6 @@ function CreateEvent() {
         setGroups(data);
       });
     }
-    setLoading(false);
 
    // eslint-disable-next-line react-hooks/exhaustive-deps
  }, []);
@@ -109,14 +106,12 @@ function CreateEvent() {
    }
    WebService.postProcess(eventData).subscribe(async (data) => {
      if (data.ok) {
+       const response = await data.json();
        const user: User | undefined = getUserData();
        if (user) {
-         WebService.fetchDelegates(user.id)
-         .subscribe((data: Delegate[]) => {
-           let updatedUser: User = user;
-           updatedUser.delegates = data
-           setUserData(updatedUser)
-         });
+         let updatedUserData: User = user;
+         updatedUserData.delegates = response.user_delegates;
+         setUserData(updatedUserData);
        }
        window.location.href = Domain.WEB;
      } else {
