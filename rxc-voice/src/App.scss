@@ -42,6 +42,21 @@ p {
   font-weight: normal;
 }
 
+button {
+  display: block;
+  margin: 1em auto 1em auto;
+  background: black;
+  color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: .5em 1em .5em 1em;
+  outline: none;
+  cursor: pointer;
+}
+button:hover {
+  opacity: 0.8;
+}
+
 .explain-text {
   font-size: 1rem;
   line-height: 1.3rem;

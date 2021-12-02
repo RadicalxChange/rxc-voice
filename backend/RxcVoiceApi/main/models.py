@@ -8,6 +8,7 @@ class Process(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     title = models.CharField(max_length=256, blank=False)
     description = models.TextField(blank=True, null=True)
+    invitation_message = models.TextField(blank=True, null=True)
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
     groups = models.ManyToManyField(Group, blank=True, default=[])
@@ -54,10 +55,10 @@ class Profile(models.Model):
 class Delegate(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     profile = models.ForeignKey(
-        Profile, related_name='delegates', blank=True, null=True, on_delete=models.CASCADE)
+        Profile, related_name='delegates', on_delete=models.CASCADE)
     invited_by = models.ForeignKey(
         Profile, related_name='delegates_invited', blank=True, null=True, on_delete=models.SET_NULL)
-    process = models.ForeignKey(Process, related_name='delegates', null=True, on_delete=models.SET_NULL)
+    process = models.ForeignKey(Process, related_name='delegates', on_delete=models.CASCADE)
     credit_balance = models.DecimalField(
         default=0, blank=True, max_digits=6, decimal_places=0)  # must be staff to change from default
 
@@ -83,7 +84,7 @@ class Stage(PolymorphicModel):
     description = models.TextField(blank=True)
     start_date = models.DateTimeField(blank=False)
     end_date = models.DateTimeField(blank=False)
-    process = models.ForeignKey(Process, related_name='stages', null=True, on_delete=models.SET_NULL)
+    process = models.ForeignKey(Process, related_name='stages', on_delete=models.CASCADE)
     position = models.DecimalField(
                 default=0, max_digits=2, decimal_places=0, editable=True)
 

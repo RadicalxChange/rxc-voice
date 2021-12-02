@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Redirect, Route, Switch } from "react-router-dom";
 import { StateContext } from './hooks';
+import "react-datetime/css/react-datetime.css";
 import Home from "./components/Home";
 import CreateEvent from "./components/CreateEvent";
 import Header from './components/Header';

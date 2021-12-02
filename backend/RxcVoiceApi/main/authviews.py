@@ -35,7 +35,21 @@ class DelegateList(mixins.CreateModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        profile_id = self.kwargs['profile_id']
+        try:
+            profile = Profile.objects.get(id=profile_id)
+        except Profile.DoesNotExist:
+            profile = None
+        if profile != None:
+            delegates = profile.delegates.all()
+            page = self.paginate_queryset(delegates)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(delegates, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -146,7 +160,21 @@ class GroupList(mixins.CreateModelMixin,
     authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        user_id = self.kwargs['user_id']
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            user = None
+        if user != None:
+            groups = user.groups.all()
+            page = self.paginate_queryset(groups)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(groups, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)

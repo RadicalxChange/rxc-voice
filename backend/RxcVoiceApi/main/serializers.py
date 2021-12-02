@@ -127,9 +127,16 @@ class ElectionSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super(GroupSerializer, self).__init__(*args, **kwargs)
+        self.fields['users'] = serializers.SerializerMethodField()
+
     class Meta:
         model = Group
         fields = '__all__'
+
+    def get_users(self, obj):
+        return map(lambda user: user.first_name + " " + user.last_name, obj.user_set.all())
 
 
 class PermissionSerializer(serializers.ModelSerializer):
@@ -252,23 +259,13 @@ class DelegateSerializer(serializers.ModelSerializer):
             total += transfer.amount
         return total
 
-    def create(self, validated_data, set_unusable_password):
-        profile_data = validated_data.get('profile')
-        try:
-            existing_user = User.objects.get(email=profile_data['user']['email'])
-        except User.DoesNotExist:
-            existing_user = None
-        if existing_user is not None:
-            profile = Profile.objects.get(user=existing_user)
-        else:
-            profile = ProfileSerializer.create(
-                ProfileSerializer(),
-                validated_data=profile_data,
-                set_unusable_password=set_unusable_password
-                )
+    def create(self, validated_data):
+        invited_by = None
+        if validated_data.get('invited_by'):
+            invited_by = validated_data.get('invited_by').profile
         delegate, created = Delegate.objects.update_or_create(
-            profile=profile,
-            invited_by=validated_data.get('invited_by').profile,
+            profile=validated_data.get('profile'),
+            invited_by=invited_by,
             process=validated_data.get('process'),
             credit_balance=validated_data.get('credit_balance', 0),
             )
@@ -460,10 +457,11 @@ class StageSerializer(serializers.ModelSerializer):
 class ProcessSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(ProcessSerializer, self).__init__(*args, **kwargs)
-        self.fields['stages'] = StageSerializer(many=True, context=self.context)
+        self.fields['stages'] = StageSerializer(many=True, context=self.context, required=False)
         self.fields['delegates'] = DelegateSerializer(
             many=True,
-            context={'allowed_fields': ['id', 'profile', 'invited_by', 'process', 'credit_balance', 'pending_credits']}
+            context={'allowed_fields': ['id', 'profile', 'invited_by', 'process', 'credit_balance', 'pending_credits']},
+            required=False,
             )
 
     class Meta:
@@ -474,6 +472,7 @@ class ProcessSerializer(serializers.ModelSerializer):
         process = Process.objects.create(
             title=validated_data.get('title'),
             description=validated_data.get('description'),
+            invitation_message=validated_data.get('invitation_message'),
             start_date=validated_data.get('start_date'),
             end_date=validated_data.get('end_date'),
             )

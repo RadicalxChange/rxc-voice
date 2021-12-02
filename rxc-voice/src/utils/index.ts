@@ -1,4 +1,4 @@
-import { Stage, StageType, Delegation, Conversation, Election } from "../models/Stage";
+import { Stage, StageType, Delegation, Conversation, Election, MatchPoolMode } from "../models/Stage";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
 import { Delegate } from "../models/Delegate"
@@ -6,6 +6,8 @@ import { Process } from "../models/Process";
 import { Transfer } from "../models/Transfer";
 import { User } from "../models/User";
 import * as Domain from "./urls";
+import { Group } from "../models/Group";
+import moment from "moment";
 
 export { Domain };
 
@@ -32,6 +34,45 @@ export const updateCreditBalance = (user: User, process: Process, new_balance: n
 }
 export const oauthState = sessionStorage.getItem("oauthState");
 export const twitterOauthSecret = sessionStorage.getItem("twitterOauthSecret");
+
+export const defaultDelegation: Delegation = {
+  id: 0,
+  type: StageType.Delegation,
+  title: "Delegation",
+  description: "",
+  start_date: moment().format(),
+  end_date: moment().add(1, "days").format(),
+  position: 0,
+  num_credits: 99,
+  allow_transfers: true,
+  allow_invites: true,
+  match_pool_mode: MatchPoolMode.Default,
+}
+export const defaultConversation: Conversation = {
+  id: 1,
+  type: StageType.Conversation,
+  title: "Conversation",
+  description: "",
+  start_date: moment().add(1, "days").format(),
+  end_date: moment().add(2, "days").format(),
+  position: 1,
+  uuid: "",
+  show_report: false,
+  report_id: "",
+}
+export const defaultElection: Election = {
+  id: 2,
+  type: StageType.Election,
+  title: "Election",
+  description: "",
+  start_date: moment().add(3, "days").format(),
+  end_date: moment().add(4, "days").format(),
+  position: 2,
+  negative_votes: true,
+  proposals: [],
+  show_results: true,
+}
+export const defaultStages: Stage[] = [defaultDelegation, defaultConversation, defaultElection]
 
 export const mapToProposals = (proposals: Proposal[]): Proposal[] => {
   return proposals.map(mapToProposal);
@@ -90,6 +131,18 @@ export const mapToDelegate = (delegate: Delegate): Delegate => {
     credit_balance: delegate.credit_balance,
     pending_credits: delegate.pending_credits,
     process: delegate.process,
+  };
+};
+
+export const mapToGroups = (groups: Group[]): Group[] => {
+  return groups.map(mapToGroup);
+};
+
+export const mapToGroup = (group: Group): Group => {
+  return {
+    id: group.id,
+    name: group.name,
+    users: group.users,
   };
 };
 
@@ -177,6 +230,7 @@ export const mapToProcess = (process: any): Process => {
     id: process.id,
     title: process.title,
     description: process.description,
+    invitation_message: process.invitation_message,
     start_date: process.start_date,
     end_date: process.end_date,
     delegates: mapToDelegates(process.delegates).filter(delegate => delegate.profile.is_verified),

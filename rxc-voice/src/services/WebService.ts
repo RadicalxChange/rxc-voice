@@ -3,7 +3,9 @@ import { Election } from "../models/Stage";
 import { Process } from "../models/Process";
 import { Proposal } from "../models/Proposal";
 import { Vote } from "../models/Vote";
-import { mapToProcesses, mapToVotes, mapToProcess, Domain } from "../utils";
+import { mapToProcesses, mapToVotes, mapToProcess, Domain, mapToGroups, mapToDelegates } from "../utils";
+import { Group } from "../models/Group";
+import { Delegate } from "../models/Delegate";
 
 const ROOT_URL = Domain.API;
 
@@ -101,6 +103,36 @@ export const getDelegate = (id: number): Observable<any> => {
   });
 };
 
+export const fetchGroups = (user_id: number): Observable<Group[]> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<Group[]>>(
+      fetch(`${ROOT_URL}/users/${user_id}/groups`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      }).then((res) => res.json())
+        .then(mapToGroups),
+    );
+  });
+};
+
+export const fetchDelegates = (profile_id: number): Observable<Delegate[]> => {
+  return defer(() => {
+    const user: string | null = sessionStorage.getItem("user");
+    return from<Promise<Delegate[]>>(
+      fetch(`${ROOT_URL}/profile/${profile_id}/delegates`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        }
+      }).then((res) => res.json())
+        .then(mapToDelegates),
+    );
+  });
+};
+
 export const validateToken = (creds: any): Observable<any> => {
   return defer(() => {
     return from<Promise<any>>(
@@ -108,28 +140,6 @@ export const validateToken = (creds: any): Observable<any> => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         method: "POST",
         body: JSON.stringify(creds),
-      }),
-    );
-  });
-};
-
-// export const fetchDelegates = (): Observable<Delegate[]> => {
-//   return defer(() => {
-//     return from<Promise<Delegate[]>>(
-//       fetch(`${ROOT_URL}/delegates/`)
-//         .then((res) => res.json())
-//         .then(mapToDelegates),
-//     );
-//   });
-// };
-
-export const postDelegates = (users: any): Observable<any> => {
-  return defer(() => {
-    return from<Promise<any>>(
-      fetch(`${ROOT_URL}/delegates/`, {
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        method: "POST",
-        body: JSON.stringify(users),
       }),
     );
   });
@@ -165,7 +175,7 @@ export const fetchSingleProcess = (id: string): Observable<any> => {
   });
 };
 
-export const postProcess = (process: any): Observable<any> => {
+export const postProcess = (data: any): Observable<any> => {
   const user: string | null = sessionStorage.getItem("user");
   return defer(() => {
     return from<Promise<any>>(
@@ -175,7 +185,7 @@ export const postProcess = (process: any): Observable<any> => {
           Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
         },
         method: "POST",
-        body: JSON.stringify(process),
+        body: JSON.stringify(data),
       }),
     );
   });

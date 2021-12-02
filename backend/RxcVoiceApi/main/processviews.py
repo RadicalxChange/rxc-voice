@@ -3,9 +3,10 @@ from django.http import JsonResponse
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, mixins, status
 from django.db.models import Q
-from .serializers import ProcessSerializer, TransferSerializer
+from .serializers import ProfileSerializer, ProcessSerializer, TransferSerializer, DelegateSerializer, StageSerializer, DelegationSerializer, ConversationSerializer, ElectionSerializer
 from .permissions import ProcessPermission, TransferPermission
-from .models import Process, Transfer, MatchPayment
+from .models import Process, Transfer, MatchPayment, Stage, Delegate, Profile
+from django.contrib.auth.models import Group, User
 from guardian.shortcuts import assign_perm
 from django.utils import timezone
 from .services import estimate_match
@@ -38,16 +39,96 @@ class ProcessList(mixins.CreateModelMixin,
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        # create process object
+        serializer = self.get_serializer(data=request.data['process'])
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         process_id = serializer.data.get('id')
         process_object = Process.objects.get(pk=process_id)
+        # create stages
+        stages = request.data['stages']
+        for stage in stages:
+            stage['process'] = process_id
+            if stage['type'] == Stage.DELEGATION:
+                stage_serializer = DelegationSerializer(data=stage)
+                stage_serializer.is_valid(raise_exception=True)
+                DelegationSerializer.create(
+                    DelegationSerializer(),
+                    validated_data=stage_serializer.validated_data,
+                    )
+            elif stage['type'] == Stage.CONVERSATION:
+                stage_serializer = ConversationSerializer(data=stage)
+                stage_serializer.is_valid(raise_exception=True)
+                ConversationSerializer.create(
+                    ConversationSerializer(),
+                    validated_data=stage_serializer.validated_data,
+                    )
+            elif stage['type'] == Stage.ELECTION:
+                stage_serializer = ElectionSerializer(data=stage)
+                stage_serializer.is_valid(raise_exception=True)
+                ElectionSerializer.create(
+                    ElectionSerializer(),
+                    validated_data=stage_serializer.validated_data,
+                    )
+            else:
+                stage_serializer = StageSerializer(data=stage)
+                stage_serializer.is_valid(raise_exception=True)
+                StageSerializer.create(
+                    StageSerializer(),
+                    validated_data=stage_serializer.validated_data,
+                    )
+        # create new group if necessary
+        group_data = request.data['group']
+        if group_data['create']:
+            new_group = Group.objects.create(name=group_data['name'])
+            new_group.save()
+            process_object.groups.add(new_group)
+            request.user.groups.add(new_group)
+        # create new delegates if necessary
+        existing_groups = process_object.groups.all()
+        for existing_group in existing_groups:
+            assign_perm('can_view', existing_group, process_object)
+            for user in existing_group.user_set.all():
+                Delegate.objects.create(
+                    profile=user.profile,
+                    process=process_object,
+                    credit_balance=request.data['stages'][0]['num_credits'],
+                    invited_by=request.user.profile,
+                )
+        invites = request.data['invites']
+        if invites:
+            for delegate in invites:
+                delegate['process'] = process_id
+                if group_data['create']:
+                    delegate['profile']['user']['groups'].append(new_group.id)
+                for existing_group in existing_groups:
+                    delegate['profile']['user']['groups'].append(existing_group.id)
+                try:
+                    profile_data = delegate['profile']
+                    try:
+                        existing_user = User.objects.get(email=profile_data['user']['email'])
+                    except:
+                        existing_user = None
+                    if existing_user is not None:
+                        profile = Profile.objects.get(user=existing_user)
+                    else:
+                        profile_serializer = ProfileSerializer(data=profile_data)
+                        profile_serializer.is_valid(raise_exception=True)
+                        profile = ProfileSerializer.create(
+                            ProfileSerializer(),
+                            validated_data=profile_serializer.validated_data,
+                            set_unusable_password=True,
+                            )
+                    Delegate.objects.create(
+                        credit_balance=delegate['credit_balance'],
+                        profile=profile,
+                        process=process_object,
+                        invited_by=request.user.profile,
+                    )
+                except:
+                    print("could not create user")
         headers = self.get_success_headers(serializer.data)
         # assign can_view permission to any groups the process belongs to.
-        groups = process_object.groups.all()
-        for group in groups:
-            assign_perm('can_view', group, process_object)
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED,
@@ -85,8 +166,6 @@ class ProcessDetail(mixins.RetrieveModelMixin,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
-
 
 
 class TransferList(mixins.CreateModelMixin,
@@ -127,8 +206,6 @@ class TransferList(mixins.CreateModelMixin,
             serializer.data,
             status=status.HTTP_201_CREATED,
             headers=headers)
-
-
 
 
 class EstimateMatch(mixins.CreateModelMixin,

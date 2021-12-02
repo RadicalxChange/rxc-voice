@@ -149,8 +149,9 @@ export const AppProvider = (props: any) => {
           const process = await data;
           dispatch({ type: "SET_SELECTED_PROCESS", selectedProcess: process });
           const user: User | undefined = getUserData();
-          if (user && process) {
-            WebService.getDelegate(getUserDelegate(user, process)!.id).subscribe(async (data: any) => {
+          const delegate: Delegate | undefined = getUserDelegate(user, process)
+          if (user && process && delegate) {
+            WebService.getDelegate(delegate.id).subscribe(async (data: any) => {
               if (data.ok) {
                 const delegateData = await data.json();
                 const userData = updateCreditBalance(user, process, delegateData.credit_balance);

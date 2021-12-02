@@ -1,0 +1,81 @@
+.create-event {
+  max-width: 700px;
+  padding: 0 20px;
+  margin: 0 auto;
+  text-align: left;
+
+  .create-event_header {
+    text-align: center;
+  }
+
+  .event-section {
+    width: calc(100% - 30px);
+    margin: 3rem auto;
+    padding: 15px;
+    border: 1px solid black;
+    border-radius: 8px;
+  }
+
+  .event-section > label {
+    font-size: 23px;
+  }
+
+  .event-section > p {
+    margin: 1rem 0;
+  }
+
+  .event-section_form {
+    margin: 20px 0;
+    width: calc(100% - 10px);
+  }
+
+  .checkbox-button {
+    margin: auto 0;
+  }
+
+  .checkbox-form {
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+
+  .checkbox-form > .event-section_form_input {
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    font-size: 20px;
+  }
+
+  .event-section_form_input {
+    display: block;
+    width: calc(100% - 30px);
+    font-size: 20px;
+    font-family: var(--secondaryFont);
+  }
+
+  .select-invites {
+    margin: .5rem 0 1.5rem 0;
+  }
+
+  .event-section_form_input > input {
+    margin-right: 1rem;
+  }
+
+  .event-section_datetime > input {
+    width: calc(100% - 10px);
+    font-size: 26px !important;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-top: 15px;
+    padding: 5px 0px 5px 5px;
+  }
+
+  #existing-group_select {
+    width: calc(100% - 22px);
+  }
+
+  #match-pool-radio > .event-section_form_input {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+
+}

@@ -30,20 +30,16 @@ function Home() {
       </div>
       {activeProcesses?.length || pastProcesses?.length ? (
         <div className="content">
-          {activeProcesses ? (
+          {activeProcesses?.length ? (
             <ul className="process-list">
               {activeProcesses.map((process: Process) => (
                 <ProcessCard process={process} key={process.id} active={true} />
               ))}
             </ul>
           ) : null}
-          {pastProcesses ? (
+          {pastProcesses?.length ? (
             <ul className="process-list">
-              {pastProcesses
-                .filter((process: Process) => (
-                  process.title==="RadicalxChange Agenda 2021-2022"
-                ))
-                .map((process: Process) => (
+              {pastProcesses.map((process: Process) => (
                 <ProcessCard key={process.id} process={process} active={false} />
               ))}
             </ul>
