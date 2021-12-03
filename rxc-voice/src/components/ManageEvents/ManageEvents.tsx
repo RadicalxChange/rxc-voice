@@ -29,7 +29,7 @@ function ManageEvents() {
       <p>Manage the events that you created.</p>
       {(activeProcesses?.length || pastProcesses?.length) && user ? (
         <div className="content">
-          {activeProcesses?.length ? (
+          {activeProcesses?.length && user.processes_managed.length ? (
             <ul className="process-list">
               {activeProcesses
                 .filter((process: Process) => (
@@ -40,7 +40,7 @@ function ManageEvents() {
               ))}
             </ul>
           ) : null}
-          {pastProcesses?.length ? (
+          {pastProcesses?.length && user.processes_managed.length ? (
             <ul className="process-list">
               {pastProcesses
                 .filter((process: Process) => (
