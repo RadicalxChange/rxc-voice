@@ -53,7 +53,7 @@ function ManageEvents() {
           ) : null}
         </div>
         ) : (
-          <p className="no-events">When you participate in an event, it will appear here!</p>
+          <p className="no-events">If you create your own events, you can manage them here.</p>
         )}
     </div>
   );
