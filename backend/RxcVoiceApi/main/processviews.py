@@ -5,7 +5,7 @@ from rest_framework import generics, mixins, status
 from django.db.models import Q
 from .serializers import ProfileSerializer, ProcessSerializer, TransferSerializer, DelegateSerializer, StageSerializer, DelegationSerializer, ConversationSerializer, ElectionSerializer
 from .permissions import ProcessPermission, TransferPermission
-from .models import Process, Transfer, MatchPayment, Stage, Delegate, Profile
+from .models import Process, Transfer, MatchPayment, Stage, Delegate, Profile, Proposal
 from django.contrib.auth.models import Group, User
 from guardian.shortcuts import assign_perm
 from django.utils import timezone
@@ -66,9 +66,16 @@ class ProcessList(mixins.CreateModelMixin,
             elif stage['type'] == Stage.ELECTION:
                 stage_serializer = ElectionSerializer(data=stage)
                 stage_serializer.is_valid(raise_exception=True)
-                ElectionSerializer.create(
+                new_election = ElectionSerializer.create(
                     ElectionSerializer(),
                     validated_data=stage_serializer.validated_data,
+                    )
+                Proposal.objects.create(
+                    title="Ballot Ratification",
+                    ballot_ratification=True,
+                    election=new_election,
+                    credits_received=0,
+                    votes_received=0,
                     )
             else:
                 stage_serializer = StageSerializer(data=stage)
@@ -131,10 +138,12 @@ class ProcessList(mixins.CreateModelMixin,
         # assign can_view permission to any groups the process belongs to.
         result = {}
         result["process"] = serializer.data
+        request_profile = Profile.objects.get(id=request.user.profile.id)
         delegate_serializer = DelegateSerializer(
-            Delegate.objects.filter(profile__id=request.user.profile.id),
+            Delegate.objects.filter(profile=request_profile),
             many=True,
             )
+        request_profile.processes_managed.add(process_object)
         result["user_delegates"] = delegate_serializer.data
         result["ok"] = True
         return Response(

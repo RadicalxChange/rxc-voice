@@ -240,6 +240,7 @@ class CustomAuthToken(ObtainAuthToken):
                 'last_name': token.user.last_name,
                 'profile_pic': profile.profile_pic,
                 'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
+                'processes_managed': map(lambda process: process.id, profile.processes_managed.all()),
             })
 
 
@@ -313,6 +314,7 @@ class ValidateAuthToken(ObtainAuthToken):
                 'last_name': token.user.last_name,
                 'profile_pic': profile.profile_pic,
                 'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
+                'processes_managed': map(lambda process: process.id, profile.processes_managed.all()),
             })
         else:
             return HttpResponse('Activation link is invalid!')
@@ -378,6 +380,7 @@ class GetGithubUser(generics.GenericAPIView):
                         'last_name': profile.user.last_name,
                         'profile_pic': profile.profile_pic,
                         'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
+                        'processes_managed': map(lambda process: process.id, profile.processes_managed.all()),
                     })
                 else:
                     error = {
@@ -452,6 +455,7 @@ class GetTwitterToken(generics.GenericAPIView):
                     'last_name': profile.user.last_name,
                     'profile_pic': profile.profile_pic,
                     'delegates': DelegateSerializer(profile.delegates.all(), many=True).data,
+                    'processes_managed': map(lambda process: process.id, profile.processes_managed.all()),
                 })
         return Response(
             twitter_data,

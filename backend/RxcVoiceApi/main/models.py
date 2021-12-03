@@ -47,6 +47,7 @@ class Profile(models.Model):
     # Represented by path
     profile_pic = models.TextField(null=True, blank=True)
     groups_managed = models.ManyToManyField(Group, blank=True, default=[])
+    processes_managed = models.ManyToManyField(Process, blank=True, default=[])
 
     def __str__(self):
         return self.user.email

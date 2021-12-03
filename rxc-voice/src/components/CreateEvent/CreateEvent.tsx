@@ -111,6 +111,7 @@ function CreateEvent() {
        if (user) {
          let updatedUserData: User = user;
          updatedUserData.delegates = response.user_delegates;
+         updatedUserData.processes_managed.push(response.process.id);
          setUserData(updatedUserData);
        }
        window.location.href = Domain.WEB;

@@ -198,6 +198,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(ProfileSerializer, self).__init__(*args, **kwargs)
+        self.fields['processes_managed'] = serializers.PrimaryKeyRelatedField(many=True, read_only=True, required=False)
         allowed_fields = self.context.get('allowed_fields', None)
         if allowed_fields:
             field_names = list(self.fields.keys()).copy()

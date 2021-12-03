@@ -16,10 +16,22 @@ function Header() {
       </Link>
       <ul className="nav">
         <Link
+        to={`/`}
+        className="nav-link"
+        >
+        Home
+        </Link>
+        <Link
         to={`/about`}
         className="nav-link"
         >
         About
+        </Link>
+        <Link
+        to={`/manage-events`}
+        className="nav-link"
+        >
+        My Events
         </Link>
         <Link
         to={`/account`}

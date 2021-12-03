@@ -52,8 +52,8 @@ class ProcessPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method == 'GET':
             return request.user.has_perm('can_view', obj)
-        elif request.method in ['PUT', 'PATCH']:
-            return is_group_admin(request.user.id, obj.groups) or request.user.is_staff
+        # elif request.method in ['PUT', 'PATCH']:
+        #     return is_group_admin(request.user.id, obj.groups) or request.user.is_staff
         elif request.method in ['DELETE']:
             return request.user.is_authenticated and request.user.is_staff
         else:
@@ -79,8 +79,8 @@ class ElectionPermission(permissions.BasePermission):
             return request.user.has_perm('can_view', obj.process) or request.user.is_staff
         elif request.method == 'POST':
             return request.user.is_authenticated
-        elif request.method in ['PUT', 'PATCH']:
-            return is_group_admin(request.user.id, obj.groups) or request.user.is_staff
+        # elif request.method in ['PUT', 'PATCH']:
+        #     return is_group_admin(request.user.id, obj.process.groups) or request.user.is_staff
         elif request.method in ['DELETE']:
             return request.user.is_authenticated and request.user.is_staff
         else:
@@ -95,15 +95,15 @@ class ProposalPermission(permissions.BasePermission):
         elif request.method == 'POST':
             return request.user.is_authenticated
         elif request.method in ['PUT', 'PATCH', 'DELETE']:
-            return request.user.is_authenticated and request.user.is_staff
+            return request.user.is_authenticated
         else:
             return True
 
     def has_object_permission(self, request, view, obj):
         if request.method == 'GET':
             return request.user.has_perm('can_view', obj.election.process) or request.user.is_staff
-        elif request.method in ['PUT', 'PATCH', 'DELETE']:
-            return is_group_admin(request.user.id, obj.election.groups) or request.user.is_staff
+        # elif request.method in ['PUT', 'PATCH', 'DELETE']:
+        #     return is_group_admin(request.user.id, obj.election.process.groups) or request.user.is_staff
         else:
             return True
 
@@ -154,14 +154,14 @@ class ConversationPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.method == 'GET':
-            if obj.groups.filter(name='RxC Conversations').exists():
+            if obj.process.groups.filter(name='RxC Conversations').exists():
                 return True
             else:
                 return request.user.has_perm('can_view', obj.process)
         elif request.method == 'POST':
             return request.user.is_authenticated
-        elif request.method in ['PUT', 'PATCH']:
-            return is_group_admin(request.user.id, obj.groups) or request.user.is_staff
+        # elif request.method in ['PUT', 'PATCH']:
+        #     return is_group_admin(request.user.id, obj.process.groups) or request.user.is_staff
         elif request.method in ['DELETE']:
             return request.user.is_authenticated and request.user.is_staff
         else:

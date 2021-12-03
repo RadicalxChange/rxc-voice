@@ -15,6 +15,8 @@ import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import NotFound from './components/NotFound';
 import LandingPage from './components/LandingPage';
+import ManageEvents from './components/ManageEvents/ManageEvents';
+import EventManager from './components/ManageEvents/components/EventManager';
 import { User } from './models/User';
 import { getUserData } from './utils';
 
@@ -75,6 +77,16 @@ function App() {
         <Route path="/create-event" exact>
           <Header />
           <CreateEvent />
+        </Route>
+
+        <Route path="/manage-events" exact>
+          <Header />
+          <ManageEvents />
+        </Route>
+
+        <Route path="/manage-events/:processId/:processSlug" exact>
+          <Header />
+          <EventManager />
         </Route>
 
         <Route path="/:processId/:processSlug/:stageId/:stageSlug" exact>

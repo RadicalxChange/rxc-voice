@@ -221,6 +221,37 @@ export const fetchProposals = (election_id: number): Observable<Proposal[]> => {
   });
 };
 
+export const postProposal = (election_id: number, data: any): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/elections/${election_id}/proposals/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    );
+  });
+};
+
+export const deleteProposal = (proposal_id: number): Observable<any> => {
+  const user: string | null = sessionStorage.getItem("user");
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/proposals/${proposal_id}/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Token ${user ? JSON.parse(user).token : ''}`,
+        },
+        method: "DELETE",
+      }),
+    );
+  });
+};
+
 export const fetchVotes = (election_id: number): Observable<Vote[]> => {
   return defer(() => {
     return from<Promise<Vote[]>>(

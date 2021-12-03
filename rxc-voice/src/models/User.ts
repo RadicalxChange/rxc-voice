@@ -12,4 +12,5 @@ export interface User {
   last_name: string,
   profile_pic: string,
   delegates: Delegate[],
+  processes_managed: number[],
 }

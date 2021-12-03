@@ -1,0 +1,32 @@
+.process-card {
+  text-align: left;
+  margin-bottom: 3em;
+  display: table;
+  width: 94%;
+  height: auto;
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 1em;
+
+  .title {
+    font-size: 1.3em;
+  }
+
+  .time-remaining {
+    text-align: right;
+    margin: 2em 0 0 0;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .process-card {
+
+    .title {
+      font-size: 1.5em;
+    }
+
+    .time-remaining {
+      // margin-right: 2vw;
+    }
+  }
+}

@@ -1,8 +1,6 @@
-from guardian.shortcuts import assign_perm
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import generics, mixins, status
-from django.utils import timezone
 from django.db.models import Q
 from .permissions import (ElectionPermission,
                           VotePermission,
@@ -12,7 +10,7 @@ from .serializers import (ElectionSerializer,
                           VoteSerializer,
                           ProposalSerializer
                           )
-from .models import Election, Vote, Proposal, Group
+from .models import Election, Vote, Proposal
 
 
 class ElectionList(mixins.CreateModelMixin,
@@ -176,7 +174,14 @@ class ProposalList(mixins.CreateModelMixin,
             })
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=True)
+        election_object = Election.objects.get(id=request.data['election'])
+        request.data['election'] = election_object
+        serializer = self.get_serializer(
+            data=request.data,
+            context={
+                'election_id': self.kwargs['pk']
+                },
+            )
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -184,3 +189,17 @@ class ProposalList(mixins.CreateModelMixin,
             serializer.data,
             status=status.HTTP_201_CREATED,
             headers=headers)
+
+
+class ProposalDetail(mixins.UpdateModelMixin,
+                     mixins.DestroyModelMixin,
+                     generics.GenericAPIView):
+
+    queryset = Proposal.objects.all()
+    serializer_class = ProposalSerializer
+
+    permission_classes = (ProposalPermission,)
+    authentication_classes = [TokenAuthentication]
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
