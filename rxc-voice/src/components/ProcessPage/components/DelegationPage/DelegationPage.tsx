@@ -21,7 +21,7 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
 
   useEffect(() => {
     if (!delegationOngoing) {
-        WebService.fetchTransfers(props.process.id).subscribe((data: any) => {
+        WebService.fetchTransfers(props.delegation.id).subscribe((data: any) => {
         if (data.transfers !== undefined) {
           processTransferData(data);
         } else {

@@ -11,6 +11,9 @@ function ProcessMenu(props: {process: Process}) {
   return (
     <ul className="menu">
       {props.process.stages
+        .sort((a: Stage, b: Stage) => {
+          return a.position > b.position ? 1 : -1;
+        })
         .map((stage: Stage) => (
           <Link
           key={stage.position}
