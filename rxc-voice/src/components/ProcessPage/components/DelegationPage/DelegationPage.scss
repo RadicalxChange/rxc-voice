@@ -3,23 +3,6 @@
   .matching-pool {
     font-size: 1rem;
   }
-
-  .submit-button {
-    font-size: 1rem;
-    display: block;
-    margin: 2rem 0;
-    background: black;
-    color: var(--whiteColor);
-    border: 1px solid black;
-    border-radius: 20px;
-    padding: .5em 1em .5em 1em;
-    outline: none;
-    cursor: pointer;
-  }
-  .submit-button:hover {
-    background: var(--whiteColor);
-    color: black;
-  }
 }
 
 .transfers {

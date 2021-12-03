@@ -23,10 +23,9 @@ function TransferModal(props: any) {
 
     const submit = (userDelegate: Delegate) => {
       setThresholdWarning(false);
-      const recipient = props.recipient ? props.recipient : recipientEmail;
       WebService.postTransfer({
         sender: userDelegate.id,
-        recipient: recipient,
+        recipient: props.recipient ? props.recipient.id : recipientEmail,
         amount: amount,
         date: moment().toISOString(),
         delegation: props.delegation.id,
@@ -50,7 +49,7 @@ function TransferModal(props: any) {
       const recipient = props.recipient ? props.recipient : recipientEmail;
       if (!recipient || !amount) {
         alert.error("Incomplete form");
-      } else if (recipient === userDelegate.profile.public_username || recipient === userDelegate.profile.user.email) {
+      } else if (recipient.id === userDelegate.id) {
         alert.error("You cannot send credits to yourself");
       } else if (+amount > userDelegate.credit_balance) {
         alert.error("Insufficient credits");
@@ -77,11 +76,10 @@ function TransferModal(props: any) {
 
     const onChangeAmount = (new_amt, userDelegate: Delegate) => {
       setAmount(new_amt);
-      if (new_amt !== "") {
-        const recipient = props.recipient ? props.recipient : recipientEmail;
+      if (new_amt !== "" && props.recipient) {
         WebService.estimateMatch({
           sender: userDelegate.id,
-          recipient: recipient,
+          recipient: props.recipient.id,
           amount: new_amt,
           date: moment().toISOString(),
           delegation: props.delegation.id,
@@ -104,7 +102,6 @@ function TransferModal(props: any) {
             </div>
             <button
               type="button"
-              className="submit-button"
               onClick={() => reset()}
               >
               Close
@@ -119,7 +116,7 @@ function TransferModal(props: any) {
                 <div className="give-credits-page">
                   <h2>Threshold Warning</h2>
                   <div className="explain-text">
-                    <p>Are you sure you'd like to send {amount} voice credits to {props.recipient ? props.recipient : recipientEmail}?</p>
+                    <p>Are you sure you'd like to send {amount} voice credits to {props.recipient ? props.recipient.profile.public_username : recipientEmail}?</p>
                     <p>If you do, your voice credit balance will fall below the threshold for participation (25 voice credits), and you may not be able to participate in the Deliberation and Election Stages.</p>
                   </div>
                   <div className="button-container">
@@ -157,7 +154,7 @@ function TransferModal(props: any) {
                   {props.recipient ? (
                     <div className="transfer-field-container">
                       <div className="field-label">Send to</div>
-                      <p className="recipient">{props.recipient}</p>
+                      <p className="recipient">{props.recipient.profile.public_username}</p>
                     </div>
                   ) : (
                     <div className="transfer-field-container">
@@ -177,7 +174,6 @@ function TransferModal(props: any) {
                   <div className="button-container">
                     <button
                       type="button"
-                      id="maybe-submit"
                       className="submit-button"
                       onClick={() => maybeSubmit(props.userDelegate)}
                       >

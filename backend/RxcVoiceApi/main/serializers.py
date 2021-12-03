@@ -260,12 +260,25 @@ class DelegateSerializer(serializers.ModelSerializer):
             total += transfer.amount
         return total
 
-    def create(self, validated_data):
+    def create(self, validated_data, set_unusable_password):
+        profile_data = validated_data.get('profile')
+        try:
+            existing_user = User.objects.get(email=profile_data['user']['email'])
+        except User.DoesNotExist:
+            existing_user = None
+        if existing_user is not None:
+            profile = Profile.objects.get(user=existing_user)
+        else:
+            profile = ProfileSerializer.create(
+                ProfileSerializer(),
+                validated_data=profile_data,
+                set_unusable_password=set_unusable_password
+                )
         invited_by = None
         if validated_data.get('invited_by'):
             invited_by = validated_data.get('invited_by').profile
         delegate, created = Delegate.objects.update_or_create(
-            profile=validated_data.get('profile'),
+            profile=profile,
             invited_by=invited_by,
             process=validated_data.get('process'),
             credit_balance=validated_data.get('credit_balance', 0),
@@ -305,7 +318,7 @@ class TransferSerializer(serializers.ModelSerializer):
             raise ValidationError("Invalid amount: insufficient credits.")
         recipient_object = Delegate.objects.filter(profile__user__email=recipient).first()
         if not recipient_object:
-            recipient_object = Delegate.objects.filter(profile__public_username=recipient).first()
+            recipient_object = Delegate.objects.filter(id=recipient).first()
         is_invitation = not recipient_object
         if is_invitation:
             new_delegate = DelegateSerializer.create(

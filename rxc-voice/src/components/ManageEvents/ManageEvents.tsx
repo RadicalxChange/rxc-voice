@@ -12,7 +12,6 @@ function ManageEvents() {
   const { setColor, fetchProcesses } = useContext(ActionContext);
   const { processes, activeProcesses, pastProcesses } = useContext(StateContext);
   const user: User | undefined = getUserData();
-  console.log(user)
 
   useEffect(() => {
     setColor(BgColor.Yellow);

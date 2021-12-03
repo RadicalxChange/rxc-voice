@@ -15,7 +15,7 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
   const [transfers, setTransfers] = useState(new Array<Transfer>());
   const [subtotal, setSubtotal] = useState(0);
   const [match, setMatch] = useState(0);
-  const [stagedTransfer, setStagedTransfer] = useState("");
+  const [stagedTransfer, setStagedTransfer] = useState<Delegate | undefined>(undefined);
   const [inviteModal, setInviteModal] = useState(false);
   const delegationOngoing = moment() < moment(props.delegation.end_date);
 
@@ -46,7 +46,7 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
   };
 
   const closeModal = () => {
-    setStagedTransfer("");
+    setStagedTransfer(undefined);
     setInviteModal(false);
   };
 
@@ -70,6 +70,7 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
         process={props.process}
         delegation={props.delegation}
         closeModal={closeModal}
+        userDelegate={props.userDelegate}
       />
       <h1>Delegation</h1>
       <h2 className="content-header">{props.process.title}</h2>

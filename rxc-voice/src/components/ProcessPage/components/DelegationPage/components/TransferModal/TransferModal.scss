@@ -75,10 +75,16 @@
       text-align: right;
       margin-top: 2rem;
 
+      .submit-button {
+        display: inline-block !important;
+        margin-right: 1rem !important;
+      }
+
       .cancel-button {
+        display: inline-block;
         background: inherit;
         border: none;
-        cursor: pointer;
+        color: black;
       }
     }
 
@@ -99,11 +105,6 @@
       text-decoration: none;
     }
   }
-}
-
-#maybe-submit {
-  display: inline-block !important;
-  margin-right: 1rem !important;
 }
 
 .closed {
