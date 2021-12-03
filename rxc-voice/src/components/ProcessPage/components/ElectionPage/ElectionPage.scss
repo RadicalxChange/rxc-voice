@@ -69,12 +69,6 @@
   border: 1px solid black;
   border-radius: 15px;
   padding: .5em 1em .5em 1em;
-  outline: none;
-  cursor: pointer;
-}
-.submit-button:hover {
-  background: var(--whiteColor);
-  color: black;
 }
 
 .results-page {
@@ -82,9 +76,11 @@
   margin-top: 5vw;
   font-size: .8rem;
   padding-bottom: 18vh;
+  max-width: 700px;
 
   #download {
     margin-bottom: 2rem;
+    margin-left: 0;
   }
 }
 
