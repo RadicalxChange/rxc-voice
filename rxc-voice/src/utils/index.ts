@@ -46,7 +46,7 @@ export const defaultDelegation: Delegation = {
   num_credits: 99,
   allow_transfers: true,
   allow_invites: true,
-  match_pool_mode: MatchPoolMode.Default,
+  matching_pool: MatchPoolMode.Default,
 }
 export const defaultConversation: Conversation = {
   id: 1,
@@ -158,7 +158,7 @@ export const mapToDelegation = (stage: any): Delegation => {
     num_credits: stage.num_credits,
     allow_transfers: stage.allow_transfers,
     allow_invites: stage.allow_invites,
-    match_pool_mode: stage.matching_pool,
+    matching_pool: stage.matching_pool,
   };
 };
 

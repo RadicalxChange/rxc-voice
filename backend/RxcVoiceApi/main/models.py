@@ -113,7 +113,6 @@ class Delegation(Stage):
         # if transfers are not allowed, there can be no invites or qf matching
         self.type = Stage.DELEGATION
         if not self.allow_transfers:
-            self.allow_invites = False
             self.matching_pool = Delegation.NONE
         super(Delegation, self).save(*args, **kwargs)
 

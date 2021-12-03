@@ -14,7 +14,7 @@ export interface Delegation extends Stage {
   num_credits: number,
   allow_transfers: boolean,
   allow_invites: boolean,
-  match_pool_mode: MatchPoolMode,
+  matching_pool: MatchPoolMode,
 }
 
 export interface Conversation extends Stage {

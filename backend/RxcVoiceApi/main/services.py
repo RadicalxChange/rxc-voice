@@ -123,7 +123,7 @@ def estimate_match(new_transfer):
     sender = new_transfer['sender']
     recipient_object = Delegate.objects.filter(profile__user__email=new_transfer['recipient']).first()
     if not recipient_object:
-        recipient_object = Delegate.objects.filter(profile__public_username=new_transfer['recipient']).first()
+        recipient_object = Delegate.objects.filter(id=new_transfer['recipient']).first()
     adjusted_pledged_total = 0
     adjusted_sum_roots = 0
     if recipient_object:
@@ -155,8 +155,6 @@ def estimate_match(new_transfer):
         avail_funds = delegation.num_credits * len(delegation.process.delegates.filter(profile__is_verified=True))
         if raw_match_total > avail_funds:
             curr_match = (curr_match / raw_match_total) * float(avail_funds)
-            print(adjusted_match)
-            print(avail_funds)
             adjusted_match = (adjusted_match / raw_match_total) * float(avail_funds)
     # return the difference caused by hypothetical transfer
     # print(str(int(adjusted_match)) + " - " + str(int(curr_match)) + " = " + str(int(adjusted_match) - int(curr_match)))

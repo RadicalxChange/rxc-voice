@@ -18,7 +18,6 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         conversation = Conversation.objects.create(
-            uuid=uuid.uuid4(),
             type=Stage.CONVERSATION,
             title=validated_data.get('title'),
             description=validated_data.get('description'),
@@ -26,6 +25,7 @@ class ConversationSerializer(serializers.ModelSerializer):
             end_date=validated_data.get('end_date'),
             process=validated_data.get('process'),
             position=validated_data.get('position'),
+            uuid=uuid.uuid4(),
             )
         return conversation
 
@@ -122,6 +122,7 @@ class ElectionSerializer(serializers.ModelSerializer):
             end_date=validated_data.get('end_date'),
             process=validated_data.get('process'),
             position=validated_data.get('position'),
+            negative_votes=validated_data.get('negative_votes'),
             )
         return election
 
@@ -318,7 +319,10 @@ class TransferSerializer(serializers.ModelSerializer):
             raise ValidationError("Invalid amount: insufficient credits.")
         recipient_object = Delegate.objects.filter(profile__user__email=recipient).first()
         if not recipient_object:
-            recipient_object = Delegate.objects.filter(id=recipient).first()
+            try:
+                recipient_object = Delegate.objects.filter(id=recipient).first()
+            except:
+                recipient_object = None
         is_invitation = not recipient_object
         if is_invitation:
             new_delegate = DelegateSerializer.create(
@@ -331,15 +335,18 @@ class TransferSerializer(serializers.ModelSerializer):
                         },
                     },
                     'process': delegation.process,
-                    'credit_balance': 0,
+                    'credit_balance': 0 if delegation.allow_transfers else delegation.num_credits,
                     'invited_by': sender,
                 },
                 set_unusable_password=True)
             recipient_object = new_delegate
         elif recipient_object.id == sender.id or self.context.get('request').user.id == recipient_object.id:
             raise ValidationError("Invalid transfer.")
-        sender.credit_balance -= validated_data.get('amount')
-        sender.save()
+        if delegation.allow_transfers:
+            sender.credit_balance -= validated_data.get('amount')
+            sender.save()
+        elif not is_invitation:
+            raise ValidationError("Transfers not allowed for this delegation.")
         transfer = Transfer.objects.create(
             sender=sender,
             recipient=recipient,
@@ -405,6 +412,10 @@ class DelegationSerializer(serializers.ModelSerializer):
             end_date=validated_data.get('end_date'),
             process=validated_data.get('process'),
             position=validated_data.get('position'),
+            num_credits=validated_data.get('num_credits'),
+            allow_transfers=validated_data.get('allow_transfers'),
+            allow_invites=validated_data.get('allow_invites'),
+            matching_pool=validated_data.get('matching_pool'),
             )
         return delegation
 

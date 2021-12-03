@@ -13,8 +13,8 @@ function DelegationSettings(props: {settings: Delegation, reducer: any}) {
     })
     props.reducer({
       id: props.settings.id,
-      field: "allow_invites",
-      value: value,
+      field: "matching_pool",
+      value: value ? MatchPoolMode.Default : MatchPoolMode.None,
     })
   };
 
@@ -57,42 +57,6 @@ function DelegationSettings(props: {settings: Delegation, reducer: any}) {
         </div>
       </div>
       <div className="event-section">
-        <label>Open Delegation</label>
-        <p>By default, delegates have the option to invite new people into the event by sending voice credits to their email address. Allow delegates to invite new people?</p>
-        <div className="event-section_form">
-          {props.settings.allow_transfers ? (
-            <label className="event-section_form_input">
-              <input
-                id="allow-invites_input"
-                className="checkbox-button"
-                type="checkbox"
-                checked={props.settings.allow_invites}
-                onChange={() => props.reducer({
-                  id: props.settings.id,
-                  field: "allow_invites",
-                  value: !props.settings.allow_invites,
-                })}
-              />Delegates can send invites
-            </label>
-          ) : (
-            <label className="event-section_form_input">
-              <input
-                id="allow-invites_input"
-                className="checkbox-button"
-                type="checkbox"
-                checked={props.settings.allow_invites}
-                onChange={() => props.reducer({
-                  id: props.settings.id,
-                  field: "allow_invites",
-                  value: !props.settings.allow_invites,
-                })}
-                disabled
-              />Delegates can send invites
-            </label>
-          )}
-        </div>
-      </div>
-      <div className="event-section">
         <label>Voice Credit Matching Fund</label>
         <p>By default, voice credit transfers are matched according to the Quadratic Funding (QF) formula. You can set a limit on the amount of voice credits in the matching pool, or turn off this feature completely.</p>
         <div id="match-pool-radio" className="event-section_form">
@@ -102,9 +66,11 @@ function DelegationSettings(props: {settings: Delegation, reducer: any}) {
               className="checkbox-button"
               name="match_pool_mode"
               value={MatchPoolMode.Infinite}
+              checked={props.settings.matching_pool === MatchPoolMode.Infinite}
+              disabled={!props.settings.allow_transfers}
               onChange={(e) => props.reducer({
                 id: props.settings.id,
-                field: "match_pool_mode",
+                field: "matching_pool",
                 value: e.target.value,
               })}
             />
@@ -116,9 +82,11 @@ function DelegationSettings(props: {settings: Delegation, reducer: any}) {
               className="checkbox-button"
               name="match_pool_mode"
               value={MatchPoolMode.Default}
+              checked={props.settings.matching_pool === MatchPoolMode.Default}
+              disabled={!props.settings.allow_transfers}
               onChange={(e) => props.reducer({
                 id: props.settings.id,
-                field: "match_pool_mode",
+                field: "matching_pool",
                 value: e.target.value,
               })}
             />
@@ -130,13 +98,34 @@ function DelegationSettings(props: {settings: Delegation, reducer: any}) {
               className="checkbox-button"
               name="match_pool_mode"
               value={MatchPoolMode.None}
+              checked={props.settings.matching_pool === MatchPoolMode.None}
+              disabled={!props.settings.allow_transfers}
               onChange={(e) => props.reducer({
                 id: props.settings.id,
-                field: "match_pool_mode",
+                field: "matching_pool",
                 value: e.target.value,
               })}
             />
             None (Turn off QF matching)
+          </label>
+        </div>
+      </div>
+      <div className="event-section">
+        <label>Open Delegation</label>
+        <p>By default, delegates have the option to invite new people into the event by sending voice credits to their email address. Allow delegates to invite new people?</p>
+        <div className="event-section_form">
+          <label className="event-section_form_input">
+            <input
+              id="allow-invites_input"
+              className="checkbox-button"
+              type="checkbox"
+              checked={props.settings.allow_invites}
+              onChange={() => props.reducer({
+                id: props.settings.id,
+                field: "allow_invites",
+                value: !props.settings.allow_invites,
+              })}
+            />Delegates can send invites
           </label>
         </div>
       </div>

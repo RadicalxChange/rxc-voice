@@ -7,6 +7,7 @@ import { WebService } from "../../../../../../services";
 import { getUserData, updateCreditBalance } from "../../../../../../utils";
 import { User } from "../../../../../../models/User";
 import { Delegate } from "../../../../../../models/Delegate";
+import { MatchPoolMode } from "../../../../../../models/Stage";
 
 import "./TransferModal.scss";
 
@@ -14,7 +15,7 @@ function TransferModal(props: any) {
     const { processId } = useParams<any>();
     const { selectProcess, setUserData } = useContext(ActionContext);
     const [recipientEmail, setRecipientEmail] = useState("");
-    const [amount, setAmount] = useState("");
+    const [amount, setAmount] = useState<number | undefined>(props.delegation.allow_transfers ? undefined : 0);
     const [estMatch, setEstMatch] = useState(0);
     const [thresholdWarning, setThresholdWarning] = useState(false);
     const [transferSuccess, setTransferSuccess] = useState(false);
@@ -33,8 +34,8 @@ function TransferModal(props: any) {
         if (data.ok) {
           setTransferSuccess(true);
           const user: User | undefined = getUserData();
-          if (user) {
-            const userData = updateCreditBalance(user, props.process, userDelegate.credit_balance - (+amount));
+          if (user && amount) {
+            const userData = updateCreditBalance(user, props.process, userDelegate.credit_balance - amount);
             setUserData(userData);
           }
         } else {
@@ -45,17 +46,17 @@ function TransferModal(props: any) {
     };
 
     const maybeSubmit = (userDelegate: Delegate) => {
-      console.log(userDelegate)
+      console.log(amount)
       const recipient = props.recipient ? props.recipient : recipientEmail;
-      if (!recipient || !amount) {
+      if (!recipient || amount === undefined) {
         alert.error("Incomplete form");
       } else if (recipient.id === userDelegate.id) {
         alert.error("You cannot send credits to yourself");
-      } else if (+amount > userDelegate.credit_balance) {
+      } else if (amount > userDelegate.credit_balance) {
         alert.error("Insufficient credits");
-      } else if (+amount < 0) {
+      } else if (amount < 0) {
         alert.error("Invalid amount")
-      } else if (userDelegate.credit_balance - (+amount) < 25) {
+      } else if (userDelegate.credit_balance - amount < 25) {
         setThresholdWarning(true);
       } else {
         submit(userDelegate);
@@ -65,7 +66,7 @@ function TransferModal(props: any) {
     const reset = () => {
       props.closeModal();
       setRecipientEmail("");
-      setAmount("");
+      setAmount(props.delegation.allow_transfers ? undefined : 0);
       setEstMatch(0);
       if (transferSuccess) {
         selectProcess(processId);
@@ -74,9 +75,9 @@ function TransferModal(props: any) {
       setThresholdWarning(false);
     };
 
-    const onChangeAmount = (new_amt, userDelegate: Delegate) => {
+    const onChangeAmount = (new_amt: number, userDelegate: Delegate) => {
       setAmount(new_amt);
-      if (new_amt !== "" && props.recipient) {
+      if (new_amt && props.recipient && props.delegation.matching_pool !== MatchPoolMode.None) {
         WebService.estimateMatch({
           sender: userDelegate.id,
           recipient: props.recipient.id,
@@ -140,17 +141,23 @@ function TransferModal(props: any) {
             ) : (
               <div className={`transfer-modal ${!props.recipient && !props.invite ? "closed" : ""}`}>
                 <div className="give-credits-page">
-                  <h1 className="title">give credits</h1>
-                  <div className="transfer-field-container">
-                    <div className="field-label">Amount</div>
-                    <input
-                      type="number"
-                      placeholder="0"
-                      className="amount-input"
-                      value={amount}
-                      onChange={(e) => onChangeAmount(e.target.value, props.userDelegate)}
-                    />
-                  </div>
+                  {props.delegation.allow_transfers ? (
+                    <>
+                    <h1 className="title">give credits</h1>
+                    <div className="transfer-field-container">
+                      <div className="field-label">Amount</div>
+                      <input
+                        type="number"
+                        placeholder="0"
+                        className="amount-input"
+                        value={amount}
+                        onChange={(e) => onChangeAmount(+e.target.value, props.userDelegate)}
+                      />
+                    </div>
+                    </>
+                  ) : (
+                    <h1 className="title">send invitation</h1>
+                  )}
                   {props.recipient ? (
                     <div className="transfer-field-container">
                       <div className="field-label">Send to</div>
