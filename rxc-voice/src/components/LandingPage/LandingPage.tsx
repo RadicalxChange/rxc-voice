@@ -35,13 +35,15 @@ function LandingPage() {
               Get Started
           </button>
         </Link>
-        <Link
-        to={`/`}
+        <a
+        href="https://www.radicalxchange.org/media/announcements/rxc-voice/"
+        target="_blank"
+        rel="noopener nofollow noreferrer"
         >
           <button type="button">
               Learn More
           </button>
-        </Link>
+        </a>
       </div>
     </div>
   );
