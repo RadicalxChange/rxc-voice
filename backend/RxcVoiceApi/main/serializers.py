@@ -345,7 +345,7 @@ class TransferSerializer(serializers.ModelSerializer):
         if delegation.allow_transfers:
             sender.credit_balance -= validated_data.get('amount')
             sender.save()
-        elif not is_invitation:
+        elif int(validated_data.get('amount')) > 0:
             raise ValidationError("Transfers not allowed for this delegation.")
         transfer = Transfer.objects.create(
             sender=sender,
