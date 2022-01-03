@@ -82,90 +82,95 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
         {props.delegation.allow_transfers ? (
           <>
           <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election.{props.delegation.matching_pool !== MatchPoolMode.None ? " At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! " : " "}If you want to save all of your credits for your own use in the election, that’s fine too.</p>
-          <p>Keep in mind, the threshold for participating in Delegation and Election is 25 voice credits. If you want to participate in the decision, <strong>make sure you keep at least 25 voice credits for yourself.</strong></p>
+          <p>Keep in mind, the threshold for participating in Conversation and Election is 25 voice credits. If you want to participate in the decision, <strong>make sure you keep at least 25 voice credits for yourself.</strong></p>
           </>
         ) : null}
-        <p>You can see who else is participating in this event below.</p>
       </div>
-      {delegationOngoing ? (
+      {moment(props.delegation.start_date) < moment() ? (
         <>
-        <p className="explain-text"><strong>The Delegation Stage closes on {moment(props.delegation.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
-        {props.delegation.matching_pool === MatchPoolMode.Default ? (
-          <h3 className="matching-pool">The size of the matching pool will be 100 times the final number of delegates.</h3>
-        ) : null}
-        {props.delegation.allow_invites ? (
-          <button
-            type="button"
-            className="submit-button"
-            onClick={() => setInviteModal(true)}
-          >
-            + Invite Someone Else
-          </button>
-        ) : null}
-        </>
-      ) : (
-        <>
-        <p className="explain-text"><strong>The Delegation Stage has concluded. You can see the final delegate list below!</strong></p>
-        {props.delegation.allow_transfers ? (
-          <div className="transfers">
-            <h2>Your transfers</h2>
-            <div className="transfers-header">
-              <h3 className="type">Type</h3>
-              <h3 className="amount">Amount</h3>
-            </div>
-            {transfers.length ? (
-              <>
-                <ul className="transfer-list">
-                  {transfers.map((transfer: Transfer) => (
-                    <TransferCard transfer={transfer} key={transfer.id}></TransferCard>
-                  ))}
-                </ul>
-                <div className="transfers-subtotals">
-                  <div className="type">
-                    <h3>Subtotal</h3>
-                    <h3>Matching Funds Received</h3>
-                  </div>
-                  <div className="amount">
-                    <h3>{(subtotal < 0) ? "- " : "+ "}{Math.abs(subtotal)} voice credits</h3>
-                    <h3>{(match < 0) ? "- " : "+ "}{Math.abs(match)} voice credits</h3>
-                  </div>
-                </div>
-                <div className="transfers-subtotals">
-                  <h3 className="total">Total Change</h3>
-                  <h3 className="total">{(subtotal + match < 0) ? "- " : "+ "}{Math.abs(subtotal + match)} voice credits</h3>
-                </div>
-              </>
-            ) : (
-              <h3>You did not send or receive any transfers.</h3>
-            )}
-          </div>
-        ) : null}
-        </>
-      )}
-      {props.process.delegates.filter(isVerified).length ? (
-        <>
-          <h2>Delegates</h2>
-          <ul className="delegate-list">
-            {props.process.delegates
-              .filter(isVerified)
-              .sort((a: Delegate, b: Delegate) => {
-                return a.profile.user.first_name.localeCompare(b.profile.user.first_name);
-              })
-              .map((delegate: Delegate) => (
-                <DelegateCard
-                  key={delegate.id}
-                  delegate={delegate}
-                  process={props.process}
-                  delegation={props.delegation}
-                  stageTransfer={setStagedTransfer}
-                  userDelegate={props.userDelegate}
-                >
-                </DelegateCard>
-              ))}
-            </ul>
+        {delegationOngoing ? (
+          <>
+          <p className="explain-text"><strong>The Delegation Stage closes on {moment(props.delegation.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+          {props.delegation.matching_pool === MatchPoolMode.Default ? (
+            <h3 className="matching-pool">The size of the matching pool will be 100 times the final number of delegates.</h3>
+          ) : null}
+          {props.delegation.allow_invites ? (
+            <button
+              type="button"
+              className="submit-button"
+              onClick={() => setInviteModal(true)}
+            >
+              + Invite Someone Else
+            </button>
+          ) : null}
           </>
+        ) : (
+          <>
+          <p className="explain-text"><strong>The Delegation Stage has concluded. You can see the final delegate list below!</strong></p>
+          {props.delegation.allow_transfers ? (
+            <div className="transfers">
+              <h2>Your transfers</h2>
+              <div className="transfers-header">
+                <h3 className="type">Type</h3>
+                <h3 className="amount">Amount</h3>
+              </div>
+              {transfers.length ? (
+                <>
+                  <ul className="transfer-list">
+                    {transfers.map((transfer: Transfer) => (
+                      <TransferCard transfer={transfer} key={transfer.id}></TransferCard>
+                    ))}
+                  </ul>
+                  <div className="transfers-subtotals">
+                    <div className="type">
+                      <h3>Subtotal</h3>
+                      <h3>Matching Funds Received</h3>
+                    </div>
+                    <div className="amount">
+                      <h3>{(subtotal < 0) ? "- " : "+ "}{Math.abs(subtotal)} voice credits</h3>
+                      <h3>{(match < 0) ? "- " : "+ "}{Math.abs(match)} voice credits</h3>
+                    </div>
+                  </div>
+                  <div className="transfers-subtotals">
+                    <h3 className="total">Total Change</h3>
+                    <h3 className="total">{(subtotal + match < 0) ? "- " : "+ "}{Math.abs(subtotal + match)} voice credits</h3>
+                  </div>
+                </>
+              ) : (
+                <h3>You did not send or receive any transfers.</h3>
+              )}
+            </div>
+          ) : null}
+          </>
+        )}
+        {props.process.delegates.filter(isVerified).length ? (
+          <>
+            <h2>Delegates</h2>
+            <ul className="delegate-list">
+              {props.process.delegates
+                .filter(isVerified)
+                .sort((a: Delegate, b: Delegate) => {
+                  return a.profile.user.first_name.localeCompare(b.profile.user.first_name);
+                })
+                .map((delegate: Delegate) => (
+                  <DelegateCard
+                    key={delegate.id}
+                    delegate={delegate}
+                    process={props.process}
+                    delegation={props.delegation}
+                    stageTransfer={setStagedTransfer}
+                    userDelegate={props.userDelegate}
+                  >
+                  </DelegateCard>
+                ))}
+              </ul>
+            </>
+        ) : (
+          <h3>No delegates found.</h3>
+        )}
+        </>
       ) : (
-        <h3>No delegates found.</h3>
+        <p className="explain-text"><strong>The Delegation Stage begins on {moment(props.delegation.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
       )}
     </div>
   );

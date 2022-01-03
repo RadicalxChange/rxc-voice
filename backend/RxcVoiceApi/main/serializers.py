@@ -224,11 +224,21 @@ class ProfileSerializer(serializers.ModelSerializer):
             UserSerializer(),
             validated_data=user_data,
             set_unusable_password=set_unusable_password)
-        profile, created = Profile.objects.update_or_create(
+        profile, created = Profile.objects.create(
             user=user,
             profile_pic=validated_data.get('profile_pic'),
             )
         return profile
+
+    def update(self, instance, validated_data):
+        updated_user = UserSerializer.update(
+            UserSerializer(),
+            instance.user,
+            validated_data=validated_data.get('user'),
+            )
+        instance.user = updated_user
+        instance.profile_pic = validated_data.get('profile_pic', instance.profile_pic)
+        return instance
 
 
 class DelegateSerializer(serializers.ModelSerializer):
