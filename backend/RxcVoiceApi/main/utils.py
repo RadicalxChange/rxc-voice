@@ -53,10 +53,10 @@ def get_mail_body(mail_name, mail_params):
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
-    def _make_hash_value(self, delegate, timestamp):
+    def _make_hash_value(self, profile, timestamp):
         return (
-            six.text_type(delegate.profile.user.pk) + six.text_type(timestamp) +
-            six.text_type(delegate.profile.user.is_active)
+            six.text_type(profile.user.pk) + six.text_type(timestamp) +
+            six.text_type(profile.user.is_active)
         )
 
 account_activation_token = TokenGenerator()

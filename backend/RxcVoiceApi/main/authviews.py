@@ -297,7 +297,7 @@ class ValidateAuthToken(ObtainAuthToken):
             delegate = Delegate.objects.get(pk=uid)
         except(TypeError, ValueError, OverflowError, Delegate.DoesNotExist):
             delegate = None
-        if delegate is not None and account_activation_token.check_token(delegate, request.data["token"]):
+        if delegate is not None and account_activation_token.check_token(delegate.profile, request.data["token"]):
             profile = delegate.profile
             profile.user.is_active = True
             profile.user.save()

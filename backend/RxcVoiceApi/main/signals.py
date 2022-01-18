@@ -13,7 +13,7 @@ def send_register_mail(sender, instance, **kwargs):
     if kwargs['created']:
         # current_site = 'https://voice.radicalxchange.org'
         uid = urlsafe_base64_encode(force_bytes(instance.pk))
-        token = account_activation_token.make_token(instance)
+        token = account_activation_token.make_token(instance.profile)
         params = {
             'delegate_name': instance.profile.user.first_name,
             'process_title': instance.process.title,
