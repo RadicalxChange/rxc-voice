@@ -8,6 +8,8 @@
 #top-panel {
   height: 100vh;
   background: var(--yellowColor);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
 .lp-header {
@@ -17,24 +19,21 @@
 }
 
 .top-panel_content {
-  padding: 10vmin 4.5vmin;
+  margin: auto;
+  width: 91vw;
+}
+
+.App-logo {
+  width: 91vw;
 }
 
 .top-panel_content > a > button {
   display: inline-block;
-  margin: 1em auto 1em auto;
-  background: black;
-  color: white;
-  border: 1px solid black;
-  border-radius: 15px;
-  padding: .5em 1em .5em 1em;
   margin: .5em;
-  outline: none;
-  cursor: pointer;
 }
-.top-panel_content > a > button:hover {
-  background: var(--yellowColor);
-  color: black;
+
+.scroll-arrow {
+  margin-bottom: 1rem;
 }
 
 #info {
@@ -102,9 +101,6 @@
 
 @media only screen and (min-width: 768px) {
 
-  .landing-page {
-  }
-
   .lp-header {
     padding: 3vw 2vw;
   }
@@ -115,7 +111,11 @@
   }
 
   .top-panel_content {
-    padding: 25vh 30vw;
+    width: auto;
+  }
+
+  .App-logo {
+    width: auto;
   }
 
   .subpanel_image > img {

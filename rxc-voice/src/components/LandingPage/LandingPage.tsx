@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
+import downArrow from "../../assets/icons/down_arrow.svg";
 import collab_img from "../../assets/collab.png";
 import group_img from "../../assets/group.png";
 import convo_img from "../../assets/speech-bubbles.png";
@@ -45,6 +46,10 @@ function LandingPage() {
                 Learn More
             </button>
           </a>
+        </div>
+        <div className="scroll-arrow">
+          <p>Scroll to learn more</p>
+          <img src={downArrow} alt="down arrow" />
         </div>
       </div>
       <div id="info">
