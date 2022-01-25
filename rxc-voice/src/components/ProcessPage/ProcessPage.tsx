@@ -12,6 +12,7 @@ import ElectionPage from "./components/ElectionPage";
 import { Delegate } from "../../models/Delegate";
 
 import "./ProcessPage.scss";
+import { getStageByPosition } from "../../utils";
 
 function ProcessPage() {
   const { processId, stageId } = useParams<ProcessPageRouteParams>();
@@ -50,7 +51,7 @@ function ProcessPage() {
             <ProcessMenu process={selectedProcess} />
           </div>
           <div className="body">
-            {renderPage(selectedProcess, selectedProcess.stages[+stageId], delegate)}
+            {renderPage(selectedProcess, getStageByPosition(+stageId, selectedProcess), delegate)}
           </div>
         </div>
       ) : (

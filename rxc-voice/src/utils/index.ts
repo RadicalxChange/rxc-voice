@@ -32,6 +32,12 @@ export const updateCreditBalance = (user: User, process: Process, new_balance: n
   });
   return user;
 }
+export const getStageByPosition = (position: number, process: Process): Stage | undefined => {
+  return process.stages.find((stage: any) => {
+    return +stage.position === position;
+  });
+}
+
 export const oauthState = sessionStorage.getItem("oauthState");
 export const twitterOauthSecret = sessionStorage.getItem("twitterOauthSecret");
 

@@ -3,14 +3,13 @@ import { Link } from "react-router-dom";
 import slugify from "react-slugify";
 import moment from "moment";
 import { Stage } from "../../../../models/Stage";
+import { getStageByPosition } from "../../../../utils";
 
 
 import "./ProcessCard.scss";
 
 function ProcessCard(props: any) {
-  const currentStage: Stage | undefined = props.process.stages.find((stage: Stage) => {
-    return stage.position === props.process.curr_stage;
-  });
+  const currentStage: Stage | undefined = getStageByPosition(+props.process.curr_stage, props.process);
 
   return (
     <li className="process-card" key={props.process.id}>
