@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ActionContext, StateContext } from "../../../../hooks/AppProvider";
 import moment from "moment";
-import { Election, Stage } from "../../../../models/Stage";
+import { Election } from "../../../../models/Stage";
 import { BgColor } from "../../../../models/BgColor";
 import { Proposal } from "../../../../models/Proposal";
 import { ProcessPageRouteParams } from "../../../../models/ProcessPageRouteParams";
 import { useParams } from "react-router";
 import { WebService } from "../../../../services";
+import { getStageByPosition } from "../../../../utils";
 
 import "./EventManager.scss";
 
@@ -22,29 +23,26 @@ function EventManager() {
 
   useEffect(() => {
     setColor(BgColor.White);
+    // if data for this process is not yet loaded, load it
     if (selectedProcess?.id !== +processId) {
       selectProcess(processId);
     } else if (selectedProcess) {
-      const election = selectedProcess.stages.map((stage: Stage): any => {
-        return stage;
-      })[2]
-      setElection(election);
-      WebService.fetchProposals(election.id)
-      .subscribe((data: any) => {
-        setProposals(data.proposals);
-      });
+      // once we have all the process data, load the election data and proposals
+      const election = getStageByPosition(2, selectedProcess);
+      if (election) {
+        setElection(election);
+        loadProposals(election.id);
+      }
       setLoading(false);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [processId, selectedProcess]);
 
-  const addProposal = (e: any) => {
+  // add a proposal to the ballot
+  const addProposal = (e: any, election: Election) => {
     e.preventDefault();
     if (selectedProcess && newProposal) {
-      const election = selectedProcess.stages.map((stage: Stage): any => {
-        return stage;
-      })[2]
       const proposalData = {
         title: newProposal,
         ballot_ratification: false,
@@ -54,12 +52,7 @@ function EventManager() {
       }
       WebService.postProposal(election.id, proposalData).subscribe(async (data) => {
         if (data.ok) {
-          setNewProposal("");
-          setAddingProposal(false);
-          WebService.fetchProposals(election.id)
-          .subscribe((data: any) => {
-            setProposals(data.proposals);
-          });
+          loadProposals(election.id);
         } else {
           const error = await data.json();
           Object.keys(error).forEach((key) => {
@@ -70,19 +63,12 @@ function EventManager() {
     }
   };
 
-  const deleteProposal = (proposal_id: number) => {
+  // delete a proposal from the ballot
+  const deleteProposal = (proposalId: number, election: Election) => {
     if (selectedProcess) {
-      const election = selectedProcess.stages.map((stage: Stage): any => {
-        return stage;
-      })[2]
-      WebService.deleteProposal(proposal_id).subscribe(async (data) => {
+      WebService.deleteProposal(proposalId).subscribe(async (data) => {
         if (data.ok) {
-          setNewProposal("");
-          setAddingProposal(false);
-          WebService.fetchProposals(election.id)
-          .subscribe((data: any) => {
-            setProposals(data.proposals);
-          });
+          loadProposals(election.id);
         } else {
           const error = await data.json();
           Object.keys(error).forEach((key) => {
@@ -91,6 +77,16 @@ function EventManager() {
         }
       });
     }
+  };
+
+  // load proposals for this election
+  const loadProposals = (electionId: any) => {
+    setNewProposal("");
+    setAddingProposal(false);
+    WebService.fetchProposals(electionId)
+    .subscribe((data: any) => {
+      setProposals(data.proposals);
+    });
   };
 
   return (
@@ -116,7 +112,7 @@ function EventManager() {
                     <div key={proposal.id} className="proposal">
                       <label>{proposal.title}</label>
                       {!proposal.ballot_ratification ? (
-                        <button className="delete-proposal" onClick={() => deleteProposal(proposal.id)}>
+                        <button className="delete-proposal" onClick={() => deleteProposal(proposal.id, election)}>
                           delete
                         </button>
                       ) : null}
@@ -126,7 +122,7 @@ function EventManager() {
               ) : null}
               {addingProposal ? (
                 <div className="event-section">
-                  <form className="event-section_form" onSubmit={addProposal}>
+                  <form className="event-section_form" onSubmit={(e) => addProposal(e, election)}>
                     <input
                       type="text"
                       id="stage_title"

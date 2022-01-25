@@ -32,7 +32,7 @@ export const updateCreditBalance = (user: User, process: Process, new_balance: n
   });
   return user;
 }
-export const getStageByPosition = (position: number, process: Process): Stage | undefined => {
+export const getStageByPosition = (position: number, process: Process): any => {
   return process.stages.find((stage: any) => {
     return +stage.position === position;
   });
