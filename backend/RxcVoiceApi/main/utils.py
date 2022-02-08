@@ -3,6 +3,8 @@ from django.template.loader import render_to_string
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import timezone
 import six
+import requests
+import os
 from .models import Profile, Stage
 from .services import match_transfers
 
@@ -10,6 +12,10 @@ from .services import match_transfers
 def advance_stage(process, curr_stage):
     if curr_stage.type == Stage.DELEGATION:
         match_transfers(process, curr_stage)
+    # if curr_stage.type == Stage.CONVERSATION:
+        # response = generate_report(os.environ.get('POLIS_ADMIN_EMAIL'),os.environ.get('POLIS_ADMIN_PASSWORD'),curr_stage.polis_id)
+        # curr_stage.report_id = response.json()[0]['report_id']
+        # curr_stage.save()
     stages_sorted = sorted(process.stages.all(), key=lambda stage: stage.position)
     for stage in stages_sorted[int(curr_stage.position)+1:]:
         if timezone.now() < stage.end_date:
@@ -18,6 +24,9 @@ def advance_stage(process, curr_stage):
             return
     process.curr_stage = stages_sorted[-1].position
     process.save()
+
+
+# def generate_report(email,password,conversation_id):
 
 
 def is_verified(user_id):
