@@ -119,6 +119,7 @@ class Delegation(Stage):
 
 class Conversation(Stage):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    polis_id = models.CharField(max_length=256, blank=True)
     show_report = models.BooleanField(default=False, blank=True)
     report_id = models.CharField(max_length=256, blank=True)
 
