@@ -146,7 +146,7 @@ class ConversationPermission(permissions.BasePermission):
         elif request.method == 'POST':
             return request.user.is_authenticated and request.user.is_staff
         elif request.method in ['PUT', 'PATCH']:
-            return request.user.is_authenticated and request.user.is_staff
+            return True
         elif request.method in ['DELETE']:
             return request.user.is_authenticated and request.user.is_staff
         else:

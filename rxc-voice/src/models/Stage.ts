@@ -19,6 +19,7 @@ export interface Delegation extends Stage {
 
 export interface Conversation extends Stage {
   uuid: string,
+  polis_id?: string,
   show_report: boolean,
   report_id: string,
 }

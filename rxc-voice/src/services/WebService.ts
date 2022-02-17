@@ -191,6 +191,20 @@ export const postProcess = (data: any): Observable<any> => {
   });
 };
 
+export const modifyConversation = (moddata: any, id: number): Observable<any> => {
+  return defer(() => {
+    return from<Promise<any>>(
+      fetch(`${ROOT_URL}/conversations/${id}/`, {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+         },
+        method: "PUT",
+        body: JSON.stringify(moddata),
+      }),
+    );
+  });
+};
+
 export const fetchElection = (id: string): Observable<Election> => {
   return defer(() => {
     const user: string | null = sessionStorage.getItem("user");

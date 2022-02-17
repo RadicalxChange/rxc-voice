@@ -4,6 +4,7 @@ import { getUserData } from "../../../../utils";
 import { Conversation } from "../../../../models/Stage";
 import { Delegate } from "../../../../models/Delegate";
 import moment from "moment";
+import { WebService } from "../../../../services";
 
 import "./DeliberationPage.scss";
 
@@ -11,6 +12,17 @@ function DeliberationPage(props: {process: Process, conversation: Conversation, 
   const POLIS_SITE_ID = 'polis_site_id_cG2opQF5hsqj9jGCsr';
 
   useEffect(() => {
+    if (!props.conversation.polis_id) {
+      window.addEventListener("message", (event) => {
+        if (event.origin === "https://pol.is" && event.data.name === 'init' && event.data.status === 'ok') {
+          WebService.modifyConversation({
+            polis_id: event.data.conversation.conversation_id,
+          }, props.conversation.id).subscribe(async (data) => {
+          });
+        }
+      }, false);
+    }
+
     // load pol.is embed script
     console.log("loading script...")
     const script = document.createElement('script');

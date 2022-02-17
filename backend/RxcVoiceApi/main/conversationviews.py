@@ -51,7 +51,12 @@ class ConversationDetail(mixins.RetrieveModelMixin,
         return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        if request.user.is_authenticated and request.user.is_staff:
+            return self.partial_update(request, *args, **kwargs)
+        elif any(key != 'polis_id' for key in request.data.keys()):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return self.partial_update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
