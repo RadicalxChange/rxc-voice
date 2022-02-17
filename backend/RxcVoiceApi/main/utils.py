@@ -12,10 +12,15 @@ from .services import match_transfers
 def advance_stage(process, curr_stage):
     if curr_stage.type == Stage.DELEGATION:
         match_transfers(process, curr_stage)
-    # if curr_stage.type == Stage.CONVERSATION:
+    if curr_stage.type == Stage.CONVERSATION:
         response = generate_report(os.environ.get('POLIS_ADMIN_EMAIL'),os.environ.get('POLIS_ADMIN_PASSWORD'),curr_stage.polis_id)
-        curr_stage.report_id = response.json()[0]['report_id']
-        curr_stage.save()
+        try:
+            report_id = response.json()[0]['report_id']
+        except:
+            report_id = None
+        if report_id is not None:
+            curr_stage.report_id = report_id
+            curr_stage.save()
     stages_sorted = sorted(process.stages.all(), key=lambda stage: stage.position)
     for stage in stages_sorted[int(curr_stage.position)+1:]:
         if timezone.now() < stage.end_date:
