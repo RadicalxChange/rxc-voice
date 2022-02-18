@@ -222,6 +222,8 @@ function ValidationPage() {
         />
 
         <p className="oauth-message">Login to either a Github or Twitter account to verify your identity. We will not access any information on your third-party account other than your username.</p>
+
+        <p>A link to the Github or Twitter account that you choose will be displayed to other users along with your name, so that they may verify that you are who you say you are.</p>
         <select
           className="oauth-provider"
           id="select-oauth-provider"
