@@ -17,6 +17,7 @@ import NotFound from './components/NotFound';
 import LandingPage from './components/LandingPage';
 import ManageEvents from './components/ManageEvents/ManageEvents';
 import EventManager from './components/ManageEvents/components/EventManager';
+import Help from './components/Help';
 import { User } from './models/User';
 import { getUserData } from './utils';
 
@@ -97,6 +98,11 @@ function App() {
         <Route path="/account" exact>
           <Header />
           <Account />
+        </Route>
+
+        <Route path="/help" exact>
+          <Header />
+          <Help />
         </Route>
 
         <Route path="/about" exact>

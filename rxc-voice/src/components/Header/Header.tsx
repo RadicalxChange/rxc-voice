@@ -31,13 +31,19 @@ function Header() {
         to={`/manage-events`}
         className="nav-link"
         >
-        My Events
+        Admin
         </Link>
         <Link
         to={`/account`}
         className="nav-link"
         >
         Account
+        </Link>
+        <Link
+        to={`/help`}
+        className="nav-link"
+        >
+        Help
         </Link>
       </ul>
     </div>
