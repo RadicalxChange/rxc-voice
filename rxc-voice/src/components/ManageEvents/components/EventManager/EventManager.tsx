@@ -85,7 +85,10 @@ function EventManager() {
     setAddingProposal(false);
     WebService.fetchProposals(electionId)
     .subscribe((data: any) => {
-      setProposals(data.proposals);
+      const sortedProposals = data.proposals.sort((a: Proposal, b: Proposal) => {
+        return a.id - b.id;
+      });
+      setProposals(sortedProposals);
     });
   };
 
