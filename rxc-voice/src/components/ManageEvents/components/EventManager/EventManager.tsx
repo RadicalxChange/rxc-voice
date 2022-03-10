@@ -102,7 +102,7 @@ function EventManager() {
             <p>{selectedProcess.title}</p>
           </div>
           <h2>Election</h2>
-          {moment() < moment(election.start_date) ? (
+          {moment() < moment(election.end_date) ? (
             <>
             <p>Manage the ballot for the election stage of this event.</p>
             {proposals.length ? (
@@ -148,7 +148,7 @@ function EventManager() {
               )}
               </>
             ) : (
-              <p>This election has already begun, so editing the ballot is disabled.</p>
+              <p>This election has ended, so editing the ballot is disabled.</p>
             )}
         </div>
       ) : (
