@@ -118,6 +118,8 @@ class ProcessList(mixins.CreateModelMixin,
                         existing_user = None
                     if existing_user is not None:
                         profile = Profile.objects.get(user=existing_user)
+                        for group in process_object.groups.all():
+                            existing_user.groups.add(group)
                     else:
                         profile_serializer = ProfileSerializer(data=profile_data)
                         profile_serializer.is_valid(raise_exception=True)
