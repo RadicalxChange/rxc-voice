@@ -23,9 +23,11 @@ function DelegateCard(props: any) {
           rel="noopener nofollow noreferrer"
         >{props.delegate.profile.public_username}
         </a>
-        <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
+        {!delegationOngoing || (props.delegate.id === props.userDelegate.id)  ? (
+          <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
+        ) : null}
         {props.delegation.allow_transfers ? (
-          <h3 className="info-text">Pending Voice Credits: {props.delegate.pending_credits}</h3>
+          <h3 className="info-text">Credits Received via Transfer: {props.delegate.pending_credits}</h3>
         ) : null}
       </div>
       {(delegationOngoing && props.delegation.allow_transfers && (props.delegate.id !== props.userDelegate.id)) ? (
