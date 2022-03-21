@@ -1,53 +1,29 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useAlert } from "react-alert";
 // import { uuid } from "uuidv4";
-import { ActionContext, StateContext } from "../../hooks";
-import { BgColor } from "../../models/BgColor";
+import { ActionContext } from "../../hooks";
+import { User } from "../../models/User";
 // import { VerificationMethod } from "../../models/VerificationMethod";
 import { WebService } from "../../services";
-import { getUserId, userobj, validateEmail } from "../../utils";
-import ProfileIcon from "../Delegation/components/ProfileIcon";
+import { getUserData, validateEmail } from "../../utils";
+import ProfileIcon from "../ProcessPage/components/DelegationPage/components/ProfileIcon";
 
 import "./Account.scss";
 
 function Account() {
   // const github_client_id = 'f9be73dc7af4857809e0';
-  const { setColor, logoutUser, updateCreditBalance, setUserData } = useContext(ActionContext);
-  const { creditBalance } = useContext(StateContext);
-  const [user, setUser] = useState(userobj());
+  const { logoutUser, setUserData } = useContext(ActionContext);
+  const user: User | undefined = getUserData();
   const [editMode, setEditMode] = useState(false);
 
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState(user ? user.email : "");
+  const [firstName, setFirstName] = useState(user ? user.first_name : "");
+  const [lastName, setLastName] = useState(user ? user.last_name : "");
   // const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
 
   const alert = useAlert()
 
-  useEffect(() => {
-    setColor(BgColor.Yellow);
-
-    var user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")!) : null
-    console.log(user)
-    setUser(user);
-    setEmail(user.email);
-    setFirstName(user.first_name);
-    setLastName(user.last_name);
-    if (creditBalance === null) {
-      if (user) {
-        WebService.getDelegate(user.id).subscribe(async (data: any) => {
-          if (data.ok) {
-            const delegate = await data.json();
-            updateCreditBalance(delegate.credit_balance);
-          }
-        });
-      }
-    }
-
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const modify = (e: any) => {
+  const modify = (e: any, user: User) => {
     e.preventDefault()
     if (formIsComplete()) {
       if (validateEmail(email)) {
@@ -58,7 +34,7 @@ function Account() {
             first_name: firstName,
             last_name: lastName,
           }
-          WebService.modifyUser(updatedUser, getUserId(user))
+          WebService.modifyUser(updatedUser, user.user_id)
             .subscribe(async (data) => {
               if (data.ok) {
                 setEditMode(false);
@@ -119,9 +95,9 @@ function Account() {
   };
 
   const cancelEdit = () => {
-    setEmail(user.email);
-    setFirstName(user.first_name);
-    setLastName(user.last_name);
+    setEmail(user ? user.email : "");
+    setFirstName(user ? user.first_name : "");
+    setLastName(user ? user.last_name : "");
     setEditMode(false);
   };
 
@@ -129,14 +105,10 @@ function Account() {
     <div className="account">
       <h1 className="title">Account</h1>
       {user ? (
-        <div className="delegate-card" key={user.id} >
-          <>{user.profile_pic ? (
-            <img src={user.profile_pic} className="profile-pic" alt="profile-pic" />
-          ) : (
-            <ProfileIcon />
-          )}
+        <div className="delegate-card" key={user.id}>
+          <ProfileIcon />
           {editMode ? (
-            <form className="edit-account" onSubmit={modify}>
+            <form className="edit-account" onSubmit={(e) => modify(e, user)}>
               <input
                 type="text"
                 placeholder="First Name"
@@ -181,9 +153,8 @@ function Account() {
           <div className="info">
             <h3 className="name">{firstName + " " + lastName}</h3>
             <h3 className="email">{email}</h3>
-            <h3 className="credit-balance">Credit Balance: {creditBalance}</h3>
           </div>
-        )}</>
+        )}
         </div>
       ) : (
         <h2>User not logged in.</h2>

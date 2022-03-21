@@ -1,4 +1,4 @@
 export enum BgColor {
-  Yellow = "YELLOW",
-  White = "WHITE",
+  Yellow = "var(--yellowColor)",
+  White = "var(--whiteColor)",
 }

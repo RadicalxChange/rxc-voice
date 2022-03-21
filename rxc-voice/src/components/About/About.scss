@@ -1,6 +1,6 @@
 .about {
   text-align: left;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 
   .header {
@@ -12,18 +12,26 @@
     }
   }
 
+  .panel {
+    text-align: left;
+    min-height: 0;
+    width: 100%;
+    border-bottom: 1px solid black;
+  }
+
+  #about-info > section:nth-child(odd) > div.subpanel_text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #about-info > section:nth-child(odd) > div.subpanel_image {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   .privacy-title {
     margin-top: 4rem;
     font-size: 1.8rem;
-  }
-
-  .bullets {
-    list-style-type: disc;
-    padding-inline-start: 3rem;
-  }
-
-  .bullets > li {
-    margin-top: 1rem;
   }
 }
 

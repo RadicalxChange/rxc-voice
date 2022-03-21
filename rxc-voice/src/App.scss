@@ -17,8 +17,12 @@
 
 @media only screen and (min-width: 768px) {
   .App {
-    padding: 3vw 2vw 3vw 2vw;
+    padding: 3vw 2vw;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 h1 {
@@ -40,6 +44,21 @@ h3 {
 p {
   font-family: var(--secondaryFont);
   font-weight: normal;
+}
+
+button {
+  display: block;
+  margin: 1em auto 1em auto;
+  background: black;
+  color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: .5em 1em .5em 1em;
+  outline: none;
+  cursor: pointer;
+}
+button:hover {
+  opacity: 0.8;
 }
 
 .explain-text {
@@ -72,6 +91,15 @@ a:visited {
 ul {
   list-style-type: none;
   padding-inline-start: 0;
+}
+
+.bullets {
+  list-style-type: disc;
+  padding-inline-start: 3rem;
+}
+
+.bullets > li {
+  margin-top: 1rem;
 }
 
 ol {

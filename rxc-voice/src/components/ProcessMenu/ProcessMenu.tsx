@@ -1,48 +1,29 @@
-import React, { useContext, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import slugify from "react-slugify";
-import { ActionContext, StateContext } from "../../hooks";
-import { BgColor } from "../../models/BgColor";
-import { ProcessPageRouteParams } from "../../models/ProcessPageRouteParams";
-import { getId, getTitle } from "../../utils";
+import { Process } from "../../models/Process";
+import { Stage } from "../../models/Stage";
 
 import "./ProcessMenu.scss";
 
-function ProcessMenu() {
-  const { processId } = useParams<ProcessPageRouteParams>();
-  const { selectedProcess } = useContext(StateContext);
-  const { selectProcess, setColor } = useContext(ActionContext);
-
-  useEffect(() => {
-    setColor(BgColor.White);
-    if (processId && (!selectedProcess || (getId(selectedProcess) !== +processId))) {
-      selectProcess(processId);
-    }
-
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processId, selectedProcess]);
+function ProcessMenu(props: {process: Process}) {
 
   return (
-    <div className="menu">
-      <Link
-      to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Delegation`}
-      className="nav-stage"
-      >
-      1. Delegation
-      </Link>
-      <Link
-      to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Deliberation`}
-      className="nav-stage"
-      >
-      2. Deliberation
-      </Link>
-      <Link
-      to={`/${getId(selectedProcess)}/${slugify(getTitle(selectedProcess))}/Election`}
-      className="nav-stage"
-      >
-      3. Election
-      </Link>
-    </div>
+    <ul className="menu">
+      {props.process.stages
+        .sort((a: Stage, b: Stage) => {
+          return a.position > b.position ? 1 : -1;
+        })
+        .map((stage: Stage) => (
+          <Link
+          key={stage.position}
+          to={`/${props.process.id}/${slugify(props.process.title)}/${stage.position}/${slugify(stage.title)}`}
+          className="nav-stage"
+          >
+          {(+stage.position+1) + ". " + stage.title}
+          </Link>
+      ))}
+    </ul>
   );
 }
 

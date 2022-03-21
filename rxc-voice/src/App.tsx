@@ -1,118 +1,118 @@
 import React, { useContext } from 'react';
-import { Route, useLocation } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { StateContext } from './hooks';
+import "react-datetime/css/react-datetime.css";
 import Home from "./components/Home";
+import CreateEvent from "./components/CreateEvent";
 import Header from './components/Header';
 import Login from './components/Login';
 import Account from './components/Account';
 import ValidationPage from './components/ValidationPage';
 import About from './components/About';
 import Callback from './components/Callback';
-import Delegation from './components/Delegation';
-import Deliberation from './components/Deliberation';
-import Election from './components/Election';
+import ProcessPage from './components/ProcessPage';
 import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword/ResetPassword';
-import { userIsVerified } from './utils';
+import ResetPassword from './components/ResetPassword';
+import NotFound from './components/NotFound';
+import LandingPage from './components/LandingPage';
+import ManageEvents from './components/ManageEvents/ManageEvents';
+import EventManager from './components/ManageEvents/components/EventManager';
+import Help from './components/Help';
+import { User } from './models/User';
+import { getUserData } from './utils';
 
 import './App.scss';
 
 function App() {
-  const location = useLocation();
-  const linkToken = new URLSearchParams(location.search).get('token');
-  const { user, color } = useContext(StateContext);
+  const { color } = useContext(StateContext);
+  const user: User | undefined = getUserData();
 
-  if (linkToken) {
-    return (
-      <div className="App" style={{ background: color }} >
+  return (
+    <div className="App" style={{ background: color }} >
+      <Switch>
+        <Route path="/" exact>
+          {user?.is_verified ? (
+            <>
+              <Header />
+              <Home />
+            </>
+          ) : (
+            <LandingPage />
+          )}
+        </Route>
+
         <Route
-          path="/"
+          path="/login"
           exact
           render={() => <Login />}
         />
-        <Route
-          path="/verify"
-          exact
-          render={() => <ValidationPage />}
-        />
+
         <Route
           path="/password-reset"
           exact
           render={() => <ResetPassword />}
         />
-      </div>
-    );
-  } else if (!userIsVerified(user)) {
-    return (
-      <div className="App" style={{ background: color }} >
-        <Route
-          path="/"
-          exact
-          render={() => <Login />}
-        />
+
         <Route
           path="/forgot-password"
           exact
           render={() => <ForgotPassword />}
         />
+
+        <Route
+          path="/verify"
+          exact
+          render={() => <ValidationPage />}
+        />
+
         <Route
           path="/oauth2/callback"
-          render={() => <Callback></Callback>}
+          render={() => <Callback />}
         />
-      </div>
-    );
-  }
-  return (
-    <div className="App" style={{ background: color }} >
 
-      <Header></Header>
+        {/* Redirect anything else to login if user is not already logged in */}
+        {!user?.is_verified ? (
+          <Redirect to="/login" />
+        ) : null}
 
-      <Route
-        path="/"
-        exact
-        render={() => <Home></Home>}
-      />
+        <Route path="/create-event" exact>
+          <Header />
+          <CreateEvent />
+        </Route>
 
-      <Route
-        path="/:processId/:processSlug/Delegation"
-        exact
-        render={() => <Delegation></Delegation>}
-      />
+        <Route path="/manage-events" exact>
+          <Header />
+          <ManageEvents />
+        </Route>
 
-      <Route
-        path="/:processId/:processSlug/Deliberation"
-        exact
-        render={() => <Deliberation></Deliberation>}
-      />
+        <Route path="/manage-events/:processId/:processSlug" exact>
+          <Header />
+          <EventManager />
+        </Route>
 
-      <Route
-        path="/:processId/:processSlug/Election"
-        exact
-        render={() => <Election></Election>}
-      />
+        <Route path="/:processId/:processSlug/:stageId/:stageSlug" exact>
+          <Header />
+          <ProcessPage />
+        </Route>
 
-      <Route
-        path="/account"
-        exact
-        render={() => <Account></Account>}
-      />
+        <Route path="/account" exact>
+          <Header />
+          <Account />
+        </Route>
 
-      <Route
-        path="/about"
-        exact
-        render={() => <About></About>}
-      />
+        <Route path="/help" exact>
+          <Header />
+          <Help />
+        </Route>
 
-      <Route
-        path="/verify"
-        exact
-        render={() => <ValidationPage></ValidationPage>}
-      />
+        <Route path="/about" exact>
+          <Header />
+          <About />
+        </Route>
 
-      <Route
-        path="/oauth2/callback"
-        render={() => <Callback></Callback>}
-      />
+        {/* Catch all - for everything else, display 404 Not Found */}
+        <Route render={() => <NotFound />} />
+      </Switch>
 
     </div>
   );

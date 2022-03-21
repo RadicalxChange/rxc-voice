@@ -1,0 +1,58 @@
+.delegation-content {
+
+  .matching-pool {
+    font-size: 1rem;
+  }
+}
+
+.transfers {
+  margin: 3rem 0;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 1rem;
+
+  .transfers-header {
+    margin-left: 2vw;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    border-bottom: 1px solid black;
+  }
+  .transfer-list {
+    margin: 0 0 0 2vw;
+  }
+  .type {
+    grid-column: 1;
+  }
+  .amount {
+    grid-column: 2;
+  }
+  .total {
+    font-weight: bold;
+  }
+  .transfers-subtotals {
+    margin-left: 2vw;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    border-top: 1px solid black;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+
+  .delegation-content {
+
+    .matching-pool {
+      margin-top: 3rem;
+    }
+
+    .delegate-list {
+      margin-right: 5vw;
+    }
+    .about {
+      margin: 0 6vw 0 6vw;
+      position: fixed;
+      left: 58vw;
+      top: 20vw;
+    }
+  }
+}

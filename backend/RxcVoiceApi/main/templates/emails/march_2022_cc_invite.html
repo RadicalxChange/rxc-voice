@@ -1,0 +1,41 @@
+{% extends 'emails/base.html' %}
+{% block content %}
+
+<div>
+    <h4>Hi, {{ delegate_name }}</h4>
+    <p>Thanks for signing up to use RxC Voice to collaboratively build the agenda for our March Community Call! Once you have clicked the link below and signed into the app, you will be able to propose topics of discussion for the call. After everyone has had a chance to propose topics of discussion, we will use Quadratic Voting to democratically choose the highest priority topics.</p>
+
+    <p>Here is the schedule for participating in this process:</p>
+
+    <ol>
+      <li>
+        <p>Participants will submit proposals in a pol.is conversation that will run from now until <strong>February 27th 2022, 23:59 UTC.</strong></p>
+      </li>
+      <li>
+        <p>The RxC Voice team will curate proposals into a QV ballot on <strong>February 28th.</strong></p>
+      </li>
+      <li>
+        <p>Participants will then vote on the ballot. Voting will open on <strong>March 1st, 00:00 UTC</strong>, and voting will close on <strong>March 1st, 23:59 UTC.</strong></p>
+      </li>
+      <li>
+        <p>The March Community Call itself will be on <strong>March 2nd, 17:00 UTC.</strong></p>
+      </li>
+    </ol>
+
+    <p>Please use the link below to sign in and participate.</p>
+
+    {% if is_verified %}
+    <a href="https://voice.radicalxchange.org?uidb64={{ uid }}&token={{ token }}">Sign in</a>
+    {% else %}
+    <a href="https://voice.radicalxchange.org/verify?uidb64={{ uid }}&token={{ token }}">Create Account</a>
+    {% endif %}
+
+    <p>If you have any questions, you can get in touch with us at voice@radicalxchange.org</p>
+
+    <p>Best wishes,</p>
+    <p>Your RxC Voice team</p>
+
+    <p>Next-Generation Political Economies at <a href="https://radicalxchange.org">RadicalxChange</a></p>
+</div>
+
+{% endblock %}

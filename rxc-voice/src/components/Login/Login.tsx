@@ -5,7 +5,7 @@ import { BgColor } from "../../models/BgColor";
 import { WebService } from "../../services";
 import { useAlert } from 'react-alert'
 import { Link } from "react-router-dom";
-import { Domain, userIsVerified } from "../../utils";
+import { Domain } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
 
 import "./Login.scss";
@@ -41,12 +41,11 @@ function Login() {
         },
       }).subscribe(async (data) => {
         if (data.ok) {
-          const user = await data.json();
-          setUserData(user);
-          if (!userIsVerified(user)) {
+          const userData = await data.json();
+          setUserData(userData);
+          if (!userData.is_verified) {
             setUnverifiedLogin(true);
-          }
-          if (linkToken) {
+          } else {
             window.location.href = Domain.WEB;
           }
         } else {

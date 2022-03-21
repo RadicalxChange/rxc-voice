@@ -4,6 +4,6 @@ export interface Transfer {
   recipient: string,
   date: string,
   amount: number,
-  process: string,
+  delegation: string,
   user_is_sender: boolean,
 }

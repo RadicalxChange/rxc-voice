@@ -13,9 +13,12 @@ def send_register_mail(sender, instance, **kwargs):
     if kwargs['created']:
         # current_site = 'https://voice.radicalxchange.org'
         uid = urlsafe_base64_encode(force_bytes(instance.pk))
-        token = account_activation_token.make_token(instance)
+        token = account_activation_token.make_token(instance.profile)
         params = {
-            'delegate_email': instance.user.email,
+            'delegate_name': instance.profile.user.first_name,
+            'process_title': instance.process.title,
+            'invitation_message': instance.process.invitation_message,
+            'is_verified': instance.profile.is_verified,
             # 'domain': current_site,
             'uid': uid,
             'token': token,
@@ -24,7 +27,10 @@ def send_register_mail(sender, instance, **kwargs):
         subject = "Invitation to participate on RxC Voice"
 
         try:
-            mail_body = get_mail_body('0L_pilot_invite', params)
-            send_mail(instance.user.email, subject, mail_body)
+            if instance.process.id == 47:
+                mail_body = get_mail_body('march_2022_cc_invite', params)
+            else:
+                mail_body = get_mail_body('default_invite', params)
+            send_mail(instance.profile.user.email, subject, mail_body)
         except Exception as e:
             print(e)

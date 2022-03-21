@@ -1,0 +1,26 @@
+.polis-page {
+
+  .body {
+
+    .insufficient-credits {
+      font-size: 1rem;
+      padding: 1rem;
+      border: 1px solid black;
+      border-radius: 8px;
+    }
+
+    .results-iframe {
+      width: 99%;
+      border: none;
+      min-height: 6000px;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .polis-page {
+
+    .body {
+    }
+  }
+}

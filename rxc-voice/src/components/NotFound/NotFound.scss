@@ -1,0 +1,18 @@
+.not-found {
+  height: 80vh;
+
+  .title {
+    font-family: var(--primaryFont);
+    font-size: 15vw;
+  }
+}
+
+
+@media only screen and (min-width: 768px) {
+  .not-found {
+
+    .title {
+      font-size: 8vw;
+    }
+  }
+}

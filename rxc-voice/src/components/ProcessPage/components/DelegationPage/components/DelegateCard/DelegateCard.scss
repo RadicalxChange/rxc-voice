@@ -1,0 +1,73 @@
+.delegate-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin-bottom: 1.5em;
+
+  .profile-pic {
+    grid-column: 1;
+    width: 15vw;
+    height: 15vw;
+    margin: 1em;
+  }
+
+  .info {
+    grid-column: 1;
+    margin: auto 0;
+
+    .info-name {
+      margin: 0;
+      font-size: 1.2em;
+    }
+
+    .info-text {
+      margin: 0;
+      font-size: 1em;
+    }
+  }
+
+  .info > a {
+    text-decoration: underline;
+  }
+  .info > a:hover {
+    text-decoration: none;
+  }
+
+  .give-credits {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    margin: auto 0;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .delegate-card {
+    grid-template-columns: auto 1fr 11rem;
+
+    .profile-pic {
+      grid-column: 1;
+      width: 8vw;
+      height: 8vw;
+      margin: 1em;
+    }
+
+    .info {
+      grid-column: 2;
+      padding: 1em 0 1em 0;
+
+      .info-name {
+        line-height: 2rem;
+        font-size: 1.5em;
+      }
+
+      .info-text {
+        line-height: 1.3rem;
+        font-size: 1.2em;
+      }
+    }
+
+    .give-credits {
+      grid-column: 3;
+      margin: auto 0 auto auto;
+    }
+  }
+}
