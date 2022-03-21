@@ -19,7 +19,7 @@ production containers.
 ```
 git clone --config core.autocrlf=input https://github.com/RadicalxChange/rxc-voice.git
 cd rxc-voice
-git checkout master
+git checkout development
 ```
 
 - Create .env file and fill up suitable environment variables.
