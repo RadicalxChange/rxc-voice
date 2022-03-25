@@ -60,7 +60,7 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
  }, []);
 
   const processProposalData = (data: any) => {
-    const proposalData = shuffle(data.proposals);
+    const proposalData = data.proposals;
     const voteData = data.votes;
     var highestProposal = 0;
     var lowestProposal = 0;
@@ -136,23 +136,23 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
                   });
   };
 
-  const shuffle = (array: any[]) => {
-    var currentIndex = array.length,  randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-
-    return array;
-  }
+  // const shuffle = (array: any[]) => {
+  //   var currentIndex = array.length,  randomIndex;
+  //
+  //   // While there remain elements to shuffle...
+  //   while (0 !== currentIndex) {
+  //
+  //     // Pick a remaining element...
+  //     randomIndex = Math.floor(Math.random() * currentIndex);
+  //     currentIndex--;
+  //
+  //     // And swap it with the current element.
+  //     [array[currentIndex], array[randomIndex]] = [
+  //       array[randomIndex], array[currentIndex]];
+  //   }
+  //
+  //   return array;
+  // }
 
   const downloadXLSX = () => {
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -271,7 +271,7 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
           <h2 className="content-header">{props.process.title}</h2>
           <div className="explain-text">
             <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
-            <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. The proposals are shuffled on each load to mitigate possible effects of list order on the Election results. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
+            <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
             <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
           </div>
           <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
