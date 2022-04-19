@@ -27,8 +27,8 @@ def send_register_mail(sender, instance, **kwargs):
         subject = "Invitation to participate on RxC Voice"
 
         try:
-            if instance.process.id == 47:
-                mail_body = get_mail_body('march_2022_cc_invite', params)
+            if instance.process.title == "RadicalxChange Agenda 2022-2023":
+                mail_body = get_mail_body('community_poll_22', params)
             else:
                 mail_body = get_mail_body('default_invite', params)
             send_mail(instance.profile.user.email, subject, mail_body)
