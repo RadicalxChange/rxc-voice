@@ -6,7 +6,7 @@ import { VerificationMethod } from "../../../../../../models/VerificationMethod"
 import "./DelegateCard.scss";
 
 function DelegateCard(props: any) {
-  const delegationOngoing = moment() < moment(props.delegation.end_date);
+  const delegationOngoing = moment() > moment(props.delegation.start_date) && moment() < moment(props.delegation.end_date);
   const oauthDomain: string =
     (props.delegate.profile.oauth_provider === VerificationMethod.Github)
     ? "https://github.com/" : "https://twitter.com/";
@@ -23,7 +23,7 @@ function DelegateCard(props: any) {
           rel="noopener nofollow noreferrer"
         >{props.delegate.profile.public_username}
         </a>
-        {!delegationOngoing || (props.delegate.id === props.userDelegate.id)  ? (
+        {moment() > moment(props.delegation.end_date) || (props.delegate.id === props.userDelegate.id)  ? (
           <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
         ) : null}
         {props.delegation.allow_transfers ? (
