@@ -1,0 +1,41 @@
+{% extends 'emails/base.html' %}
+{% block content %}
+
+<div>
+    <h4>Hi, {{ delegate_name }}</h4>
+    <p>Welcome to RxC Voice! We want to invite you to participate in a collective decision about the priorities for RxC Foundation: "What activities should the RadicalxChange Foundation prioritize in 2022-2023?"</p>
+
+    <p>Here is the schedule for participating in this process:</p>
+
+    <ol>
+      <li>
+        <p>Participants may delegate voice credits to others from <strong>May 2nd, 17:00 UTC.</strong> until <strong>May 6th, 17:00 UTC.</strong></p>
+      </li>
+      <li>
+        <p>Participants will submit proposals in a pol.is conversation that will run from <strong>May 6th, 17:00 UTC.</strong> until <strong>May 16th, 17:00 UTC.</strong></p>
+      </li>
+      <li>
+        <p>The RxC Voice team will curate proposals into a QV ballot on <strong>May 16th.</strong></p>
+      </li>
+      <li>
+        <p>Participants will then vote on the ballot. Voting will open on <strong>May 17th, 17:00 UTC</strong>, and voting will close on <strong>May 24th, 21:00 UTC.</strong></p>
+      </li>
+    </ol>
+
+    <p>Please use the link below to sign in and participate.</p>
+
+    {% if is_verified %}
+    <a href="https://voice.radicalxchange.org?uidb64={{ uid }}&token={{ token }}">Sign in</a>
+    {% else %}
+    <a href="https://voice.radicalxchange.org/verify?uidb64={{ uid }}&token={{ token }}">Create Account</a>
+    {% endif %}
+
+    <p>If you have any questions, you can get in touch with us at voice@radicalxchange.org</p>
+
+    <p>Best wishes,</p>
+    <p>Your RxC Voice team</p>
+
+    <p>Next-Generation Political Economies at <a href="https://radicalxchange.org">RadicalxChange</a></p>
+</div>
+
+{% endblock %}
