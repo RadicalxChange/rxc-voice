@@ -26,7 +26,7 @@ function DelegateCard(props: any) {
         {moment() > moment(props.delegation.end_date) || (props.delegate.id === props.userDelegate.id)  ? (
           <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
         ) : null}
-        {props.delegation.allow_transfers ? (
+        {props.delegation.allow_transfers && (moment() < moment(props.delegation.end_date)) ? (
           <h3 className="info-text">Credits Received via Transfer: {props.delegate.pending_credits}</h3>
         ) : null}
       </div>
