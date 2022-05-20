@@ -6,30 +6,62 @@
 }
 
 #top-panel {
+  background: black;
+  color: var(--yellowColor);
   height: 100vh;
-  background: var(--yellowColor);
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr;
 }
 
 .lp-header {
-  padding: 4.5vmin;
-  text-align: right;
-  margin-right: 3vw;
+  background: black;
+  padding: .8rem 1.5rem .8rem 1.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
 }
 
-.top-panel_content {
+.logo-container {
+  background: var(--yellowColor);
+
+  .App-logo {
+    width: 100px;
+  }
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  padding: auto 0 auto 0;
+}
+.nav-link {
+  color: var(--yellowColor) !important;
   margin: auto;
-  width: 91vw;
+  text-transform: uppercase;
 }
 
-.App-logo {
-  width: 91vw;
+.top-panel_row-2 {
+  background: var(--yellowColor);
+}
+.top-panel_row-2 > img {
+  margin: 4rem 0 1rem 0;
 }
 
-.top-panel_content > a > button {
+.top-panel_row-3 {
+  color: var(--yellowColor);
+  font-size: 1.8rem;
+  padding-top: 1.5rem;
+}
+.top-panel_row-3 > a > button {
+  background: var(--yellowColor);
+  color: black;
   display: inline-block;
-  margin: .5em;
+  margin: 2rem 1.5rem;
+}
+
+.subtitle {
+  width: 70%;
+  max-width: 450px;
+  margin: 0 auto 0 auto;
 }
 
 .scroll-arrow {
@@ -37,85 +69,137 @@
 }
 
 #info {
-  background: white;
   width: 100%;
 }
 
 .panel {
-  text-align: left;
   min-height: 100vh;
-  width: 100%;
-  border-bottom: 1px solid black;
 }
 
 .subpanel_image {
+  background: var(--yellowColor);
   width: 100%;
-  display: inline-block;
+  height: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  margin: auto 0;
 }
 
 .subpanel_image > img {
   display: block;
-  margin: auto;
-  width: 85vw;
+  margin: auto auto;
+  width: 85%;
 }
 
 .subpanel_text {
   display: inline-block;
-  margin: auto 0;
   padding: 2rem;
   line-height: 1.5rem;
+  color: white;
+  background: black;
+  text-align: left;
 }
 
 .subpanel_text > h2 {
-  font-size: 1.8rem;
+  color: var(--yellowColor);
+  font-size: 2rem;
 }
 
-#info > section:nth-child(odd) > div.subpanel_text {
+.subpanel_subtitle {
+  color: #faffc3;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+#info > section:nth-child(odd) > div.subpanel_image {
   grid-column: 1;
   grid-row: 1;
 }
 
-#info > section:nth-child(odd) > div.subpanel_image {
+#info > section:nth-child(odd) > div.subpanel_text {
   grid-column: 2;
   grid-row: 1;
 }
 
-#first-panel > h2 {
-  font-size: 2rem;
+#first-panel {
+  padding: 4vmin;
+  background: var(--yellowColor);
 }
 
-#first-panel > p {
-  font-size: 1.25rem;
+#first-panel > div > h2 {
+  font-size: 2.5rem;
+  margin-bottom: .5rem;
+}
+
+#first-panel > div > p {
+  font-size: 1rem;
+  margin: .5rem 0;
 }
 
 #last-panel {
-  text-align: left;
-  margin: 3rem auto 8rem auto;
+  background: black;
+  color: white;
+  text-align: center;
   padding: 2rem;
   line-height: 1.5rem;
+}
+
+#last-panel > div {
   max-width: 600px;
+  margin: auto;
+}
+
+#last-panel > div > h2 {
+  font-size: 2rem;
+}
+
+#last-panel_text {
+  max-width: 400px;
+  margin: auto;
+}
+
+#last-panel_text > p {
+  margin: 3rem 0;
+}
+
+.white-link {
+  color: white !important;
 }
 
 @media only screen and (min-width: 768px) {
 
   .lp-header {
-    padding: 3vw 2vw;
+    grid-template-columns:  1fr 40%;
   }
 
-  .panel {
-    display: grid;
-    grid-template-columns: 50% 50%;
-  }
-
-  .top-panel_content {
-    width: auto;
+  .logo-container {
+    margin-right: auto;
   }
 
   .App-logo {
     width: auto;
+  }
+
+  #first-panel {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    #stages {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      width: 100%;
+    }
+
+    #stages > img {
+      width: 80%;
+      margin: auto;
+      grid-row: 1;
+    }
+  }
+
+  .stage-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   .subpanel_image > img {
@@ -128,5 +212,13 @@
 
   #last-panel {
     padding: 3rem;
+  }
+
+  #last-panel_text {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    max-width: none;
+    margin: 0;
   }
 }
