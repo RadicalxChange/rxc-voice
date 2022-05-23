@@ -25,7 +25,7 @@
     width: 250px;
   }
 }
-.header-button {
+.home-header_button {
   margin: 0 !important;
   padding: 0 !important;
   color: #f0fc62;
@@ -37,11 +37,7 @@
   display: flex;
   justify-content: space-between;
   padding: auto 0 auto 0;
-}
-.nav-link {
-  color: #f0fc62 !important;
-  margin: auto;
-  text-transform: uppercase;
+  margin: auto 0;
 }
 
 .top-panel_row-2 {

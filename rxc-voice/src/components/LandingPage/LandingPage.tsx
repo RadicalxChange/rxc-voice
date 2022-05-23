@@ -30,7 +30,7 @@ function LandingPage() {
               rel="noopener nofollow noreferrer"
               className="nav-link"
             >
-              <button type="button" className="header-button">
+              <button type="button" className="home-header_button">
                 <img src={rxc_logo} className="App-logo" alt="logo" />
               </button>
             </a>
@@ -42,7 +42,7 @@ function LandingPage() {
               rel="noopener nofollow noreferrer"
               className="nav-link"
             >
-              <button type="button" className="header-button">
+              <button type="button" className="home-header_button">
                 <span>RxC Home</span>
               </button>
             </a>
@@ -52,7 +52,7 @@ function LandingPage() {
               rel="noopener nofollow noreferrer"
               className="nav-link"
             >
-              <button type="button" className="header-button">
+              <button type="button" className="home-header_button">
                 <span>Github</span>
               </button>
             </a>
@@ -60,7 +60,7 @@ function LandingPage() {
             to={`/login`}
             className="nav-link"
             >
-              <button type="button" className="header-button">
+              <button type="button" className="home-header_button">
                 <span>Sign in</span>
               </button>
             </Link>
