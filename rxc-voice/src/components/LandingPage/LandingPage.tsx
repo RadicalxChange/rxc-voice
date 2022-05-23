@@ -35,7 +35,7 @@ function LandingPage() {
               </button>
             </a>
           </div>
-          <div className="nav">
+          <div className="landing-page_nav">
             <a
               href="https://radicalxchange.org"
               target="_blank"
