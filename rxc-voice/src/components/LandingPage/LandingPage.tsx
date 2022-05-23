@@ -31,7 +31,7 @@ function LandingPage() {
               className="nav-link"
             >
               <button type="button" className="home-header_button">
-                <img src={rxc_logo} className="App-logo" alt="logo" />
+                <img src={rxc_logo} className="rxc-logo" alt="logo" />
               </button>
             </a>
           </div>
@@ -87,17 +87,23 @@ function LandingPage() {
       </div>
       <div id="info">
         <section id="first-panel" className="panel">
-          <div>
+          <div id="first-panel_header">
             <h2>Introducing RxC Voice</h2>
             <p>A modular way for groups to evolve and make decisions democratically.</p>
           </div>
           <div id="stages">
-            <img src={form_group_img} alt="handshake" />
-            <p>Form a group</p>
-            <img src={explore_prob_img} alt="handshake" />
-            <p>Explore a shared problem</p>
-            <img src={identify_comp_img} alt="handshake" />
-            <p>Identify actionable compromises</p>
+            <div className="stage">
+              <img src={form_group_img} alt="handshake" />
+              <p>Form a group</p>
+            </div>
+            <div className="stage">
+              <img src={explore_prob_img} alt="handshake" />
+              <p>Explore a shared problem</p>
+            </div>
+            <div className="stage">
+              <img src={identify_comp_img} alt="handshake" />
+              <p>Identify actionable compromises</p>
+            </div>
           </div>
         </section>
         <section className="panel stage-panel">

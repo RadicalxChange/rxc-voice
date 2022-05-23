@@ -16,14 +16,15 @@
 .lp-header {
   background: black;
   padding: .8rem 1.5rem .8rem 1.5rem;
-  display: grid;
-  grid-template-columns: auto 1fr;
 }
 
 .logo-container {
-  .App-logo {
-    width: 250px;
+  .rxc-logo {
+    display: none;
   }
+}
+.App-logo {
+  width: 250px;
 }
 .home-header_button {
   margin: 0 !important;
@@ -80,7 +81,7 @@
 .subpanel_image {
   background: #f0fc62;
   width: 100%;
-  height: 100%;
+  min-height: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,13 +124,29 @@
 }
 
 #first-panel {
-  padding: 4vmin;
   background: #f0fc62;
+  padding: 2rem 1rem;
+
+  #first-panel_header {
+  }
+  #stages {
+  }
+
+  .stage {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 100vw;
+  }
+
+  .stage > img {
+    max-width: 100%;
+    margin: auto;
+  }
 }
 
-#first-panel > div > h2 {
+#first-panel_header > h2 {
   font-size: 2.5rem;
-  margin-bottom: .5rem;
+  margin: 0 0 .5rem 0 !important;
 }
 
 #first-panel > div > p {
@@ -152,6 +169,7 @@
 
 #last-panel > div > h2 {
   font-size: 2rem;
+  line-height: 2rem;
 }
 
 #last-panel_text {
@@ -170,11 +188,17 @@
 @media only screen and (min-width: 768px) {
 
   .lp-header {
+    display: grid;
     grid-template-columns:  1fr 40%;
   }
 
   .logo-container {
     margin-right: auto;
+
+    .rxc-logo {
+      display: block;
+      width: 250px;
+    }
   }
 
   .App-logo {
@@ -189,11 +213,15 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       width: 100%;
+      margin: 2rem 0 auto 0;
     }
 
-    #stages > img {
+    .stage {
+      min-height: auto;
+    }
+
+    .stage > img {
       width: 80%;
-      margin: auto;
       grid-row: 1;
     }
   }
@@ -203,6 +231,9 @@
     grid-template-columns: 1fr 1fr;
   }
 
+  .subpanel_image {
+    min-height: auto;
+  }
   .subpanel_image > img {
     max-width: 500px;
   }
