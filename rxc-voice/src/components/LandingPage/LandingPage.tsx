@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
-import downArrow from "../../assets/icons/down_arrow.svg";
-import collab_img from "../../assets/collab.png";
-import group_img from "../../assets/group.png";
-import convo_img from "../../assets/speech-bubbles.png";
-import handshake_img from "../../assets/handshake.png";
+import rxc_logo from "../../assets/icons/logo-yellow.svg";
+import form_group_img from "../../assets/form-group.png";
+import explore_prob_img from "../../assets/explore-problem.png";
+import identify_comp_img from "../../assets/identify-compromise.png";
 import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
 
@@ -25,7 +24,16 @@ function LandingPage() {
       <div id="top-panel">
         <div className="lp-header">
           <div className="logo-container">
-            <img src={logo} className="App-logo" alt="logo" />
+            <a
+              href="https://radicalxchange.org"
+              target="_blank"
+              rel="noopener nofollow noreferrer"
+              className="nav-link"
+            >
+              <button type="button" className="header-button">
+                <img src={rxc_logo} className="App-logo" alt="logo" />
+              </button>
+            </a>
           </div>
           <div className="nav">
             <a
@@ -33,20 +41,28 @@ function LandingPage() {
               target="_blank"
               rel="noopener nofollow noreferrer"
               className="nav-link"
-            >RxC Home
+            >
+              <button type="button" className="header-button">
+                <span>RxC Home</span>
+              </button>
             </a>
             <a
               href="https://github.com/RadicalxChange/rxc-voice"
               target="_blank"
               rel="noopener nofollow noreferrer"
               className="nav-link"
-            >Github
+            >
+              <button type="button" className="header-button">
+                <span>Github</span>
+              </button>
             </a>
             <Link
             to={`/login`}
             className="nav-link"
             >
-            Sign in
+              <button type="button" className="header-button">
+                <span>Sign in</span>
+              </button>
             </Link>
           </div>
         </div>
@@ -76,11 +92,11 @@ function LandingPage() {
             <p>A modular way for groups to evolve and make decisions democratically.</p>
           </div>
           <div id="stages">
-            <img src={handshake_img} alt="handshake" />
+            <img src={form_group_img} alt="handshake" />
             <p>Form a group</p>
-            <img src={handshake_img} alt="handshake" />
+            <img src={explore_prob_img} alt="handshake" />
             <p>Explore a shared problem</p>
-            <img src={handshake_img} alt="handshake" />
+            <img src={identify_comp_img} alt="handshake" />
             <p>Identify actionable compromises</p>
           </div>
         </section>
@@ -97,7 +113,7 @@ function LandingPage() {
             <p>Even after delegating, everyone can participate directly.</p>
           </div>
           <div className="subpanel_image">
-            <img src={group_img} alt="form a group" />
+            <img src={form_group_img} alt="form a group" />
           </div>
         </section>
         <section className="panel stage-panel">
@@ -113,7 +129,7 @@ function LandingPage() {
             <p>Pol.is outputs meaningful data about which comments built consensus and which were divisive.</p>
           </div>
           <div className="subpanel_image">
-            <img src={convo_img} alt="conversation" />
+            <img src={explore_prob_img} alt="conversation" />
           </div>
         </section>
         <section className="panel stage-panel">
@@ -129,7 +145,7 @@ function LandingPage() {
             <p>By imposing an increasing cost on strong preferences, QV incentivizes coalition building and compromise.</p>
           </div>
           <div className="subpanel_image">
-            <img src={handshake_img} alt="handshake" />
+            <img src={identify_comp_img} alt="handshake" />
           </div>
         </section>
         <section id="last-panel">
