@@ -170,4 +170,4 @@ postgres-# \l`
 
 ## Chat with us
 
-Ask on Discord: https://discord.gg/  TcE9FKQb
+Ask on Discord: https://discord.gg/ nw5QvvxQj7
