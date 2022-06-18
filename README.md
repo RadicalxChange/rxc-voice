@@ -168,6 +168,17 @@ postgres-# \l`
 
 - copy the name of the correct database and update the value of POSTGRES_DB in your .env file
 
+## Getting Started - Creating your account
+
+After following the instructions above, verify you can log in via the frontend by following these steps:
+
+* Log in to the admin with your superuser
+* [Create a new user and profile](http://127.0.0.1:8000/admin/main/profile/)
+* Set `is_verified` for your new profile as true
+* [Via the frontend](http://localhost:4000/login), log in with your user's `username` and password. 
+* If you can't log in, verify the environment variable in `rxc-voice/src/utils/urls.ts` are set correctly
+* Once logged in, verify you can create an event, and that you can view the event [under processes in the admin](http://127.0.0.1:8000/admin/main/process/)
+
 ## Chat with us
 
 Ask on Discord: https://discord.gg/ nw5QvvxQj7
