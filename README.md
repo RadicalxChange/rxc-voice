@@ -106,7 +106,7 @@ python manage.py makemigrations main
 python manage.py migrate
 ```
 
-- Create a superuser to access the admin site
+- Create a superuser to access the admin site. Don't forget to give the user a password, you'll need it to log in to the admin. 
 
 ```
 python manage.py createsuperuser
