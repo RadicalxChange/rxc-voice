@@ -137,7 +137,7 @@ RxC Voice - http://localhost:4000
 ## Creating users and accessing the site for testing
 
 - Log in to the admin site at http://127.0.0.1:8000/admin
-- [Create a new user and profile](http://127.0.0.1:8000/admin/main/profile/)
+- Create a new user and profile. You can do this either via [the admin](http://127.0.0.1:8000/admin/main/profile/) or the [frontend UI](http://localhost:4000/verify)
 - Set `is_verified` for your new profile as true
 - [Via the frontend](http://localhost:4000/login), log in with your user's `username` and password. 
 - If you can't log in, verify the environment variable in `rxc-voice/src/utils/urls.ts` are set correctly
