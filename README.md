@@ -106,7 +106,7 @@ python manage.py makemigrations main
 python manage.py migrate
 ```
 
-- Create a superuser to access the admin site
+- Create a superuser to access the admin site. Don't forget to give the user a password, you'll need it to log in to the admin. 
 
 ```
 python manage.py createsuperuser
@@ -137,14 +137,11 @@ RxC Voice - http://localhost:4000
 ## Creating users and accessing the site for testing
 
 - Log in to the admin site at http://127.0.0.1:8000/admin
-
-- Create a Group named "RxC Voice" -- any objects you create for RxC Voice must be added to this group.
-
-- Create a User. The login UI uses `username` but has the label `email` - to prevent confusion you should use the same email address for both the "Email address" field and the "Username" field. Add the user to the "RxC Voice" group you created in step 3.
-
-- Now create a Delegate for the User you just created (The Delegate class is an extension/wrapper of the User class). If you have not set up email services, you can bypass the user verification process by checking "Is verified" and entering something into the "Public username" field.
-
-- You should now be able to log in to the site with the test user's email and password.
+- Create a new user and profile. You can do this either via [the admin](http://127.0.0.1:8000/admin/main/profile/) or the [frontend UI](http://localhost:4000/verify)
+- If you are unable to verify your account via the frontend, you may have to set `is_verified` for your new profile as true in the admin
+- [Via the frontend](http://localhost:4000/login), log in with your user's `username` and password. 
+- If you can't log in, verify the environment variable in `rxc-voice/src/utils/urls.ts` are set correctly
+- Once logged in, verify you can create an event, and that you can view the event [under processes in the admin](http://127.0.0.1:8000/admin/main/process/)
 
 ## Contribute
 
@@ -166,7 +163,7 @@ error, you probably have already initialized a database with another name.
 `psql -U POSTGRES_USER
 postgres-# \l`
 
-- copy the name of the correct database and update the value of POSTGRES_DB in your .env file
+- copy the name of the correct database and update the value of `POSTGRES_DB` in your .env file
 
 ## Chat with us
 
