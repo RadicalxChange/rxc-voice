@@ -2,12 +2,13 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 import moment from "moment";
 import Datetime from "react-datetime";
 import { ActionContext } from "../../hooks";
+import { useAlert } from "react-alert";
 import { BgColor } from "../../models/BgColor";
 import { Group } from "../../models/Group";
 import { Stage, StageType } from "../../models/Stage";
 import { User } from "../../models/User";
 import { WebService } from "../../services";
-import { defaultStages, Domain, getUserData } from "../../utils";
+import { defaultConversation, defaultDelegation, defaultElection, defaultStages, Domain, getUserData } from "../../utils";
 import DelegationSettings from "./components/DelegationSettings";
 import DeliberationSettings from "./components/DeliberationSettings";
 import ElectionSettings from "./components/ElectionSettings";
@@ -15,10 +16,63 @@ import ElectionSettings from "./components/ElectionSettings";
 import "./CreateEvent.scss";
 
 export interface Change {
-  id: number,
-  field: string,
-  value: any,
+  type: string,
+  id?: number,
+  field?: string,
+  value?: any,
 }
+
+function setPositions(stages: Stage[]) {
+  return stages.map((stage: Stage, i: number) => {
+    stage.id = i;
+    stage.position = i;
+    stage.start_date = moment().add(i, "days").format();
+    stage.end_date = moment().add(i + 1, "days").format();
+    return stage;
+  });
+}
+
+function stageReducer(stages: Stage[], change: Change) {
+  let targetIndex: number;
+  switch (change.type) {
+    case 'add':
+      stages.splice(change.value.position, 0, change.value)
+      return setPositions(stages)
+    case 'remove':
+      stages = stages.filter((stage: Stage) => stage.id !== change.id);
+      return setPositions(stages)
+    case 'edit':
+      if (change.field && change.value) {
+        return stages.map((stage: Stage) => {
+          if (stage.id === change.id) {
+            stage = {
+              ...stage,
+              [change.field!]: change.value,
+            }
+          }
+          return stage;
+        });
+      } else {
+        return stages;
+      }
+    case 'moveUp':
+      targetIndex = stages.findIndex((stage: Stage) => {
+        return stage.id === change.id;
+      })
+      stages[targetIndex] = stages[targetIndex - 1];
+      stages[targetIndex - 1] = change.value;
+      return setPositions(stages);
+    case 'moveDown':
+      targetIndex = stages.findIndex((stage: Stage) => {
+        return stage.id === change.id;
+      })
+      stages[targetIndex] = stages[targetIndex + 1];
+      stages[targetIndex + 1] = change.value;
+      return setPositions(stages);
+    default:
+      return stages;
+  }
+};
 
 function CreateEvent() {
   const { setColor, setUserData } = useContext(ActionContext);
@@ -33,20 +87,10 @@ function CreateEvent() {
   const [groupMembers, setGroupMembers] = useState(new Array<string>());
   const [invites, setInvites] = useState("");
   const [invitationMessage, setInvitationMessage] = useState("")
-
-  function stageReducer(stages: Stage[], change: Change) {
-    stages = stages.map((stage: Stage) => {
-      if (stage.id === change.id) {
-        stage = {
-          ...stage,
-          [change.field]: change.value,
-        }
-      }
-      return stage;
-    });
-    return stages;
-  };
+  const [newStage, setNewStage] = useState<string | undefined>(undefined);
   const [stages, stageDispatch] = useReducer(stageReducer, defaultStages);
+
+  const alert = useAlert()
 
   useEffect(() => {
     setColor(BgColor.White);
@@ -124,14 +168,50 @@ function CreateEvent() {
    });
  };
 
+ const addStage = () => {
+   switch (newStage) {
+     case StageType.Delegation:
+        stageDispatch({
+          type: "add",
+          value: {
+            ...defaultDelegation,
+            position: stages.length - 1,
+          },
+        })
+        break;
+     case StageType.Conversation:
+        stageDispatch({
+          type: "add",
+          value: {
+            ...defaultConversation,
+            position: stages.length - 1,
+          },
+        })
+        break;
+     case StageType.Election:
+        stageDispatch({
+          type: "add",
+          value: {
+            ...defaultElection,
+            position: stages.length - 1,
+          },
+        })
+        break;
+      default:
+        alert.error("Select a type of stage to add");
+    }
+    setNewStage(undefined);
+ };
+
+
  const renderSettings = (stage: any) => {
    switch (stage.type) {
      case StageType.Delegation:
-       return <DelegationSettings key={stage.id} settings={stage} reducer={stageDispatch} />
+       return <DelegationSettings key={stage.id} settings={stage} numStages={stages.length} reducer={stageDispatch} />
      case StageType.Conversation:
-       return <DeliberationSettings key={stage.id} settings={stage} reducer={stageDispatch} />
+       return <DeliberationSettings key={stage.id} settings={stage} numStages={stages.length} reducer={stageDispatch} />
      case StageType.Election:
-       return <ElectionSettings key={stage.id} settings={stage} reducer={stageDispatch} />
+       return <ElectionSettings key={stage.id} settings={stage} numStages={stages.length} reducer={stageDispatch} />
    }
  };
 
@@ -296,6 +376,23 @@ function CreateEvent() {
       </div>
       <h2>Event Settings</h2>
       <p>Choose the settings for each stage of this event.</p>
+      <select
+        id="new-stage-type-select"
+        defaultValue=""
+        onChange={(e) => setNewStage(e.target.value)}
+      >
+        <option value="" disabled hidden>
+          Click to add a stage
+        </option>
+        <option value={StageType.Delegation}>Delegation</option>
+        <option value={StageType.Conversation}>Conversation</option>
+        <option value={StageType.Election}>Election</option>
+      </select>
+      {newStage ? (
+        <button id="add-stage-button" type="button" className="text-button" onClick={() => addStage()}>
+          <p>+ Add stage</p>
+        </button>
+      ) : null}
       {stages.map((stage: Stage) => (
         renderSettings(stage)
       ))}

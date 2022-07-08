@@ -61,6 +61,17 @@ button:hover {
   opacity: 0.8;
 }
 
+.text-button {
+  margin: auto 0px;
+  background: inherit;
+  border: none;
+  padding: 0px;
+  color: black;
+}
+.text-button:disabled {
+  opacity: .4;
+}
+
 .explain-text {
   font-size: 1rem;
   line-height: 1.3rem;

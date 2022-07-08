@@ -6,7 +6,7 @@ import { VerificationMethod } from "../../../../../../models/VerificationMethod"
 import "./DelegateCard.scss";
 
 function DelegateCard(props: any) {
-  const delegationOngoing = moment() < moment(props.delegation.end_date);
+  const delegationOngoing = moment() < moment(props.delegation.end_date) && moment(props.delegation.start_date) < moment();
   const oauthDomain: string =
     (props.delegate.profile.oauth_provider === VerificationMethod.Github)
     ? "https://github.com/" : "https://twitter.com/";
