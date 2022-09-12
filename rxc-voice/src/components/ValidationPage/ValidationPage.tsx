@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useAlert } from "react-alert";
 import { useLocation } from "react-router";
-import { uuid } from "uuidv4";
 import { ActionContext } from "../../hooks";
 import { BgColor } from "../../models/BgColor";
-import { VerificationMethod } from "../../models/VerificationMethod";
 import { WebService } from "../../services";
-import { getUserData, validateEmail } from "../../utils";
+import { Domain, getUserData, validateEmail } from "../../utils";
 import logo from "../../assets/icons/rxc-voice-beta-logo.png";
 import { User } from "../../models/User";
 import { Link } from "react-router-dom";
@@ -15,7 +13,6 @@ import { Link } from "react-router-dom";
 import "./ValidationPage.scss";
 
 function ValidationPage() {
-  const github_client_id = 'f9be73dc7af4857809e0';
   const location = useLocation();
   const linkUid = new URLSearchParams(location.search).get('uidb64');
   const linkToken = new URLSearchParams(location.search).get('token');
@@ -28,7 +25,6 @@ function ValidationPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   // const [profilePic, setProfilePic] = useState("");
-  const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | undefined>(undefined);
   const [signedAgreement, setSignedAgreement] = useState(false);
   const [alreadyExists, setAlreadyExists] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -63,56 +59,40 @@ function ValidationPage() {
     if (formIsComplete()) {
       if (validateEmail(email)) {
         if (password === passReEntry) {
-          if (verificationMethod) {
-            if (signedAgreement) {
-              const updatedUser = {
-                username: email,
-                email: email,
-                password: password,
-                first_name: firstName,
-                last_name: lastName,
-              }
-              const updatedProfile = {
-                oauth_provider: verificationMethod,
-                user: updatedUser,
-              }
-              if (user) {
-                WebService.modifyUser(updatedUser, user.user_id)
+          if (signedAgreement) {
+            const updatedUser = {
+              username: email,
+              email: email,
+              password: password,
+              first_name: firstName,
+              last_name: lastName,
+            }
+            const updatedProfile = {
+              user: updatedUser,
+            }
+            if (user) {
+              WebService.modifyUser(updatedUser, user.user_id)
+                .subscribe(async (data) => {
+                  console.error("Error", await data.json());
+                });
+              } else {
+                WebService.createProfile(updatedProfile)
                   .subscribe(async (data) => {
                     if (data.ok) {
-                      WebService.modifyProfile({
-                        oauth_provider: verificationMethod,
-                      }, user.id)
-                        .subscribe(async (data) => {
-                          if (data.ok) {
-                            oauthRedirect();
-                          }
-                        });
+                      const userData = await data.json();
+                      setUserData(userData);
                     } else {
-                      console.error("Error", await data.json());
+                      const error = await data.json();
+                      console.error("Error", error);
+                      if (error.user.username) {
+                        setAlreadyExists(true);
+                      }
                     }
                   });
-                } else {
-                  WebService.createProfile(updatedProfile)
-                    .subscribe(async (data) => {
-                      if (data.ok) {
-                        const userData = await data.json();
-                        setUserData(userData);
-                        oauthRedirect();
-                      } else {
-                        const error = await data.json();
-                        console.error("Error", error);
-                        if (error.user.username) {
-                          setAlreadyExists(true);
-                        }
-                      }
-                    });
-                }
-            } else {
-              alert.error("Please sign the user agreement")
-            }
+              }
+              window.location.href = Domain.WEB;
           } else {
-            alert.error("Please select a verification method")
+            alert.error("Please sign the user agreement")
           }
         } else {
           alert.error("Re-entered password does not match")
@@ -125,30 +105,8 @@ function ValidationPage() {
     }
   };
 
-  const oauthRedirect = () => {
-    // redirect to 3rd party oauth app
-    if (verificationMethod === VerificationMethod.Github) {
-      const stateUUID = uuid();
-      sessionStorage.setItem("oauthState", stateUUID);
-      window.location.href =
-        'https://github.com/login/oauth/authorize?client_id='
-        + github_client_id
-        + '&redirect_uri=https://voice.radicalxchange.org/oauth2/callback&state='
-        + stateUUID;
-    } else if (verificationMethod === VerificationMethod.Twitter) {
-      WebService.getTwitterRequestToken().subscribe(async (data) => {
-        sessionStorage.setItem("oauthState", data.oauth_token);
-        sessionStorage.setItem("twitterOauthSecret", data.oauth_secret);
-        window.location.href =
-          'https://api.twitter.com/oauth/authenticate?oauth_token='
-          + data.oauth_token;
-        }
-      );
-    }
-  };
-
   const formIsComplete = () => {
-    if (firstName && lastName && email && password && passReEntry) {
+    if (email && password && passReEntry) {
       return true;
     }
     return false;
@@ -184,21 +142,6 @@ function ValidationPage() {
 
         <input
           type="text"
-          placeholder="First Name"
-          className="login-input"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Last Name"
-          className="login-input"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-        <input
-          type="text"
           placeholder="Email"
           className="login-input"
           value={email}
@@ -221,33 +164,24 @@ function ValidationPage() {
           onChange={(e) => setPassReEntry(e.target.value)}
         />
 
-        <p className="oauth-message">Login to either a Github or Twitter account to verify your identity. We will not access any information on your third-party account other than your username.</p>
+        <p className="oauth-message"><strong>Note:</strong> The first and last name fields are not required. You may choose to leave them blank, or use a Discord username or pseudonym. However, note that you will not be able to receive voice credit transfers from other users if they cannot identify you by a recognizable name, username, or pseudonym.</p>
 
-        <p>A link to the Github or Twitter account that you choose will be displayed to other users along with your name, so that they may verify that you are who you say you are.</p>
-        <select
-          className="oauth-provider"
-          id="select-oauth-provider"
-          defaultValue=""
-          onChange={(e) => setVerificationMethod(() => {
-            switch (e.target.value) {
-              case VerificationMethod.Github: {
-                return VerificationMethod.Github;
-              }
-              case VerificationMethod.Twitter: {
-                return VerificationMethod.Twitter;
-              }
-              default: {
-                return undefined;
-              }
-            }
-          })}
-        >
-          <option value="" disabled hidden>
-            Select a verification method
-          </option>
-          <option value={VerificationMethod.Github}>Verify with Github</option>
-          <option value={VerificationMethod.Twitter}>Verify with Twitter</option>
-        </select>
+        <input
+          type="text"
+          placeholder="First Name"
+          className="login-input"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Last Name"
+          className="login-input"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+
 
         <div className="attestation">
           <h3>User Agreement</h3>

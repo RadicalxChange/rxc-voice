@@ -15,14 +15,20 @@ function DelegateCard(props: any) {
     <li className="delegate-card" key={props.delegate.id} >
       <ProfileIcon />
       <div className="info">
-        <h3 className="info-name">{props.delegate.profile.user.first_name + " " + props.delegate.profile.user.last_name}</h3>
-        <a
-          className="info-text"
-          href={oauthDomain + props.delegate.profile.public_username}
-          target="_blank"
-          rel="noopener nofollow noreferrer"
-        >{props.delegate.profile.public_username}
-        </a>
+        {(props.delegate.profile.user.first_name || props.delegate.profile.user.last_name) ? (
+          <h3 className="info-name">{props.delegate.profile.user.first_name + " " + props.delegate.profile.user.last_name}</h3>
+        ) : (
+          <h3 className="info-name">Anonymous</h3>
+        )}
+        {props.delegate.profile.public_username ? (
+          <a
+            className="info-text"
+            href={oauthDomain + props.delegate.profile.public_username}
+            target="_blank"
+            rel="noopener nofollow noreferrer"
+          >{props.delegate.profile.public_username}
+          </a>
+        ) : null}
         {moment() > moment(props.delegation.end_date) || (props.delegate.id === props.userDelegate.id)  ? (
           <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
         ) : null}
