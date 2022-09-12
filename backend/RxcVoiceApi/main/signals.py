@@ -27,7 +27,7 @@ def send_register_mail(sender, instance, **kwargs):
         subject = "Invitation to participate on RxC Voice"
 
         try:
-            if instance.process.id == "188":
+            if instance.process.id == 188:
                 mail_body = get_mail_body('0L_pilot_invite', params)
             else:
                 mail_body = get_mail_body('default_invite', params)
