@@ -88,7 +88,7 @@ function Account() {
   };
 
   const formIsComplete = () => {
-    if (firstName && lastName && email) {
+    if (email) {
       return true;
     }
     return false;
@@ -151,7 +151,11 @@ function Account() {
             </form>
           ) : (
           <div className="info">
-            <h3 className="name">{firstName + " " + lastName}</h3>
+            {firstName || lastName ? (
+              <h3 className="name">{firstName + " " + lastName}</h3>
+            ) : (
+              <h3 className="name">Anonymous</h3>
+            )}
             <h3 className="email">{email}</h3>
           </div>
         )}
