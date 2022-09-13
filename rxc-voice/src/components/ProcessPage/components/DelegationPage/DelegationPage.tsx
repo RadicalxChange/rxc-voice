@@ -153,7 +153,13 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
             {props.process.delegates
               .filter(isVerified)
               .sort((a: Delegate, b: Delegate) => {
+                if (a.profile.user.first_name === "") {
+                  return 1
+                } else if (b.profile.user.first_name === "") {
+                  return -1
+                } else {
                 return a.profile.user.first_name.localeCompare(b.profile.user.first_name);
+                }
               })
               .map((delegate: Delegate) => (
                 <DelegateCard
