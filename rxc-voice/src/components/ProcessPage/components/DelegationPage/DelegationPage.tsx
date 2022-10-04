@@ -34,7 +34,7 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
   }, []);
 
   const isVerified = (delegate: Delegate, index, array) => {
-    return delegate.profile.is_verified !== null;
+    return delegate.profile.is_verified !== null && delegate.profile.user.first_name + delegate.profile.user.last_name !== "";
   };
 
   const processTransferData = (data: any) => {
