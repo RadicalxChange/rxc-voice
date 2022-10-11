@@ -117,7 +117,7 @@ function TransferModal(props: any) {
                 <div className="give-credits-page">
                   <h2>Threshold Warning</h2>
                   <div className="explain-text">
-                    <p>Are you sure you'd like to send {amount} voice credits to {props.recipient ? props.recipient.profile.public_username : recipientEmail}?</p>
+                    <p>Are you sure you'd like to send {amount} voice credits to {props.recipient ? props.recipient.profile.user.first_name + ' ' + props.recipient.profile.user.last_name : recipientEmail}?</p>
                     <p>If you do, your voice credit balance will fall below the threshold for participation (25 voice credits), and you may not be able to participate in the Deliberation and Election Stages.</p>
                   </div>
                   <div className="button-container">
@@ -161,7 +161,7 @@ function TransferModal(props: any) {
                   {props.recipient ? (
                     <div className="transfer-field-container">
                       <div className="field-label">Send to</div>
-                      <p className="recipient">{props.recipient.profile.public_username}</p>
+                      <p className="recipient">{props.recipient.profile.user.first_name + ' ' + props.recipient.profile.user.last_name}</p>
                     </div>
                   ) : (
                     <div className="transfer-field-container">

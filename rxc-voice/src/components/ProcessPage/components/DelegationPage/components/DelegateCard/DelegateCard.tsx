@@ -20,15 +20,6 @@ function DelegateCard(props: any) {
         ) : (
           <h3 className="info-name">Anonymous</h3>
         )}
-        {props.delegate.profile.public_username ? (
-          <a
-            className="info-text"
-            href={oauthDomain + props.delegate.profile.public_username}
-            target="_blank"
-            rel="noopener nofollow noreferrer"
-          >{props.delegate.profile.public_username}
-          </a>
-        ) : null}
         {moment() > moment(props.delegation.end_date) || (props.delegate.id === props.userDelegate.id)  ? (
           <h3 className="info-text">Current Voice Credits: {props.delegate.credit_balance}</h3>
         ) : null}
