@@ -75,17 +75,45 @@ function DelegationPage(props: {process: Process, delegation: Delegation, userDe
       <h1>Delegation</h1>
       <h2 className="content-header">{props.process.title}</h2>
       <div className="explain-text">
-        <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some voice credits. Voice credits are used for voting in the election later on.</p>
-        {props.delegation.allow_invites ? (
-          <p>Is there anyone you don’t see in the list below that you think should have a say? You can invite them yourself.</p>
-        ) : null}
-        {props.delegation.allow_transfers ? (
+        {props.delegation.id === 505 ? (
           <>
-          <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election.{props.delegation.matching_pool !== MatchPoolMode.None ? " At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! " : " "}If you want to save all of your credits for your own use in the election, that’s fine too.</p>
-          <p>Keep in mind, the threshold for participating in Delegation and Election is 25 voice credits. If you want to participate in the decision, <strong>make sure you keep at least 25 voice credits for yourself.</strong></p>
+          <p>Welcome to the V6 Upgrade Poll.</p>
+          <p>Over the last few weeks we ran the "conversation" phase where we crowdsourced the proposals. This is done, and now we have a ballot to vote on.</p>
+          <p>On Monday Oct 17, the voting will commence.</p>
+          <p>In preparation for the vote, you must complete the "delegation". You, as an elector, can assign governance credits to other electors you think are most qualified to evaluate this ballot.</p>
+          <p>There are 8 proposals that will be evaluated:</p>
+          <ul className="bullets">
+            <li>Proposal 2210-1: Final Supply</li>
+            <li>Proposal 2210-2: Proof of Fee</li>
+            <li>Proposal 2210-3: Musical Chairs</li>
+            <li>Proposal 2210-4: Repurpose Carpe as an Oracle</li>
+            <li>Proposal 2210-5: Revenue Binding Primitives</li>
+            <li>Proposal 2210-6: Faucets for workers</li>
+            <li>Proposal 2210-7: Community Wallets should be donor-directed, not validator directed.</li>
+            <li>Proposal 2210-8: Cui Bono - Infrastructure Escrow Funding</li>
+          </ul>
+          <a
+            href="https://discord.com/channels/833074824447655976/1029478805187858462"
+            target="_blank"
+            rel="noopener nofollow noreferrer"
+            className="inline-link"
+          >Follow the discussion on Discord</a>
           </>
-        ) : null}
-        <p>You can see who else is participating in this event below.</p>
+        ) : (
+          <>
+          <p>Welcome to the RxC Voice democratic process! We want to make this decision democratically, so we have to start by deciding who gets to participate. Let’s start with why you’re here. Someone thought you should have a say in this decision, so they gave you some voice credits. Voice credits are used for voting in the election later on.</p>
+          {props.delegation.allow_invites ? (
+            <p>Is there anyone you don’t see in the list below that you think should have a say? You can invite them yourself.</p>
+          ) : null}
+          {props.delegation.allow_transfers ? (
+            <>
+            <p>You can also give voice credits to someone who is already here if you trust them and want them to have greater influence in the election.{props.delegation.matching_pool !== MatchPoolMode.None ? " At the end of this stage, all voice credit transfers will be matched using Quadratic Funding! " : " "}If you want to save all of your credits for your own use in the election, that’s fine too.</p>
+            <p>Keep in mind, the threshold for participating in Delegation and Election is 25 voice credits. If you want to participate in the decision, <strong>make sure you keep at least 25 voice credits for yourself.</strong></p>
+            </>
+          ) : null}
+          <p>You can see who else is participating in this event below.</p>
+          </>
+        )}
       </div>
       {moment() < moment(props.delegation.start_date) ? (
         <p className="explain-text"><strong>The Delegation Stage begins on {moment(props.delegation.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
