@@ -12,11 +12,10 @@
 
     <p>Please use the link below to sign in and participate.</p>
 
-    {% if is_verified %}
-    <a href="https://voice.radicalxchange.org?uidb64={{ uid }}&token={{ token }}">Sign in</a>
-    {% else %}
     <a href="https://voice.radicalxchange.org/verify?uidb64={{ uid }}&token={{ token }}">Create Account</a>
-    {% endif %}
+
+    <p>Already have an account?</p>
+    <a href="https://voice.radicalxchange.org?uidb64={{ uid }}&token={{ token }}">Sign in</a>
 
     <p>If you have any questions, you can get in touch with us at voice@radicalxchange.org</p>
 
