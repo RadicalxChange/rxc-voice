@@ -181,9 +181,9 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
   } else if (moment() < moment(props.election.start_date)) {
     return (
       <div className="voting-page">
-        <h1>Election</h1>
+        <h1>Voting</h1>
         <h2 className="content-header">{props.process.title}</h2>
-        <p className="explain-text"><strong>The Election Stage begins on {moment(props.election.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+        <p className="explain-text"><strong>The Voting Stage begins on {moment(props.election.start_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
       </div>
     );
   } else if (moment() > moment(props.election.end_date)) {
@@ -191,7 +191,7 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
       <div className="results-page">
         <h1>Election Results</h1>
         <h2 className="content-header">{props.process.title}</h2>
-        <p className="explain-text"><strong>The Election Stage has concluded. You can see the results below!</strong></p>
+        <p className="explain-text"><strong>The Voting Stage has concluded. You can see the results below!</strong></p>
         <button onClick={downloadXLSX} id="download" className="submit-button">
           Download spreadsheet
         </button>
@@ -205,9 +205,9 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
       <div className="voting-page">
         <h1>Election</h1>
         <h2 className="content-header">{props.process.title}</h2>
-        <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+        <p className="explain-text"><strong>The Voting Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
         <p className="explain-text">Thanks for voting! The results will
-          appear here when the election stage is over.
+          appear here when the voting stage is over.
         </p>
         <button
           type="button"
@@ -220,7 +220,7 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
           <div className={`success-modal ${!success ? "closed" : ""}`}>
             <h2>Success!</h2>
             <div className="explain-text">
-                <p>Your votes are in. You'll be able to change your votes up until the Election Stage closes.</p>
+                <p>Your votes are in. You'll be able to change your votes up until the Voting Stage closes.</p>
             </div>
             <button
               type="button"
@@ -270,11 +270,13 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
           <h1>Election</h1>
           <h2 className="content-header">{props.process.title}</h2>
           <div className="explain-text">
-            <p>Spend your voice credits on the proposals you wish to support or oppose.</p>
-            <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can go back and check the pol.is report to verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
+            <p>Each of the 8 proposals are listed below. The first 7 are simply yes/no votes (vote up/vote down). The last one, Proposal 8 has 4 parts. You vote on each separately (this will determine the dilution ratio for different classes of users).</p>
+            <p>Spend your voice credits on the proposals you wish to support or oppose. You have multiple voting credits (see the number on the right column). How you spend those is up to you. If you strongly believe / oppose something, vote multiple times, up to your credit limit. Vote UP to vote YES. Vote DOWN (casting negative votes) to vote NO. Skip it (casting zero votes) to abstain.</p>
+            <p>This ballot was curated from proposals submitted by the delegation in the Deliberation Stage. You can use the menu on the left (or at the bottom of your screen if you're on mobile) to go back and check the pol.is report and verify that the ballot fairly and accurately represents the delegation’s submissions. Make sure you use some of your voice credits to support or oppose the Ballot Ratification proposal accordingly.</p>
             <p>If Ballot Ratification receives a negative number of votes, the ballot will not be ratified, the election results will be overturned, and the ballot will have to be redrafted.</p>
+            <p>After you submit your votes, you can go back, make changes, and resubmit at any time.</p>
           </div>
-          <p className="explain-text"><strong>The Election Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
+          <p className="explain-text"><strong>The Voting Stage closes on {moment(props.election.end_date).format('MMMM Do YYYY, h:mm a')}</strong></p>
           {+props.userDelegate.credit_balance >= 25 || alreadyVoted ? (
           <ul className="proposal-list">
             {ratProposal && proposals[ratProposal] ? (
