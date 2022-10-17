@@ -288,6 +288,7 @@ function ElectionPage(props: {process: Process, election: Election, userDelegate
             ) : null}
             {proposals
               .filter(notRatProposal)
+              .sort((a, b) => a.title[14] - b.title[14])
               .map((proposal: Proposal, i) => (
               <ProposalWidget key={proposal.id}
                               creditsRemaining={startingBalance - creditsSpent}
